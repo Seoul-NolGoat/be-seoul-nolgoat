@@ -5,7 +5,7 @@ import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 public class DistanceCalculator {
 
-    private static final double RADIUS = 6371; // 상수 통합 예정
+    public static final double EARTH_RADIUS_KM = 6371.0;
     private static final double TO_RADIAN = Math.PI / 180;
 
     public double calculateTotalDistance(
@@ -57,6 +57,6 @@ public class DistanceCalculator {
                         * sinDeltaLongitude
         );
 
-        return RADIUS * Math.asin(squareRoot) * 2;
+        return EARTH_RADIUS_KM * Math.asin(squareRoot) * 2;
     }
 }
