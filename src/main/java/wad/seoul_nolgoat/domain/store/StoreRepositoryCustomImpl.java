@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import wad.seoul_nolgoat.service.search.dto.StoreForDistanceSortDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForGradeSortDto;
+import wad.seoul_nolgoat.service.search.sort.DistanceCalculator;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 import java.util.Collections;
@@ -16,8 +17,6 @@ import static wad.seoul_nolgoat.domain.store.QStore.store;
 
 @RequiredArgsConstructor
 public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
-
-    private static final double EARTH_RADIUS_KM = 6371.0;
 
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -108,7 +107,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
         return numberTemplate(
                 Double.class,
                 "{0} * acos(cos(radians({1})) * cos(radians({2})) * cos(radians({3}) - radians({4})) + sin(radians({1})) * sin(radians({2})))",
-                EARTH_RADIUS_KM,
+                DistanceCalculator.EARTH_RADIUS_KM,
                 startCoordinate.getLatitude(),
                 store.latitude,
                 store.longitude,
