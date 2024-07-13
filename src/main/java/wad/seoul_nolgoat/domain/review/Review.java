@@ -1,11 +1,14 @@
 package wad.seoul_nolgoat.domain.review;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import wad.seoul_nolgoat.domain.BaseTimeEntity;
 import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.user.User;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review extends BaseTimeEntity {
 
     @Id

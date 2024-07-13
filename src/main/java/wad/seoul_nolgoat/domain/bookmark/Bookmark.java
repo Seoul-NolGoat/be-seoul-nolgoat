@@ -1,11 +1,14 @@
 package wad.seoul_nolgoat.domain.bookmark;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import wad.seoul_nolgoat.domain.BaseTimeEntity;
 import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.user.User;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Bookmark extends BaseTimeEntity {
 
     @Id
