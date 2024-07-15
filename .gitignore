@@ -1,5 +1,7 @@
 ### config ###
 /src/main/resources/db-config.yml
+/src/main/resources/kakao-config.yml
+/src/main/resources/seoul-config.yml
 
 ### build ###
 .gradle
