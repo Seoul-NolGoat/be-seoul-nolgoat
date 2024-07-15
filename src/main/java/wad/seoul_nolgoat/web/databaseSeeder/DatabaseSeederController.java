@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 import wad.seoul_nolgoat.domain.store.StoreType;
 import wad.seoul_nolgoat.service.databaseSeeder.DatabaseSeederService;
 
-@RestController
-@RequestMapping("/seeder")
 @RequiredArgsConstructor
+@RequestMapping("/seeder")
+@RestController
 public class DatabaseSeederController {
 
     private final DatabaseSeederService databaseSeederService;

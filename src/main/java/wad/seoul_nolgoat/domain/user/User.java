@@ -7,8 +7,8 @@ import wad.seoul_nolgoat.domain.BaseTimeEntity;
 
 import java.time.LocalDate;
 
-@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 public class User extends BaseTimeEntity {
 
     @Id
