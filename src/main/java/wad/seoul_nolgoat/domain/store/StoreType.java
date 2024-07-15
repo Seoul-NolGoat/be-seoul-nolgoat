@@ -1,6 +1,6 @@
 package wad.seoul_nolgoat.domain.store;
 
-public enum Type {
+public enum StoreType {
 
     RESTAURANT,
     CAFE,
