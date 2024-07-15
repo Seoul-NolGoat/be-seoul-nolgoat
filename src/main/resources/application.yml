@@ -4,3 +4,5 @@ spring:
   config:
     import:
       - db-config.yml
+      - kakao-config.yml
+      - seoul-config.yml
