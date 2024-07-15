@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-@Service
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
+@Service
 public class DatabaseSeederService {
 
     private static final double RATE_LIMIT = 50.0;

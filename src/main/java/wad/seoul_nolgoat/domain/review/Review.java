@@ -7,8 +7,8 @@ import wad.seoul_nolgoat.domain.BaseTimeEntity;
 import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.user.User;
 
-@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 public class Review extends BaseTimeEntity {
 
     @Id

@@ -17,12 +17,12 @@ public class SeoulStoreService {
 
     private static final String METHOD_GET = "GET";
     private static final String ROW_PATH = "row";
-    public static final String STORE_OPERATION_STATUS_PATH = "TRDSTATEGBN";
-    public static final String STORE_STATUS_OPEN = "01";
-    public static final String MANAGEMENT_NUMBER_PATH = "MGTNO";
-    public static final String LOT_ADDRESS_PATH = "SITEWHLADDR";
-    public static final String ROAD_ADDRESS_PATH = "RDNWHLADDR";
-    public static final String STORE_NAME_PATH = "BPLCNM";
+    private static final String STORE_OPERATION_STATUS_PATH = "TRDSTATEGBN";
+    private static final String STORE_STATUS_OPEN = "01";
+    private static final String MANAGEMENT_NUMBER_PATH = "MGTNO";
+    private static final String LOT_ADDRESS_PATH = "SITEWHLADDR";
+    private static final String ROAD_ADDRESS_PATH = "RDNWHLADDR";
+    private static final String STORE_NAME_PATH = "BPLCNM";
 
     @Value("${seoul.api.url}")
     private String apiUrl;
@@ -59,7 +59,10 @@ public class SeoulStoreService {
         storeTypeCodeMap.put(StoreType.BILLIARD, billiardCode);
     }
 
-    public Optional<List<Store>> fetchSeoulStoreInfo(StoreType storeType, int startIdx, int endIdx) {
+    public Optional<List<Store>> fetchSeoulStoreInfo(
+            StoreType storeType,
+            int startIdx,
+            int endIdx) {
         try {
             String code = storeTypeCodeMap.get(storeType);
 
@@ -79,13 +82,12 @@ public class SeoulStoreService {
 
             for (JsonNode row : rows) {
                 if (STORE_STATUS_OPEN.equals(row.path(STORE_OPERATION_STATUS_PATH).asText())) {
-                    Store store = Store.builder()
-                            .storeType(storeType)
-                            .name(row.path(STORE_NAME_PATH).asText())
-                            .managementNumber(row.path(MANAGEMENT_NUMBER_PATH).asText())
-                            .lotAddress(row.path(LOT_ADDRESS_PATH).asText())
-                            .roadAddress(row.path(ROAD_ADDRESS_PATH).asText())
-                            .build();
+                    Store store = new Store(
+                            storeType,
+                            row.path(STORE_NAME_PATH).asText(),
+                            row.path(MANAGEMENT_NUMBER_PATH).asText(),
+                            row.path(LOT_ADDRESS_PATH).asText(),
+                            row.path(ROAD_ADDRESS_PATH).asText());
 
                     stores.add(store);
                 }

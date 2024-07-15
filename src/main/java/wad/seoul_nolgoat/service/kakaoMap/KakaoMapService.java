@@ -14,8 +14,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.kakaoMap.dto.CoordinateDto;
 import wad.seoul_nolgoat.service.kakaoMap.dto.StoreAdditionalInfoDto;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class KakaoMapService {
 
     private static final String AUTHORIZATION = "Authorization";
@@ -82,7 +82,10 @@ public class KakaoMapService {
         return null;
     }
 
-    public StoreAdditionalInfoDto fetchStoreAdditionalInfo(String name, Double longitude, Double latitude) {
+    public StoreAdditionalInfoDto fetchStoreAdditionalInfo(
+            String name,
+            Double longitude,
+            Double latitude) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(AUTHORIZATION, KAKAO_AUTHORIZATION_START + apiKey);
 
