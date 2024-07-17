@@ -7,7 +7,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.review.ReviewService;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewUpdateDto;
-import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsDto;
+import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
 
 import java.net.URI;
 import java.util.List;
@@ -40,7 +40,7 @@ public class ReviewController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<ReviewDetailsDto>> showReviewsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<ReviewDetailsForUserDto>> showReviewsByUserId(@PathVariable Long userId) {
         return ResponseEntity
                 .ok(reviewService.findByUserId(userId));
     }
