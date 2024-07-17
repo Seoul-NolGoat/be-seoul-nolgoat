@@ -41,6 +41,7 @@ public class User extends BaseTimeEntity {
         this.profileImage = profileImage;
         this.gender = gender;
         this.birthDate = birthDate;
+        this.isDeleted = false;
     }
 
     public void update(
