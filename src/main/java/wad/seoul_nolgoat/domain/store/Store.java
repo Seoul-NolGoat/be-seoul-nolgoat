@@ -52,6 +52,29 @@ public class Store extends BaseTimeEntity {
         this.isDeleted = false;
     }
 
+    public void update(
+            String name,
+            String category,
+            String managementNumber,
+            String phoneNumber,
+            String lotAddress,
+            String roadAddress,
+            double latitude,
+            double longitude,
+            double kakaoAverageGrade,
+            String placeUrl) {
+        this.name = name;
+        this.category = category;
+        this.managementNumber = managementNumber;
+        this.phoneNumber = phoneNumber;
+        this.lotAddress = lotAddress;
+        this.roadAddress = roadAddress;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.kakaoAverageGrade = kakaoAverageGrade;
+        this.placeUrl = placeUrl;
+    }
+
     public void updateCoordinates(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
@@ -68,5 +91,9 @@ public class Store extends BaseTimeEntity {
 
     public void updateKakaoAverageGrade(double kakaoAverageGrade) {
         this.kakaoAverageGrade = kakaoAverageGrade;
+    }
+
+    public void delete() {
+        this.isDeleted = true;
     }
 }
