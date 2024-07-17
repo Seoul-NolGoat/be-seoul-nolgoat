@@ -6,3 +6,4 @@ spring:
       - db-config.yml
       - kakao-config.yml
       - seoul-config.yml
+      - t-config.yml
