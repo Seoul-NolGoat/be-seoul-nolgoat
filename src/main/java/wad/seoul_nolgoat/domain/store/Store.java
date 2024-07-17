@@ -49,6 +49,7 @@ public class Store extends BaseTimeEntity {
         this.managementNumber = managementNumber;
         this.lotAddress = lotAddress;
         this.roadAddress = roadAddress;
+        this.isDeleted = false;
     }
 
     public void updateCoordinates(double latitude, double longitude) {
