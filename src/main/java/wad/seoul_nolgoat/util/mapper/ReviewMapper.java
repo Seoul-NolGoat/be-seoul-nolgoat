@@ -5,6 +5,7 @@ import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
 import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsDto;
+import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForStoreDto;
 
 public class ReviewMapper {
 
@@ -26,6 +27,16 @@ public class ReviewMapper {
                 review.getContent(),
                 review.getUser().getId(),
                 review.getStore().getId()
+        );
+    }
+
+    public static ReviewDetailsForStoreDto toReviewDetailsForStoreDto(Review review) {
+        return new ReviewDetailsForStoreDto(
+                review.getId(),
+                review.getGrade(),
+                review.getContent(),
+                review.getUser().getNickname(),
+                review.getUser().getProfileImage()
         );
     }
 }
