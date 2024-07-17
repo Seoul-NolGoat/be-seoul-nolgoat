@@ -2,9 +2,12 @@ package wad.seoul_nolgoat.service.review;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.review.Review;
 import wad.seoul_nolgoat.domain.review.ReviewRepository;
+import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.store.StoreRepository;
+import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.util.mapper.ReviewMapper;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
@@ -25,21 +28,31 @@ public class ReviewService {
             Long userId,
             Long storeId,
             ReviewSaveDto reviewSaveDto) {
-        return reviewRepository.save(ReviewMapper.toEntity(
-                userRepository.findById(userId).get(),
-                storeRepository.findById(storeId).get(),
-                reviewSaveDto)
+        User user = userRepository.findById(userId).get();
+        Store store = storeRepository.findById(storeId).get();
+
+        return reviewRepository.save(
+                ReviewMapper.toEntity(
+                        user,
+                        store,
+                        reviewSaveDto
+                )
         ).getId();
     }
 
     public List<ReviewDetailsDto> findByUserId(Long userId) {
-        return toReviewDetailsDtoList(reviewRepository.findByUserId(userId));
+        List<Review> reviews = reviewRepository.findByUserId(userId);
+
+        return toReviewDetailsDtoList(reviews);
     }
 
     public List<ReviewDetailsDto> findByStoreId(Long storeId) {
-        return toReviewDetailsDtoList(reviewRepository.findByStoreId(storeId));
+        List<Review> reviews = reviewRepository.findByStoreId(storeId);
+
+        return toReviewDetailsDtoList(reviews);
     }
 
+    @Transactional
     public void update(Long reviewId, ReviewUpdateDto reviewUpdateDto) {
         Review review = reviewRepository.findById(reviewId).get();
         review.update(reviewUpdateDto.getGrade(), reviewUpdateDto.getContent());
