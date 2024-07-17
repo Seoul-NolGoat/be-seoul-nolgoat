@@ -46,12 +46,6 @@ public class ReviewService {
         return toReviewDetailsDtoList(reviews);
     }
 
-    public List<ReviewDetailsDto> findByStoreId(Long storeId) {
-        List<Review> reviews = reviewRepository.findByStoreId(storeId);
-
-        return toReviewDetailsDtoList(reviews);
-    }
-
     @Transactional
     public void update(Long reviewId, ReviewUpdateDto reviewUpdateDto) {
         Review review = reviewRepository.findById(reviewId).get();
