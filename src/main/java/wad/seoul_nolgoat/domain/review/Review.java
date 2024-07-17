@@ -37,10 +37,15 @@ public class Review extends BaseTimeEntity {
         this.content = content;
         this.user = user;
         this.store = store;
+        store.getReviews().add(this);
     }
 
     public void update(double grade, String content) {
         this.grade = grade;
         this.content = content;
+    }
+
+    public void delete() {
+        store.getReviews().remove(this);
     }
 }

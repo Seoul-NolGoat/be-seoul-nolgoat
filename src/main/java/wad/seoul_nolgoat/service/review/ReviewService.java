@@ -43,7 +43,9 @@ public class ReviewService {
     public List<ReviewDetailsDto> findByUserId(Long userId) {
         List<Review> reviews = reviewRepository.findByUserId(userId);
 
-        return toReviewDetailsDtoList(reviews);
+        return reviews.stream()
+                .map(ReviewMapper::toReviewDetailsDto)
+                .toList();
     }
 
     @Transactional
@@ -53,12 +55,8 @@ public class ReviewService {
     }
 
     public void deleteById(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId).get();
+        review.delete();
         reviewRepository.deleteById(reviewId);
-    }
-
-    private List<ReviewDetailsDto> toReviewDetailsDtoList(List<Review> reviews) {
-        return reviews.stream()
-                .map(ReviewMapper::toReviewDetailsDto)
-                .toList();
     }
 }
