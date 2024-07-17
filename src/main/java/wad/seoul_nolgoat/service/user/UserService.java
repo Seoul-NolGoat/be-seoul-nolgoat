@@ -3,6 +3,7 @@ package wad.seoul_nolgoat.service.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.util.mapper.UserMapper;
 import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
@@ -20,22 +21,24 @@ public class UserService {
     }
 
     public UserDetailsDto findByUserId(Long userId) {
-        return UserMapper.toUserDetailsDto(userRepository.findById(userId).get());
+        User user = userRepository.findById(userId).get();
+
+        return UserMapper.toUserDetailsDto(user);
     }
 
     @Transactional
     public void update(Long userId, UserUpdateDto userUpdateDto) {
-        userRepository.findById(userId).get()
-                .update(
-                        userUpdateDto.getPassword(),
-                        userUpdateDto.getNickname(),
-                        userUpdateDto.getProfileImage()
-                );
+        User user = userRepository.findById(userId).get();
+        user.update(
+                userUpdateDto.getPassword(),
+                userUpdateDto.getNickname(),
+                userUpdateDto.getProfileImage()
+        );
     }
 
     @Transactional
     public void deleteById(Long userId) {
-        userRepository.findById(userId).get()
-                .delete();
+        User user = userRepository.findById(userId).get();
+        user.delete();
     }
 }
