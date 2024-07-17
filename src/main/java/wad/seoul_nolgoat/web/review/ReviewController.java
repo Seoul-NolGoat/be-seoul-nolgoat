@@ -45,12 +45,6 @@ public class ReviewController {
                 .ok(reviewService.findByUserId(userId));
     }
 
-    @GetMapping("/{storeId}")
-    public ResponseEntity<List<ReviewDetailsDto>> showReviewsByStoreId(@PathVariable Long storeId) {
-        return ResponseEntity
-                .ok(reviewService.findByStoreId(storeId));
-    }
-
     @PutMapping("/{reviewId}")
     public ResponseEntity<Void> update(@PathVariable Long reviewId, @RequestBody ReviewUpdateDto reviewUpdateDto) {
         reviewService.update(reviewId, reviewUpdateDto);
