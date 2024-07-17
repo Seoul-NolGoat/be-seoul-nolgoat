@@ -33,6 +33,7 @@ public class Store extends BaseTimeEntity {
     private double kakaoAverageGrade;
     private double nolgoatAverageGrade;
     private String placeUrl;
+    private Boolean isDeleted;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE)
     private List<Review> reviews = new ArrayList<>();
