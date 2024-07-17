@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class ReviewDetailsDto {
+public class ReviewDetailsForUserDto {
 
     private final double grade;
     private final String content;
-    private final Long userId;
     private final Long storeId;
+    private final String storeName;
 }

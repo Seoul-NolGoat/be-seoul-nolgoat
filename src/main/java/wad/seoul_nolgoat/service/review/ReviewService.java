@@ -12,7 +12,7 @@ import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.util.mapper.ReviewMapper;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewUpdateDto;
-import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsDto;
+import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
 
 import java.util.List;
 
@@ -40,11 +40,11 @@ public class ReviewService {
         ).getId();
     }
 
-    public List<ReviewDetailsDto> findByUserId(Long userId) {
+    public List<ReviewDetailsForUserDto> findByUserId(Long userId) {
         List<Review> reviews = reviewRepository.findByUserId(userId);
 
         return reviews.stream()
-                .map(ReviewMapper::toReviewDetailsDto)
+                .map(ReviewMapper::toReviewDetailsForUserDto)
                 .toList();
     }
 
