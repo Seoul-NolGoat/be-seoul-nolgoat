@@ -19,7 +19,7 @@ public class UserService {
         return userRepository.save(UserMapper.toEntity(userSaveDto)).getId();
     }
 
-    public UserDetailsDto findById(Long userId) {
+    public UserDetailsDto findByUserId(Long userId) {
         return UserMapper.toUserDetailsDto(userRepository.findById(userId).get());
     }
 
