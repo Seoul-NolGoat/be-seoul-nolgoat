@@ -10,8 +10,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import wad.seoul_nolgoat.service.kakaoMap.dto.CoordinateDto;
 import wad.seoul_nolgoat.service.tMap.dto.WalkRouteInfoDto;
+import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,11 +47,12 @@ public class TMapService {
     private final ObjectMapper objectMapper;
 
     public WalkRouteInfoDto fetchWalkRouteInfo(CoordinateDto startCoordinate, CoordinateDto endCoordinate) {
+        List<String> passList = new ArrayList<>();
+
         return fetchWalkRouteInfo(
                 startCoordinate,
-                null,
-                null,
-                endCoordinate
+                endCoordinate,
+                passList
         );
     }
 
@@ -59,11 +60,13 @@ public class TMapService {
             CoordinateDto startCoordinate,
             CoordinateDto waypointCoordinate1,
             CoordinateDto endCoordinate) {
+        List<String> passList = new ArrayList<>();
+        passList.add(convertCoordinateToString(waypointCoordinate1));
+
         return fetchWalkRouteInfo(
                 startCoordinate,
-                waypointCoordinate1,
-                null,
-                endCoordinate
+                endCoordinate,
+                passList
         );
     }
 
@@ -72,6 +75,21 @@ public class TMapService {
             CoordinateDto waypointCoordinate1,
             CoordinateDto waypointCoordinate2,
             CoordinateDto endCoordinate) {
+        List<String> passList = new ArrayList<>();
+        passList.add(convertCoordinateToString(waypointCoordinate1));
+        passList.add(convertCoordinateToString(waypointCoordinate2));
+
+        return fetchWalkRouteInfo(
+                startCoordinate,
+                endCoordinate,
+                passList
+        );
+    }
+
+    public WalkRouteInfoDto fetchWalkRouteInfo(
+            CoordinateDto startCoordinate,
+            CoordinateDto endCoordinate,
+            List<String> passList) {
         try {
             Map<String, String> requestBodyMap = new HashMap<>();
             requestBodyMap.put("startX", String.valueOf(startCoordinate.getLongitude()));
@@ -79,13 +97,6 @@ public class TMapService {
             requestBodyMap.put("endX", String.valueOf(endCoordinate.getLongitude()));
             requestBodyMap.put("endY", String.valueOf(endCoordinate.getLatitude()));
 
-            List<String> passList = new ArrayList<>();
-            if (waypointCoordinate1 != null) {
-                passList.add(waypointCoordinate1.getLongitude() + COORDINATE_SEPARATOR + waypointCoordinate1.getLatitude());
-            }
-            if (waypointCoordinate2 != null) {
-                passList.add(waypointCoordinate2.getLongitude() + COORDINATE_SEPARATOR + waypointCoordinate2.getLatitude());
-            }
             if (!passList.isEmpty()) {
                 requestBodyMap.put("passList", String.join(WAYPOINT_SEPARATOR, passList));
             }
@@ -117,5 +128,9 @@ public class TMapService {
         } catch (Exception e) {
             throw new RuntimeException("TMap API error", e);
         }
+    }
+
+    private String convertCoordinateToString(CoordinateDto coordinate) {
+        return coordinate.getLongitude() + COORDINATE_SEPARATOR + coordinate.getLatitude();
     }
 }
