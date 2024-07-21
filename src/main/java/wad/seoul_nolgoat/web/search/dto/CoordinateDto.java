@@ -1,12 +1,12 @@
 package wad.seoul_nolgoat.web.search.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class CoordinateDto {
 
-    private final double latitude;
-    private final double longitude;
+    private double latitude;
+    private double longitude;
 }
