@@ -11,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import wad.seoul_nolgoat.service.kakaoMap.dto.CoordinateDto;
 import wad.seoul_nolgoat.service.kakaoMap.dto.StoreAdditionalInfoDto;
+import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 @RequiredArgsConstructor
 @Service

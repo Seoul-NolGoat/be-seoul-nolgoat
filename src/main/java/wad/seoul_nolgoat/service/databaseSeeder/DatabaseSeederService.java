@@ -9,9 +9,9 @@ import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.store.StoreRepository;
 import wad.seoul_nolgoat.domain.store.StoreType;
 import wad.seoul_nolgoat.service.kakaoMap.KakaoMapService;
-import wad.seoul_nolgoat.service.kakaoMap.dto.CoordinateDto;
 import wad.seoul_nolgoat.service.kakaoMap.dto.StoreAdditionalInfoDto;
 import wad.seoul_nolgoat.service.seoulStore.SeoulStoreService;
+import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 import java.util.List;
 import java.util.Optional;
