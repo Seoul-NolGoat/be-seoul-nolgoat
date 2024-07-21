@@ -18,14 +18,14 @@ public class SearchService {
     public static final int ONE_ROUND = 1;
     public static final int TWO_ROUND = 2;
     public static final int THREE_ROUND = 3;
-    private static final int STORE_COMBINATION_SEARCH_LIMIT = 10;
+
     private static final String DISTANCE_CRITERIA = "distance";
     private static final String KAKAO_GRADE_CRITERIA = "kakaoGrade";
     private static final String NOLGOAT_GRADE_CRITERIA = "nolgoatGrade";
     private static final int FIRST_CATEGORY = 0;
     private static final int SECOND_CATEGORY = 1;
     private static final int THIRD_CATEGORY = 2;
-
+    private static final int STORE_COMBINATION_SEARCH_LIMIT = 10;
 
     private final FilterService filterService;
     private final SortService sortService;
