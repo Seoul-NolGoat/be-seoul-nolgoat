@@ -54,12 +54,12 @@ public class DatabaseSeederService {
                 CompletableFuture.allOf(coordinateFutures.toArray(new CompletableFuture[0])).join();
 
                 List<CompletableFuture<Void>> infoFutures = stores.stream()
-                        .map(this::updateRestaurantInfoAsync)
+                        .map(this::updateStoreInfoAsync)
                         .toList();
                 CompletableFuture.allOf(infoFutures.toArray(new CompletableFuture[0])).join();
 
                 List<CompletableFuture<Void>> ratingFutures = stores.stream()
-                        .map(this::updateRestaurantRatingAsync)
+                        .map(this::updateStoreRatingAsync)
                         .toList();
                 CompletableFuture.allOf(ratingFutures.toArray(new CompletableFuture[0])).join();
 
@@ -83,8 +83,9 @@ public class DatabaseSeederService {
         return CompletableFuture.runAsync(() -> {
             rateLimiter.acquire(); // RateLimiter 사용
             if (store.getRoadAddress() != null && !store.getRoadAddress().isEmpty()) {
-                CoordinateDto coordinates = kakaoMapService.fetchCoordinate(store.getRoadAddress());
-                if (coordinates != null) {
+                Optional<CoordinateDto> optionalCoordinates = kakaoMapService.fetchCoordinate(store.getRoadAddress());
+                if (optionalCoordinates.isPresent()) {
+                    CoordinateDto coordinates = optionalCoordinates.get();
                     store.updateCoordinates(coordinates.getLatitude(), coordinates.getLongitude());
                 }
             }
@@ -92,28 +93,35 @@ public class DatabaseSeederService {
     }
 
     @Async
-    public CompletableFuture<Void> updateRestaurantInfoAsync(Store store) {
+    public CompletableFuture<Void> updateStoreInfoAsync(Store store) {
         return CompletableFuture.runAsync(() -> {
             rateLimiter.acquire(); // RateLimiter 사용
             if (store.getLongitude() != 0 && store.getLatitude() != 0) {
-                StoreAdditionalInfoDto storeAdditionalInfoDto = kakaoMapService.fetchStoreAdditionalInfo(store.getName(), store.getLongitude(), store.getLatitude());
-                if (storeAdditionalInfoDto != null) {
-                    store.updateAdditionalInfo(storeAdditionalInfoDto.getCategory(), storeAdditionalInfoDto.getPhoneNumber(), storeAdditionalInfoDto.getPlaceUrl());
+                Optional<StoreAdditionalInfoDto> optionalStoreAdditionalInfo = kakaoMapService.fetchStoreAdditionalInfo(
+                        store.getName(),
+                        store.getLongitude(),
+                        store.getLatitude()
+                );
+                if (optionalStoreAdditionalInfo.isPresent()) {
+                    StoreAdditionalInfoDto storeAdditionalInfoDto = optionalStoreAdditionalInfo.get();
+                    store.updateAdditionalInfo(
+                            storeAdditionalInfoDto.getCategory(),
+                            storeAdditionalInfoDto.getPhoneNumber(),
+                            storeAdditionalInfoDto.getPlaceUrl()
+                    );
                 }
             }
         });
     }
 
     @Async
-    public CompletableFuture<Void> updateRestaurantRatingAsync(Store store) {
+    public CompletableFuture<Void> updateStoreRatingAsync(Store store) {
         return CompletableFuture.runAsync(() -> {
             if (store.getPlaceUrl() != null) {
                 try {
-                    Long restaurantId = Long.parseLong(store.getPlaceUrl().substring(store.getPlaceUrl().lastIndexOf('/') + 1));
-                    Double kakaoGrade = kakaoMapService.fetchStoreKakaoGrade(restaurantId);
-                    if (kakaoGrade != null) {
-                        store.updateKakaoAverageGrade(kakaoGrade);
-                    }
+                    Long storeKakaoId = Long.parseLong(store.getPlaceUrl().substring(store.getPlaceUrl().lastIndexOf('/') + 1));
+                    Double kakaoGrade = kakaoMapService.fetchStoreKakaoGrade(storeKakaoId);
+                    store.updateKakaoAverageGrade(kakaoGrade);
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
