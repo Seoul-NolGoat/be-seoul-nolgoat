@@ -154,5 +154,68 @@ public class KakaoMapService {
         }
         return (double) 0;
     }
-}
 
+    public Optional<String> fetchRoadAddress(CoordinateDto coordinate) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(AUTHORIZATION, KAKAO_AUTHORIZATION_START + apiKey);
+
+        String url = UriComponentsBuilder.fromHttpUrl(addressApiUrl)
+                .queryParam(LONGITUDE_PATH, coordinate.getLongitude())
+                .queryParam(LATITUDE_PATH, coordinate.getLatitude())
+                .build()
+                .toUriString();
+
+        try {
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+
+            JsonNode rootNode = objectMapper.readTree(response.getBody());
+            JsonNode documentsNode = rootNode.path(DOCUMENTS_PATH);
+
+            if (documentsNode.isArray() && !documentsNode.isEmpty()) {
+                JsonNode firstDocument = documentsNode.get(FIRST_INDEX);
+                JsonNode roadAddressNode = firstDocument.path(ROAD_ADDRESS_PATH);
+
+                if (!roadAddressNode.isMissingNode()) {
+                    return Optional.of(roadAddressNode.path(ADDRESS_NAME_PATH).asText());
+                }
+            }
+
+            return Optional.empty();
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
+
+    public Optional<String> fetchLotAddress(CoordinateDto coordinate) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(AUTHORIZATION, KAKAO_AUTHORIZATION_START + apiKey);
+
+        String url = UriComponentsBuilder.fromHttpUrl(addressApiUrl)
+                .queryParam(LONGITUDE_PATH, coordinate.getLongitude())
+                .queryParam(LATITUDE_PATH, coordinate.getLatitude())
+                .build()
+                .toUriString();
+
+        try {
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+
+            JsonNode rootNode = objectMapper.readTree(response.getBody());
+            JsonNode documentsNode = rootNode.path(DOCUMENTS_PATH);
+
+            if (documentsNode.isArray() && !documentsNode.isEmpty()) {
+                JsonNode firstDocument = documentsNode.get(FIRST_INDEX);
+                JsonNode roadAddressNode = firstDocument.path(LOT_ADDRESS_PATH);
+
+                if (!roadAddressNode.isMissingNode()) {
+                    return Optional.of(roadAddressNode.path(ADDRESS_NAME_PATH).asText());
+                }
+            }
+
+            return Optional.empty();
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
+}
