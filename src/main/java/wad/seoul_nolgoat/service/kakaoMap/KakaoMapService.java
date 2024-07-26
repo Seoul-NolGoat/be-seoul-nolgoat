@@ -14,6 +14,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.kakaoMap.dto.StoreAdditionalInfoDto;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class KakaoMapService {
@@ -26,18 +28,25 @@ public class KakaoMapService {
     private static final String LONGITUDE_PATH = "x";
     private static final int FIRST_INDEX = 0;
 
-    // getStoreAdditionalInfo
+    // fetchStoreAdditionalInfo
     private static final String RADIUS = "radius";
     private static final int RADIUS_VALUE = 50;
     private static final String CATEGORY_NAME_PATH = "category_name";
     private static final String PHONE_PATH = "phone";
     private static final String PLACE_URL_PATH = "place_url";
 
-    // getStoreKakaoGrade
+    // fetchStoreKakaoGrade
     private static final String BASIC_INFO_PATH = "basicInfo";
     private static final String FEEDBACK_PATH = "feedback";
     private static final String SCORE_SUM_PATH = "scoresum";
     private static final String SCORE_COUNT_PATH = "scorecnt";
+
+    // fetchRoadAddress
+    private static final String ROAD_ADDRESS_PATH = "road_address";
+    private static final String ADDRESS_NAME_PATH = "address_name";
+
+    // fetchLotAddress
+    private static final String LOT_ADDRESS_PATH = "address";
 
     @Value("${kakao.api.key}")
     private String apiKey;
@@ -51,10 +60,13 @@ public class KakaoMapService {
     @Value("${kakao.api.store-info-website-url}")
     private String storeInfoWebsiteUrl;
 
+    @Value("${kakao.api.address-url}")
+    private String addressApiUrl;
+
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    public CoordinateDto fetchCoordinate(String address) {
+    public Optional<CoordinateDto> fetchCoordinate(String address) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(AUTHORIZATION, KAKAO_AUTHORIZATION_START + apiKey);
 
@@ -74,15 +86,16 @@ public class KakaoMapService {
                 JsonNode firstDocument = documentsNode.get(FIRST_INDEX);
                 double latitude = firstDocument.path(LATITUDE_PATH).asDouble();
                 double longitude = firstDocument.path(LONGITUDE_PATH).asDouble();
-                return new CoordinateDto(latitude, longitude);
+
+                return Optional.of(new CoordinateDto(latitude, longitude));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return Optional.empty();
     }
 
-    public StoreAdditionalInfoDto fetchStoreAdditionalInfo(
+    public Optional<StoreAdditionalInfoDto> fetchStoreAdditionalInfo(
             String name,
             Double longitude,
             Double latitude) {
@@ -109,16 +122,17 @@ public class KakaoMapService {
                 String categoryName = firstDocument.path(CATEGORY_NAME_PATH).asText();
                 String phone = firstDocument.path(PHONE_PATH).asText();
                 String placeUrl = firstDocument.path(PLACE_URL_PATH).asText();
-                return new StoreAdditionalInfoDto(categoryName, phone, placeUrl);
+
+                return Optional.of(new StoreAdditionalInfoDto(categoryName, phone, placeUrl));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return Optional.empty();
     }
 
-    public Double fetchStoreKakaoGrade(Long restaurantId) {
-        String url = storeInfoWebsiteUrl + restaurantId;
+    public Double fetchStoreKakaoGrade(Long storeKakaoId) {
+        String url = storeInfoWebsiteUrl + storeKakaoId;
 
         try {
             HttpEntity<String> entity = new HttpEntity<>(new HttpHeaders());
@@ -131,15 +145,14 @@ public class KakaoMapService {
                 int scoreSum = feedbackNode.path(SCORE_SUM_PATH).asInt();
                 int scoreCount = feedbackNode.path(SCORE_COUNT_PATH).asInt();
 
-                if (scoreCount == 0) {
-                    return null;
+                if (scoreCount != 0) {
+                    return Math.round((double) scoreSum / scoreCount * 100) / 100.0;
                 }
-                return Math.round((double) scoreSum / scoreCount * 100) / 100.0;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return (double) 0;
     }
 }
 
