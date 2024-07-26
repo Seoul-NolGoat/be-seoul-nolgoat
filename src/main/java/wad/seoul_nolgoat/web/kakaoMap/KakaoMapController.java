@@ -18,39 +18,27 @@ public class KakaoMapController {
     @GetMapping("/road-address")
     public ResponseEntity<String> getRoadAddress(@ModelAttribute CoordinateDto coordinate) {
         Optional<String> optionalAddress = kakaoMapService.fetchRoadAddress(coordinate);
-        if (optionalAddress.isEmpty()) {
-            return ResponseEntity
-                    .notFound()
-                    .build();
-        }
-
-        return ResponseEntity
-                .ok(optionalAddress.get());
+        return optionalAddress.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity
+                        .notFound()
+                        .build());
     }
 
     @GetMapping("/lot-address")
     public ResponseEntity<String> getLotAddress(@ModelAttribute CoordinateDto coordinate) {
         Optional<String> optionalAddress = kakaoMapService.fetchLotAddress(coordinate);
-        if (optionalAddress.isEmpty()) {
-            return ResponseEntity
-                    .notFound()
-                    .build();
-        }
-
-        return ResponseEntity
-                .ok(optionalAddress.get());
+        return optionalAddress.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity
+                        .notFound()
+                        .build());
     }
 
     @GetMapping("/coordinate")
     public ResponseEntity<CoordinateDto> getCoordinate(@RequestParam String address) {
         Optional<CoordinateDto> optionalCoordinate = kakaoMapService.fetchCoordinate(address);
-        if (optionalCoordinate.isEmpty()) {
-            return ResponseEntity
-                    .notFound()
-                    .build();
-        }
-
-        return ResponseEntity
-                .ok(optionalCoordinate.get());
+        return optionalCoordinate.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity
+                        .notFound()
+                        .build());
     }
 }
