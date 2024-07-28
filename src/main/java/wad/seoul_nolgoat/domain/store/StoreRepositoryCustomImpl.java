@@ -8,6 +8,7 @@ import wad.seoul_nolgoat.service.search.dto.StoreForDistanceSortDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForGradeSortDto;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
+import java.util.Collections;
 import java.util.List;
 
 import static com.querydsl.core.types.dsl.Expressions.numberTemplate;
@@ -23,20 +24,26 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             CoordinateDto startCoordinate,
             double radiusRange,
             String category) {
-        return jpaQueryFactory
-                .select(Projections.constructor(
-                        StoreForDistanceSortDto.class,
-                        store.id,
-                        store.name,
-                        Projections.constructor(
-                                CoordinateDto.class,
-                                store.latitude,
-                                store.longitude
+        return Collections.unmodifiableList(
+                jpaQueryFactory.select(
+                                Projections.constructor(
+                                        StoreForDistanceSortDto.class,
+                                        store.id,
+                                        store.name,
+                                        Projections.constructor(
+                                                CoordinateDto.class,
+                                                store.latitude,
+                                                store.longitude
+                                        )
+                                )
                         )
-                ))
-                .from(store)
-                .where(calculateHaversineDistance(startCoordinate).loe(radiusRange), store.category.contains(category))
-                .fetch();
+                        .from(store)
+                        .where(
+                                calculateHaversineDistance(startCoordinate).loe(radiusRange),
+                                store.category.contains(category)
+                        )
+                        .fetch()
+        );
     }
 
     @Override
@@ -44,21 +51,27 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             CoordinateDto startCoordinate,
             double radiusRange,
             String category) {
-        return jpaQueryFactory
-                .select(Projections.constructor(
-                        StoreForGradeSortDto.class,
-                        store.id,
-                        store.name,
-                        Projections.constructor(
-                                CoordinateDto.class,
-                                store.latitude,
-                                store.longitude
-                        ),
-                        store.kakaoAverageGrade
-                ))
-                .from(store)
-                .where(calculateHaversineDistance(startCoordinate).loe(radiusRange), store.category.contains(category))
-                .fetch();
+        return Collections.unmodifiableList(
+                jpaQueryFactory.select(
+                                Projections.constructor(
+                                        StoreForGradeSortDto.class,
+                                        store.id,
+                                        store.name,
+                                        Projections.constructor(
+                                                CoordinateDto.class,
+                                                store.latitude,
+                                                store.longitude
+                                        ),
+                                        store.kakaoAverageGrade
+                                )
+                        )
+                        .from(store)
+                        .where(
+                                calculateHaversineDistance(startCoordinate).loe(radiusRange),
+                                store.category.contains(category)
+                        )
+                        .fetch()
+        );
     }
 
     @Override
@@ -66,21 +79,27 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             CoordinateDto startCoordinate,
             double radiusRange,
             String category) {
-        return jpaQueryFactory
-                .select(Projections.constructor(
-                        StoreForGradeSortDto.class,
-                        store.id,
-                        store.name,
-                        Projections.constructor(
-                                CoordinateDto.class,
-                                store.latitude,
-                                store.longitude
-                        ),
-                        store.nolgoatAverageGrade
-                ))
-                .from(store)
-                .where(calculateHaversineDistance(startCoordinate).loe(radiusRange), store.category.contains(category))
-                .fetch();
+        return Collections.unmodifiableList(
+                jpaQueryFactory.select(
+                                Projections.constructor(
+                                        StoreForGradeSortDto.class,
+                                        store.id,
+                                        store.name,
+                                        Projections.constructor(
+                                                CoordinateDto.class,
+                                                store.latitude,
+                                                store.longitude
+                                        ),
+                                        store.nolgoatAverageGrade
+                                )
+                        )
+                        .from(store)
+                        .where(
+                                calculateHaversineDistance(startCoordinate).loe(radiusRange),
+                                store.category.contains(category)
+                        )
+                        .fetch()
+        );
     }
 
     private NumberExpression<Double> calculateHaversineDistance(CoordinateDto startCoordinate) {
