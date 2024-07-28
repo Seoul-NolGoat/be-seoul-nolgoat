@@ -11,6 +11,7 @@ import java.util.List;
 public class SearchConditionDto {
 
     private final CoordinateDto startCoordinate;
+    private final double radiusRange;
     private final String criteria;
     private final List<String> categories;
 }
