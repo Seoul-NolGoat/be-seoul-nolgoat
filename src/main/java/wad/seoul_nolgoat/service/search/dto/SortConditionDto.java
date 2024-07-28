@@ -1,13 +1,11 @@
 package wad.seoul_nolgoat.service.search.dto;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 import java.util.List;
 
 @Getter
-@RequiredArgsConstructor
 public class SortConditionDto<T> {
 
     private final CoordinateDto startCoordinate;
@@ -43,5 +41,4 @@ public class SortConditionDto<T> {
         this.firstFilteredStores = firstFilteredStores;
         this.totalRounds = 1;
     }
-
 }
