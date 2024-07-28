@@ -13,16 +13,23 @@ public class DistanceSortCombinationDto {
     private WalkRouteInfoDto walkRouteInfoDto;
 
     @Setter
-    private double totalDistnace;
+    private double totaleDistnace;
 
-    public DistanceSortCombinationDto(StoreForDistanceSortDto firstStore, StoreForDistanceSortDto secondStore, StoreForDistanceSortDto thirdStore, WalkRouteInfoDto walkRouteInfoDto) {
+    public DistanceSortCombinationDto(
+            StoreForDistanceSortDto firstStore,
+            StoreForDistanceSortDto secondStore,
+            StoreForDistanceSortDto thirdStore,
+            WalkRouteInfoDto walkRouteInfoDto) {
         this.firstStore = firstStore;
         this.secondStore = secondStore;
         this.thirdStore = thirdStore;
         this.walkRouteInfoDto = walkRouteInfoDto;
     }
 
-    public DistanceSortCombinationDto(StoreForDistanceSortDto firstStore, StoreForDistanceSortDto secondStore, StoreForDistanceSortDto thirdStore) {
+    public DistanceSortCombinationDto(
+            StoreForDistanceSortDto firstStore,
+            StoreForDistanceSortDto secondStore,
+            StoreForDistanceSortDto thirdStore) {
         this.firstStore = firstStore;
         this.secondStore = secondStore;
         this.thirdStore = thirdStore;
