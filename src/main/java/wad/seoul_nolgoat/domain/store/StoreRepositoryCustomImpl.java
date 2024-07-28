@@ -17,6 +17,8 @@ import static wad.seoul_nolgoat.domain.store.QStore.store;
 @RequiredArgsConstructor
 public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
+    private static final double EARTH_RADIUS_KM = 6371.0;
+
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
@@ -105,7 +107,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     private NumberExpression<Double> calculateHaversineDistance(CoordinateDto startCoordinate) {
         return numberTemplate(
                 Double.class,
-                "6371 * acos(cos(radians({0})) * cos(radians({1})) * cos(radians({2}) - radians({3})) + sin(radians({0})) * sin(radians({1})))",
+                "{0} * acos(cos(radians({1})) * cos(radians({2})) * cos(radians({3}) - radians({4})) + sin(radians({1})) * sin(radians({2})))",
+                EARTH_RADIUS_KM,
                 startCoordinate.getLatitude(),
                 store.latitude,
                 store.longitude,
