@@ -36,10 +36,6 @@ dependencies {
     // RateLimiter 사용을 위한 Guava 라이브러리
     implementation 'com.google.guava:guava:32.0.0-android'
 
-    implementation 'com.navercorp.fixturemonkey:fixture-monkey:1.0.2'
-    implementation 'com.navercorp.fixturemonkey:fixture-monkey-junit-jupiter:1.0.2'
-
-
 }
 
 tasks.named('test') {
