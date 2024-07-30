@@ -1,214 +1,224 @@
 package wad.seoul_nolgoat.service.search.sort;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import wad.seoul_nolgoat.domain.store.Store;
-import wad.seoul_nolgoat.utilty.DistanceCalculator;
-import wad.seoul_nolgoat.web.search.dto.response.CombinationDto;
+import wad.seoul_nolgoat.service.search.dto.*;
+import wad.seoul_nolgoat.service.tMap.TMapService;
+import wad.seoul_nolgoat.service.tMap.dto.WalkRouteInfoDto;
+import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.IntStream;
 
+@RequiredArgsConstructor
 @Service
 public class SortService {
+    private static final int TOP_FIRST = 0;
+    private static final int TOP_TWENTIETH = 20;
 
-    public static final String KAKAO = "kakao";
-    public static final String NOLGOAT = "nolgoat";
+    private final TMapService tMapService;
 
-    public static final int FIRST_RANK = 0;
-    public static final int TENTH_RANK = 10;
-    public static final int TOP_FIVE = 5;
-
-    public List<CombinationDto> sortByKakaoGrade(
-            List<Store> firstStores,
-            List<Store> secondStores,
-            List<Store> thirdStores) {
-        List<Store> sortedFirstStoresByKakaoGrade = sortByGrade(firstStores, KAKAO);
-        List<Store> sortedSecondStoresByKakaoGrade = sortByGrade(secondStores, KAKAO);
-        List<Store> sortedThirdStoresByKakaoGrade = sortByGrade(thirdStores, KAKAO);
-
-        List<CombinationDto> combinations = generateTopGradeCombinations(
-                sortedFirstStoresByKakaoGrade,
-                sortedSecondStoresByKakaoGrade,
-                sortedThirdStoresByKakaoGrade);
-
-        return Collections.unmodifiableList(sortCombinationsByGrade(combinations, KAKAO)
-                .subList(FIRST_RANK, TENTH_RANK));
+    public List<GradeSortCombinationDto> sortStoresByGrade(
+            SortConditionDto<StoreForGradeSortDto> sortConditionDto) {
+        int totalRounds = sortConditionDto.getTotalRounds();
+        List<GradeSortCombinationDto> gradeCombinations = generateGradeCombinations(sortConditionDto, totalRounds);
+        return sortCombinationsByGrade(gradeCombinations);
     }
 
-    public List<CombinationDto> sortByNolgoatGrade(
-            List<Store> firstStores,
-            List<Store> secondStores,
-            List<Store> thirdStores) {
-        List<Store> sortedFirstStoresByNolgoatGrade = sortByGrade(firstStores, NOLGOAT);
-        List<Store> sortedSecondStoresByNolgoatGrade = sortByGrade(secondStores, NOLGOAT);
-        List<Store> sortedThirdStoresByNolgoatGrade = sortByGrade(thirdStores, NOLGOAT);
+    public List<DistanceSortCombinationDto> sortStoresByDistance(
+            SortConditionDto<StoreForDistanceSortDto> sortConditionDto) {
+        int totalRounds = sortConditionDto.getTotalRounds();
+        List<DistanceSortCombinationDto> distanceCombinations = generateAndSortDistanceCombinations(sortConditionDto, totalRounds).subList(TOP_FIRST, TOP_TWENTIETH);
 
-        List<CombinationDto> combinations = generateTopGradeCombinations(
-                sortedFirstStoresByNolgoatGrade,
-                sortedSecondStoresByNolgoatGrade,
-                sortedThirdStoresByNolgoatGrade);
-
-        return Collections.unmodifiableList(sortCombinationsByGrade(combinations, NOLGOAT).
-                subList(FIRST_RANK, TENTH_RANK));
+        return fetchDistancesFromTMapApi(distanceCombinations, totalRounds);
     }
 
-    //sortByDistance는 인자 하나 더 추가해야함(현재 위치)
-
-    public List<CombinationDto> sortByDistance(
-            List<Store> firstStores,
-            List<Store> secondStores,
-            List<Store> thirdStores) {
-        List<CombinationForDistance> combinationForDistances = generateDistanceCombinations(
-                firstStores,
-                secondStores,
-                thirdStores);
-
-        return combinationForDistances.stream()
-                .sorted(Comparator.comparingDouble(CombinationForDistance::getTotalDistance))
-                .limit(20)
-                .map(i -> new CombinationDto(i.getStores()))
-                .toList();
-    }
-
-    private List<Store> sortByGrade(List<Store> stores, String keyword) {
-        if (keyword.equals(KAKAO)) {
-            stores.sort(Comparator.comparingDouble(Store::getKakaoAverageGrade).reversed());
-        } else {
-            stores.sort(Comparator.comparingDouble(Store::getNolgoatAverageGrade).reversed());
+    //api 호출 횟수를 줄이기 위한 테스트 용도
+    public List<DistanceSortCombinationDto> generateAndSortDistanceCombinations(
+            SortConditionDto<StoreForDistanceSortDto> sortConditionDto,
+            int totalRounds) {
+        List<DistanceSortCombinationDto> distanceSortCombinations = null;
+        if (totalRounds == 3) {
+            distanceSortCombinations = createDistanceCombinationsForThreeRounds(
+                    sortConditionDto.getFirstFilteredStores(),
+                    sortConditionDto.getSecondFilteredStores(),
+                    sortConditionDto.getThirdFilteredStores(),
+                    sortConditionDto.getStartCoordinate());
         }
 
-        return stores;
-    }
+        if (totalRounds == 2) {
+            distanceSortCombinations = createDistanceCombinationsForTwoRounds(
+                    sortConditionDto.getFirstFilteredStores(),
+                    sortConditionDto.getSecondFilteredStores(),
+                    sortConditionDto.getStartCoordinate());
+        }
 
-    private List<CombinationDto> sortCombinationsByGrade(List<CombinationDto> stores, String keyword) {
-        stores.sort((a, b) -> {
-
-            double firstRate = a.getStores().stream()
-                    .mapToDouble(store -> keyword.equals(KAKAO)
-                            ? store.getKakaoAverageGrade()
-                            : store.getNolgoatAverageGrade())
-                    .sum();
-
-            double secondRate = b.getStores().stream()
-                    .mapToDouble(store -> keyword.equals(KAKAO)
-                            ? store.getKakaoAverageGrade()
-                            : store.getNolgoatAverageGrade())
-                    .sum();
-
-            return Double.compare(secondRate, firstRate);
-        });
-
-        return stores;
-    }
-
-    private List<CombinationDto> generateTopGradeCombinations(
-            List<Store> firstStores,
-            List<Store> secondStores,
-            List<Store> thirdStores) {
-        return IntStream.range(0, TOP_FIVE)
-                .boxed()
-                .flatMap(i -> IntStream.range(0, TOP_FIVE)
-                        .boxed()
-                        .flatMap(j -> IntStream.range(0, TOP_FIVE)
-                                .boxed()
-                                .map(k -> new CombinationDto(
-                                        List.of(firstStores.get(i), secondStores.get(j), thirdStores.get(k))))))
+        if (totalRounds == 1) {
+            distanceSortCombinations = createDistanceCombinationsForOneRound(
+                    sortConditionDto.getFirstFilteredStores(),
+                    sortConditionDto.getStartCoordinate());
+        }
+        return distanceSortCombinations
+                .stream()
+                .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistnace))
                 .toList();
     }
 
-    private List<CombinationForDistance> generateDistanceCombinations(
-            List<Store> firstStores,
-            List<Store> secondStores,
-            List<Store> thirdStores) {
-        DistanceCalculator distanceCalculator = new DistanceCalculator();
-        List<CombinationForDistance> combinations = new ArrayList<>();
+    private List<GradeSortCombinationDto> generateGradeCombinations(
+            SortConditionDto<StoreForGradeSortDto> sortConditionDto, int totalRounds) {
+        List<GradeSortCombinationDto> gradeCombinations = null;
+        if (totalRounds == 3) {
+            gradeCombinations = createGradeCombinationsForThreeRounds(
+                    sortConditionDto.getFirstFilteredStores(),
+                    sortConditionDto.getSecondFilteredStores(),
+                    sortConditionDto.getThirdFilteredStores());
+        }
 
-        for (Store firstStore : firstStores) {
-            for (Store secondStore : secondStores) {
-                for (Store thirdStore : thirdStores) {
+        if (totalRounds == 2) {
+            gradeCombinations = createGradeCombinationsForTwoRounds(
+                    sortConditionDto.getFirstFilteredStores(),
+                    sortConditionDto.getSecondFilteredStores());
+        }
 
-                    CombinationForDistance combinationDto = new CombinationForDistance(List.of(firstStore, secondStore, thirdStore));
-                    double totalDistance = distanceCalculator.calculateDistance(combinationDto);
-                    combinationDto.setTotalDistance(totalDistance);
-                    combinations.add(combinationDto);
+        if (totalRounds == 1) {
+            gradeCombinations = createGradeCombinationsForOneRound(
+                    sortConditionDto.getFirstFilteredStores());
+        }
+        return gradeCombinations;
+    }
+
+    private List<GradeSortCombinationDto> createGradeCombinationsForThreeRounds(
+            List<StoreForGradeSortDto> firstStores,
+            List<StoreForGradeSortDto> secondStores,
+            List<StoreForGradeSortDto> thirdStores) {
+        List<GradeSortCombinationDto> gradeCombinations = new ArrayList<>();
+        for (StoreForGradeSortDto firstStore : firstStores) {
+            for (StoreForGradeSortDto secondStore : secondStores) {
+                for (StoreForGradeSortDto thirdStore : thirdStores) {
+                    GradeSortCombinationDto combination = new GradeSortCombinationDto(firstStore, secondStore, thirdStore);
+                    gradeCombinations.add(combination);
                 }
             }
         }
+        return gradeCombinations;
+    }
 
+    private List<GradeSortCombinationDto> createGradeCombinationsForTwoRounds(
+            List<StoreForGradeSortDto> firstStores,
+            List<StoreForGradeSortDto> secondStores) {
+        List<GradeSortCombinationDto> gradeCombinations = new ArrayList<>();
+        for (StoreForGradeSortDto firstStore : firstStores) {
+            for (StoreForGradeSortDto secondStore : secondStores) {
+                GradeSortCombinationDto combination = new GradeSortCombinationDto(firstStore, secondStore);
+                gradeCombinations.add(combination);
+            }
+        }
+        return gradeCombinations;
+    }
+
+    private List<GradeSortCombinationDto> createGradeCombinationsForOneRound(
+            List<StoreForGradeSortDto> firstStores) {
+        List<GradeSortCombinationDto> gradeCombinations = new ArrayList<>();
+        for (StoreForGradeSortDto firstStore : firstStores) {
+            GradeSortCombinationDto combination = new GradeSortCombinationDto(firstStore);
+            gradeCombinations.add(combination);
+        }
+        return gradeCombinations;
+    }
+
+    private List<GradeSortCombinationDto> sortCombinationsByGrade(
+            List<GradeSortCombinationDto> combinations) {
+        combinations.sort((a, b) -> {
+            double firstRate = a.getFirstStore().getAverageGrade() +
+                    a.getSecondStore().getAverageGrade() +
+                    a.getThirdStore().getAverageGrade();
+
+            double secondRate = b.getFirstStore().getAverageGrade() +
+                    b.getSecondStore().getAverageGrade() +
+                    b.getThirdStore().getAverageGrade();
+
+            return Double.compare(secondRate, firstRate);
+        });
         return combinations;
     }
 
-    //    public List<CombinationDto> combineForDistance(
-//            List<Store> firstStores,
-//            List<Store> secondStores,
-//            List<Store> thirdStores) {
-//
-//        DistanceCalculator distanceCalculator = new DistanceCalculator();
-//        ConcurrentLinkedQueue<CombinationDto> combinations = new ConcurrentLinkedQueue<>();
-//        int firstSize = firstStores.size();
-//        int secondSize = secondStores.size();
-//        int thirdSize = thirdStores.size();
-//
-//        IntStream.range(0, firstSize).parallel().forEach(i -> {
-//            Store firstStore = firstStores.get(i);
-//            IntStream.range(0, secondSize).parallel().forEach(j -> {
-//                Store secondStore = secondStores.get(j);
-//                IntStream.range(0, thirdSize).parallel().forEach(k -> {
-//                    Store thirdStore = thirdStores.get(k);
-//                    CombinationDto combinationDto = new CombinationDto(List.of(firstStore, secondStore, thirdStore));
-//                    double totalDistance = distanceCalculator.calculateDistance(combinationDto);
-//                    combinationDto.setDistance(totalDistance);
-//                    combinations.add(combinationDto);
-//                });
-//            });
-//        });
-//
-//        return new ArrayList<>(combinations);
-//    }
+    private List<DistanceSortCombinationDto> createDistanceCombinationsForThreeRounds(
+            List<StoreForDistanceSortDto> firstStores,
+            List<StoreForDistanceSortDto> secondStores,
+            List<StoreForDistanceSortDto> thirdStores,
+            CoordinateDto coordinateDto) {
+        DistanceCalculator distanceCalculator = new DistanceCalculator();
+        List<DistanceSortCombinationDto> combinations = new ArrayList<>();
+        for (StoreForDistanceSortDto firstStore : firstStores) {
+            for (StoreForDistanceSortDto secondStore : secondStores) {
+                for (StoreForDistanceSortDto thirdStore : thirdStores) {
+                    DistanceSortCombinationDto distanceSortCombinationDto = new DistanceSortCombinationDto(firstStore, secondStore, thirdStore);
+                    double totalDistance = distanceCalculator.calculateDistance(distanceSortCombinationDto, coordinateDto);
+                    distanceSortCombinationDto.setTotalDistnace(totalDistance);
+                    combinations.add(distanceSortCombinationDto);
+                }
+            }
+        }
+        return combinations;
+    }
 
+    private List<DistanceSortCombinationDto> createDistanceCombinationsForTwoRounds(
+            List<StoreForDistanceSortDto> firstStores,
+            List<StoreForDistanceSortDto> secondStores,
+            CoordinateDto coordinateDto) {
+        DistanceCalculator distanceCalculator = new DistanceCalculator();
+        List<DistanceSortCombinationDto> combinations = new ArrayList<>();
+        for (StoreForDistanceSortDto firstStore : firstStores) {
+            for (StoreForDistanceSortDto secondStore : secondStores) {
+                DistanceSortCombinationDto distanceSortCombinationDto = new DistanceSortCombinationDto(firstStore, secondStore);
+                double totalDistance = distanceCalculator.calculateDistance(distanceSortCombinationDto, coordinateDto);
+                distanceSortCombinationDto.setTotalDistnace(totalDistance);
+                combinations.add(distanceSortCombinationDto);
+            }
+        }
+        return combinations;
+    }
 
-//    public List<Store> selectionSort(List<Store> stores) {
-//
-//        int size = stores.size();
-//
-//        for (int i = 0; i < size - 1; i++) {
-//            int minIndex = i;
-//
-//            for (int j = i + 1; j < size; j++) {
-//                if (stores.get(j).getRate() > stores.get(minIndex).getRate()) {
-//                    minIndex = j;
-//                }
-//            }
-//            swap(stores, minIndex, i);
-//        }
-//        return stores;
-//    }
+    private List<DistanceSortCombinationDto> createDistanceCombinationsForOneRound(
+            List<StoreForDistanceSortDto> firstStores,
+            CoordinateDto coordinateDto) {
+        DistanceCalculator distanceCalculator = new DistanceCalculator();
+        List<DistanceSortCombinationDto> combinations = new ArrayList<>();
+        for (StoreForDistanceSortDto firstStore : firstStores) {
+            DistanceSortCombinationDto distanceSortCombinationDto = new DistanceSortCombinationDto(firstStore);
+            double totalDistance = distanceCalculator.calculateDistance(distanceSortCombinationDto, coordinateDto);
+            distanceSortCombinationDto.setTotalDistnace(totalDistance);
+            combinations.add(distanceSortCombinationDto);
+        }
+        return combinations;
+    }
 
+    private List<DistanceSortCombinationDto> fetchDistancesFromTMapApi(List<DistanceSortCombinationDto> list, int totalRounds) {
 
-//    public List<Store> bubbleSort(List<Store> list) {
-//
-//        int size = list.size();
-//
-//        for (int i = 0; i < size - 1; i++) {
-//            for (int j = 0; j < size - i - 1; j++) {
-//                if (list.get(j).getRate() < list.get(j + 1).getRate()) {
-//                    // Swap list[j] and list[j+1]
-//                    Store temp = list.get(j);
-//                    list.set(j, list.get(j + 1));
-//                    list.set(j + 1, temp);
-//                }
-//            }
-//        }
-//        return list;
-//    }
+        List<DistanceSortCombinationDto> combinations = list.parallelStream()
+                .map(i -> {
+                            DistanceSortCombinationDto dto = null;
+                            if (totalRounds == 3) {
+                                CoordinateDto startCoordinate = i.getFirstStore().getCoordinate();
+                                CoordinateDto pass = i.getSecondStore().getCoordinate();
+                                CoordinateDto endCoordinate = i.getThirdStore().getCoordinate();
+                                WalkRouteInfoDto walkRouteInfoDto = tMapService.fetchWalkRouteInfo(startCoordinate, pass, endCoordinate);
+                                dto = new DistanceSortCombinationDto(i.getFirstStore(), i.getSecondStore(), i.getThirdStore(), walkRouteInfoDto);
 
-//    private void swap(List<Store> list, int a, int b) {
-//        Store tmp = list.get(a);
-//        list.set(a, list.get(b));
-//        list.set(b, tmp);
-//    }
-
+                            }
+                            if (totalRounds == 2) {
+                                CoordinateDto startCoordinate = i.getFirstStore().getCoordinate();
+                                CoordinateDto endCoordinate = i.getSecondStore().getCoordinate();
+                                WalkRouteInfoDto walkRouteInfoDto = tMapService.fetchWalkRouteInfo(startCoordinate, endCoordinate);
+                                dto = new DistanceSortCombinationDto(i.getFirstStore(), i.getSecondStore(), i.getThirdStore(), walkRouteInfoDto);
+                            }
+                            return dto;
+                        }
+                ).toList();
+        return combinations
+                .stream()
+                .sorted(Comparator.comparingInt(o -> o.getWalkRouteInfoDto().getTotalDistance()))
+                .toList();
+    }
 }
