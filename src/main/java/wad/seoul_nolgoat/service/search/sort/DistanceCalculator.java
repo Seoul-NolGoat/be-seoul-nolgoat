@@ -8,7 +8,7 @@ public class DistanceCalculator {
     private static final double RADIUS = 6371; // 상수 통합 예정
     private static final double TO_RADIAN = Math.PI / 180;
 
-    public double calculateDistance(
+    public double calculateTotalDistance(
             StoreForDistanceSortDto firstStore,
             StoreForDistanceSortDto secondStore,
             StoreForDistanceSortDto thirdStore,
@@ -16,27 +16,30 @@ public class DistanceCalculator {
         CoordinateDto firstCoordinate = firstStore.getCoordinate();
         CoordinateDto secondCoordinate = secondStore.getCoordinate();
         CoordinateDto thirdCoordinate = thirdStore.getCoordinate();
-        return calculate(startCoordinate, firstCoordinate)
-                + calculate(firstCoordinate, secondCoordinate)
-                + calculate(secondCoordinate, thirdCoordinate);
+
+        return calculateDistance(startCoordinate, firstCoordinate)
+                + calculateDistance(firstCoordinate, secondCoordinate)
+                + calculateDistance(secondCoordinate, thirdCoordinate);
     }
 
-    public double calculateDistance(
+    public double calculateTotalDistance(
             StoreForDistanceSortDto firstStore,
             StoreForDistanceSortDto secondStore,
             CoordinateDto startCoordinate) {
         CoordinateDto firstCoordinate = firstStore.getCoordinate();
         CoordinateDto secondCoordinate = secondStore.getCoordinate();
-        return calculate(startCoordinate, firstCoordinate)
-                + calculate(firstCoordinate, secondCoordinate);
+
+        return calculateDistance(startCoordinate, firstCoordinate)
+                + calculateDistance(firstCoordinate, secondCoordinate);
     }
 
-    public double calculateDistance(StoreForDistanceSortDto firstStore, CoordinateDto startCoordinate) {
+    public double calculateTotalDistance(StoreForDistanceSortDto firstStore, CoordinateDto startCoordinate) {
         CoordinateDto firstCoordinate = firstStore.getCoordinate();
-        return calculate(startCoordinate, firstCoordinate);
+
+        return calculateDistance(startCoordinate, firstCoordinate);
     }
 
-    private double calculate(CoordinateDto firstCoordinate, CoordinateDto secondCoordinate) {
+    private double calculateDistance(CoordinateDto firstCoordinate, CoordinateDto secondCoordinate) {
         double firstLatitude = firstCoordinate.getLatitude();
         double firstLongitude = firstCoordinate.getLongitude();
         double secondLatitude = secondCoordinate.getLatitude();
