@@ -37,60 +37,60 @@ public class SortService {
         return fetchDistancesFromTMapApi(distanceCombinations, totalRounds);
     }
 
-    //api 호출 횟수를 줄이기 위한 테스트 용도
+    // 테스트를 위해 접근제어자를 public으로 변경
     public List<DistanceSortCombinationDto> generateAndSortDistanceCombinations(
             SortConditionDto<StoreForDistanceSortDto> sortConditionDto,
             int totalRounds) {
-        List<DistanceSortCombinationDto> distanceSortCombinations = null;
         if (totalRounds == 3) {
-            distanceSortCombinations = createDistanceCombinationsForThreeRounds(
+            return createDistanceCombinationsForThreeRounds(
                     sortConditionDto.getFirstFilteredStores(),
                     sortConditionDto.getSecondFilteredStores(),
                     sortConditionDto.getThirdFilteredStores(),
                     sortConditionDto.getStartCoordinate()
-            );
+            ).stream()
+                    .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistnace))
+                    .toList();
         }
         if (totalRounds == 2) {
-            distanceSortCombinations = createDistanceCombinationsForTwoRounds(
+            return createDistanceCombinationsForTwoRounds(
                     sortConditionDto.getFirstFilteredStores(),
                     sortConditionDto.getSecondFilteredStores(),
                     sortConditionDto.getStartCoordinate()
-            );
+            ).stream()
+                    .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistnace))
+                    .toList();
         }
         if (totalRounds == 1) {
-            distanceSortCombinations = createDistanceCombinationsForOneRound(
+            return createDistanceCombinationsForOneRound(
                     sortConditionDto.getFirstFilteredStores(),
                     sortConditionDto.getStartCoordinate()
-            );
+            ).stream()
+                    .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistnace))
+                    .toList();
         }
-
-        return distanceSortCombinations.stream()
-                .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistnace))
-                .toList();
+        throw new RuntimeException();
     }
 
     private List<GradeSortCombinationDto> generateGradeCombinations(
             SortConditionDto<StoreForGradeSortDto> sortConditionDto,
             int totalRounds) {
-        List<GradeSortCombinationDto> gradeCombinations = null;
         if (totalRounds == 3) {
-            gradeCombinations = createGradeCombinationsForThreeRounds(
+            return createGradeCombinationsForThreeRounds(
                     sortConditionDto.getFirstFilteredStores(),
                     sortConditionDto.getSecondFilteredStores(),
                     sortConditionDto.getThirdFilteredStores()
             );
         }
         if (totalRounds == 2) {
-            gradeCombinations = createGradeCombinationsForTwoRounds(
+            return createGradeCombinationsForTwoRounds(
                     sortConditionDto.getFirstFilteredStores(),
                     sortConditionDto.getSecondFilteredStores()
             );
         }
         if (totalRounds == 1) {
-            gradeCombinations = createGradeCombinationsForOneRound(sortConditionDto.getFirstFilteredStores());
+            return createGradeCombinationsForOneRound(sortConditionDto.getFirstFilteredStores());
         }
-
-        return gradeCombinations;
+        throw new RuntimeException();
     }
 
     private List<GradeSortCombinationDto> createGradeCombinationsForThreeRounds(
@@ -138,13 +138,13 @@ public class SortService {
     }
 
     private List<GradeSortCombinationDto> sortCombinationsByGrade(List<GradeSortCombinationDto> combinations) {
-        combinations.sort((a, b) -> {
-            double firstRate = a.getFirstStore().getAverageGrade()
-                    + a.getSecondStore().getAverageGrade()
-                    + a.getThirdStore().getAverageGrade();
-            double secondRate = b.getFirstStore().getAverageGrade()
-                    + b.getSecondStore().getAverageGrade()
-                    + b.getThirdStore().getAverageGrade();
+        combinations.sort((combination1, combination2) -> {
+            double firstRate = combination1.getFirstStore().getAverageGrade()
+                    + combination1.getSecondStore().getAverageGrade()
+                    + combination1.getThirdStore().getAverageGrade();
+            double secondRate = combination2.getFirstStore().getAverageGrade()
+                    + combination2.getSecondStore().getAverageGrade()
+                    + combination2.getThirdStore().getAverageGrade();
 
             return Double.compare(secondRate, firstRate);
         });
@@ -217,48 +217,63 @@ public class SortService {
     }
 
     private List<DistanceSortCombinationDto> fetchDistancesFromTMapApi(
-            List<DistanceSortCombinationDto> list,
+            List<DistanceSortCombinationDto> distanceSortCombinationDtos,
             int totalRounds) {
-        List<DistanceSortCombinationDto> combinations = list.parallelStream()
-                .map(i -> {
-                            DistanceSortCombinationDto dto = null;
+        List<DistanceSortCombinationDto> combinations = distanceSortCombinationDtos.parallelStream()
+                .map(combination -> {
                             if (totalRounds == 3) {
-                                CoordinateDto startCoordinate = i.getFirstStore().getCoordinate();
-                                CoordinateDto pass = i.getSecondStore().getCoordinate();
-                                CoordinateDto endCoordinate = i.getThirdStore().getCoordinate();
+                                CoordinateDto startCoordinate = combination.getFirstStore().getCoordinate();
+                                CoordinateDto pass = combination.getSecondStore().getCoordinate();
+                                CoordinateDto endCoordinate = combination.getThirdStore().getCoordinate();
                                 WalkRouteInfoDto walkRouteInfoDto = tMapService.fetchWalkRouteInfo(
                                         startCoordinate,
                                         pass,
                                         endCoordinate
                                 );
-                                dto = new DistanceSortCombinationDto(
-                                        i.getFirstStore(),
-                                        i.getSecondStore(),
-                                        i.getThirdStore(),
+
+                                return new DistanceSortCombinationDto(
+                                        combination.getFirstStore(),
+                                        combination.getSecondStore(),
+                                        combination.getThirdStore(),
                                         walkRouteInfoDto
                                 );
                             }
                             if (totalRounds == 2) {
-                                CoordinateDto startCoordinate = i.getFirstStore().getCoordinate();
-                                CoordinateDto endCoordinate = i.getSecondStore().getCoordinate();
+                                CoordinateDto startCoordinate = combination.getFirstStore().getCoordinate();
+                                CoordinateDto endCoordinate = combination.getSecondStore().getCoordinate();
                                 WalkRouteInfoDto walkRouteInfoDto = tMapService.fetchWalkRouteInfo(
                                         startCoordinate,
                                         endCoordinate
                                 );
-                                dto = new DistanceSortCombinationDto(
-                                        i.getFirstStore(),
-                                        i.getSecondStore(),
-                                        i.getThirdStore(),
+
+                                return new DistanceSortCombinationDto(
+                                        combination.getFirstStore(),
+                                        combination.getSecondStore(),
+                                        combination.getThirdStore(),
                                         walkRouteInfoDto
                                 );
                             }
+                            if (totalRounds == 1) {
+                                CoordinateDto startCoordinate = combination.getFirstStore().getCoordinate();
+                                CoordinateDto endCoordinate = combination.getSecondStore().getCoordinate();
+                                WalkRouteInfoDto walkRouteInfoDto = tMapService.fetchWalkRouteInfo(
+                                        startCoordinate,
+                                        endCoordinate
+                                );
 
-                            return dto;
+                                return new DistanceSortCombinationDto(
+                                        combination.getFirstStore(),
+                                        combination.getSecondStore(),
+                                        combination.getThirdStore(),
+                                        walkRouteInfoDto
+                                );
+                            }
+                            throw new RuntimeException();
                         }
                 ).toList();
 
         return combinations.stream()
-                .sorted(Comparator.comparingInt(o -> o.getWalkRouteInfoDto().getTotalDistance()))
+                .sorted(Comparator.comparingInt(combination -> combination.getWalkRouteInfoDto().getTotalDistance()))
                 .toList();
     }
 }
