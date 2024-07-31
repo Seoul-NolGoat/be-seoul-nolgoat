@@ -1,6 +1,6 @@
 package wad.seoul_nolgoat.service.search.sort;
 
-import wad.seoul_nolgoat.service.search.dto.DistanceSortCombinationDto;
+import wad.seoul_nolgoat.service.search.dto.StoreForDistanceSortDto;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 public class DistanceCalculator {
@@ -8,14 +8,32 @@ public class DistanceCalculator {
     private static final double RADIUS = 6371; // 상수 통합 예정
     private static final double TO_RADIAN = Math.PI / 180;
 
-    public double calculateDistance(DistanceSortCombinationDto combination, CoordinateDto startCoordinate) {
-        CoordinateDto firstCoordinate = combination.getFirstStore().getCoordinate();
-        CoordinateDto secondCoordinate = combination.getSecondStore().getCoordinate();
-        CoordinateDto thirdCoordinate = combination.getThirdStore().getCoordinate();
-
+    public double calculateDistance(
+            StoreForDistanceSortDto firstStore,
+            StoreForDistanceSortDto secondStore,
+            StoreForDistanceSortDto thirdStore,
+            CoordinateDto startCoordinate) {
+        CoordinateDto firstCoordinate = firstStore.getCoordinate();
+        CoordinateDto secondCoordinate = secondStore.getCoordinate();
+        CoordinateDto thirdCoordinate = thirdStore.getCoordinate();
         return calculate(startCoordinate, firstCoordinate)
                 + calculate(firstCoordinate, secondCoordinate)
                 + calculate(secondCoordinate, thirdCoordinate);
+    }
+
+    public double calculateDistance(
+            StoreForDistanceSortDto firstStore,
+            StoreForDistanceSortDto secondStore,
+            CoordinateDto startCoordinate) {
+        CoordinateDto firstCoordinate = firstStore.getCoordinate();
+        CoordinateDto secondCoordinate = secondStore.getCoordinate();
+        return calculate(startCoordinate, firstCoordinate)
+                + calculate(firstCoordinate, secondCoordinate);
+    }
+
+    public double calculateDistance(StoreForDistanceSortDto firstStore, CoordinateDto startCoordinate) {
+        CoordinateDto firstCoordinate = firstStore.getCoordinate();
+        return calculate(startCoordinate, firstCoordinate);
     }
 
     private double calculate(CoordinateDto firstCoordinate, CoordinateDto secondCoordinate) {
