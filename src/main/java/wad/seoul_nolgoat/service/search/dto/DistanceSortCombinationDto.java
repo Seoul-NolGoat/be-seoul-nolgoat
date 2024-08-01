@@ -13,7 +13,7 @@ public class DistanceSortCombinationDto {
     private WalkRouteInfoDto walkRouteInfoDto;
 
     @Setter
-    private double totaleDistnace;
+    private double totalDistance;
 
     public DistanceSortCombinationDto(
             StoreForDistanceSortDto firstStore,
