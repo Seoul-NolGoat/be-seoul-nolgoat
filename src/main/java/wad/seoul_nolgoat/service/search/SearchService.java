@@ -33,7 +33,7 @@ public class SearchService {
 
     private List<CombinationDto> getCombinationsByDistance(SearchConditionDto searchConditionDto) {
         if (searchConditionDto.getCategories().size() == 3) {
-            return sortService.sortByDistance(
+            return sortService.sortStoresByDistance(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
@@ -57,7 +57,7 @@ public class SearchService {
                     .toList();
         }
         if (searchConditionDto.getCategories().size() == 2) {
-            return sortService.sortByDistance(
+            return sortService.sortStoresByDistance(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
@@ -76,7 +76,7 @@ public class SearchService {
                     .toList();
         }
         if (searchConditionDto.getCategories().size() == 1) {
-            return sortService.sortByDistance(
+            return sortService.sortStoresByDistance(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
@@ -94,7 +94,7 @@ public class SearchService {
 
     private List<CombinationDto> getCombinationsByKakaoGrade(SearchConditionDto searchConditionDto) {
         if (searchConditionDto.getCategories().size() == 3) {
-            return sortService.sortByGrade(
+            return sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
@@ -118,7 +118,7 @@ public class SearchService {
                     .toList();
         }
         if (searchConditionDto.getCategories().size() == 2) {
-            return sortService.sortByGrade(
+            return sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
@@ -137,7 +137,7 @@ public class SearchService {
                     .toList();
         }
         if (searchConditionDto.getCategories().size() == 1) {
-            return sortService.sortByGrade(
+            return sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
@@ -155,7 +155,7 @@ public class SearchService {
 
     private List<CombinationDto> getCombinationsByNolgoatGrade(SearchConditionDto searchConditionDto) {
         if (searchConditionDto.getCategories().size() == 3) {
-            return sortService.sortByGrade(
+            return sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
@@ -179,7 +179,7 @@ public class SearchService {
                     .toList();
         }
         if (searchConditionDto.getCategories().size() == 2) {
-            return sortService.sortByGrade(
+            return sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
@@ -198,7 +198,7 @@ public class SearchService {
                     .toList();
         }
         if (searchConditionDto.getCategories().size() == 1) {
-            return sortService.sortByGrade(
+            return sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
