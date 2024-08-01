@@ -48,7 +48,7 @@ public class SortService {
                     sortConditionDto.getThirdFilteredStores(),
                     sortConditionDto.getStartCoordinate()
             ).stream()
-                    .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistnace))
+                    .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistance))
                     .toList();
         }
         if (totalRounds == 2) {
@@ -57,7 +57,7 @@ public class SortService {
                     sortConditionDto.getSecondFilteredStores(),
                     sortConditionDto.getStartCoordinate()
             ).stream()
-                    .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistnace))
+                    .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistance))
                     .toList();
         }
         if (totalRounds == 1) {
@@ -65,7 +65,7 @@ public class SortService {
                     sortConditionDto.getFirstFilteredStores(),
                     sortConditionDto.getStartCoordinate()
             ).stream()
-                    .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistnace))
+                    .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistance))
                     .toList();
         }
         throw new RuntimeException();
@@ -173,7 +173,7 @@ public class SortService {
                             distanceSortCombinationDto.getThirdStore(),
                             coordinateDto
                     );
-                    distanceSortCombinationDto.setTotalDistnace(totalDistance);
+                    distanceSortCombinationDto.setTotalDistance(totalDistance);
                     combinations.add(distanceSortCombinationDto);
                 }
             }
@@ -198,7 +198,7 @@ public class SortService {
                         distanceSortCombinationDto.getFirstStore(),
                         distanceSortCombinationDto.getSecondStore(),
                         coordinateDto);
-                distanceSortCombinationDto.setTotalDistnace(totalDistance);
+                distanceSortCombinationDto.setTotalDistance(totalDistance);
                 combinations.add(distanceSortCombinationDto);
             }
         }
@@ -215,7 +215,7 @@ public class SortService {
             DistanceSortCombinationDto distanceSortCombinationDto = new DistanceSortCombinationDto(firstStore);
             double totalDistance = distanceCalculator.calculateTotalDistance(
                     distanceSortCombinationDto.getFirstStore(), coordinateDto);
-            distanceSortCombinationDto.setTotalDistnace(totalDistance);
+            distanceSortCombinationDto.setTotalDistance(totalDistance);
             combinations.add(distanceSortCombinationDto);
         }
 
