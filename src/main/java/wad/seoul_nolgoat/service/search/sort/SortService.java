@@ -20,6 +20,7 @@ public class SortService {
     private static final int TOP_TWENTIETH = 20;
 
     private final TMapService tMapService;
+    private final DistanceCalculator distanceCalculator;
 
     public List<GradeSortCombinationDto> sortStoresByGrade(SortConditionDto<StoreForGradeSortDto> sortConditionDto) {
         int totalRounds = sortConditionDto.getTotalRounds();
@@ -158,7 +159,6 @@ public class SortService {
             List<StoreForDistanceSortDto> secondStores,
             List<StoreForDistanceSortDto> thirdStores,
             CoordinateDto coordinateDto) {
-        DistanceCalculator distanceCalculator = new DistanceCalculator(); // Bean으로 등록 예정
         List<DistanceSortCombinationDto> combinations = new ArrayList<>();
         for (StoreForDistanceSortDto firstStore : firstStores) {
             for (StoreForDistanceSortDto secondStore : secondStores) {

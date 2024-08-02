@@ -1,8 +1,10 @@
 package wad.seoul_nolgoat.service.search.sort;
 
+import org.springframework.stereotype.Component;
 import wad.seoul_nolgoat.service.search.dto.StoreForDistanceSortDto;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
+@Component
 public class DistanceCalculator {
 
     public static final double EARTH_RADIUS_KM = 6371.0;
