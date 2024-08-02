@@ -2,6 +2,7 @@ package wad.seoul_nolgoat.service.search.sort;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import wad.seoul_nolgoat.service.search.SearchService;
 import wad.seoul_nolgoat.service.search.dto.*;
 import wad.seoul_nolgoat.service.tMap.TMapService;
 import wad.seoul_nolgoat.service.tMap.dto.WalkRouteInfoDto;
@@ -41,7 +42,7 @@ public class SortService {
     public List<DistanceSortCombinationDto> generateAndSortDistanceCombinations(
             SortConditionDto<StoreForDistanceSortDto> sortConditionDto,
             int totalRounds) {
-        if (totalRounds == 3) {
+        if (totalRounds == SearchService.THREE_ROUND) {
             return createDistanceCombinationsForThreeRounds(
                     sortConditionDto.getFirstFilteredStores(),
                     sortConditionDto.getSecondFilteredStores(),
@@ -51,7 +52,7 @@ public class SortService {
                     .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistance))
                     .toList();
         }
-        if (totalRounds == 2) {
+        if (totalRounds == SearchService.TWO_ROUND) {
             return createDistanceCombinationsForTwoRounds(
                     sortConditionDto.getFirstFilteredStores(),
                     sortConditionDto.getSecondFilteredStores(),
@@ -60,7 +61,7 @@ public class SortService {
                     .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistance))
                     .toList();
         }
-        if (totalRounds == 1) {
+        if (totalRounds == SearchService.ONE_ROUND) {
             return createDistanceCombinationsForOneRound(
                     sortConditionDto.getFirstFilteredStores(),
                     sortConditionDto.getStartCoordinate()
@@ -74,20 +75,20 @@ public class SortService {
     private List<GradeSortCombinationDto> generateGradeCombinations(
             SortConditionDto<StoreForGradeSortDto> sortConditionDto,
             int totalRounds) {
-        if (totalRounds == 3) {
+        if (totalRounds == SearchService.THREE_ROUND) {
             return createGradeCombinationsForThreeRounds(
                     sortConditionDto.getFirstFilteredStores(),
                     sortConditionDto.getSecondFilteredStores(),
                     sortConditionDto.getThirdFilteredStores()
             );
         }
-        if (totalRounds == 2) {
+        if (totalRounds == SearchService.TWO_ROUND) {
             return createGradeCombinationsForTwoRounds(
                     sortConditionDto.getFirstFilteredStores(),
                     sortConditionDto.getSecondFilteredStores()
             );
         }
-        if (totalRounds == 1) {
+        if (totalRounds == SearchService.ONE_ROUND) {
             return createGradeCombinationsForOneRound(sortConditionDto.getFirstFilteredStores());
         }
         throw new RuntimeException();
@@ -228,7 +229,7 @@ public class SortService {
             int totalRounds) {
         List<DistanceSortCombinationDto> combinations = distanceSortCombinationDtos.parallelStream()
                 .map(combination -> {
-                            if (totalRounds == 3) {
+                            if (totalRounds == SearchService.THREE_ROUND) {
                                 CoordinateDto pass1 = combination.getFirstStore().getCoordinate();
                                 CoordinateDto pass2 = combination.getSecondStore().getCoordinate();
                                 CoordinateDto endCoordinate = combination.getThirdStore().getCoordinate();
@@ -246,7 +247,7 @@ public class SortService {
                                         walkRouteInfoDto
                                 );
                             }
-                            if (totalRounds == 2) {
+                            if (totalRounds == SearchService.TWO_ROUND) {
                                 CoordinateDto pass = combination.getFirstStore().getCoordinate();
                                 CoordinateDto endCoordinate = combination.getSecondStore().getCoordinate();
                                 WalkRouteInfoDto walkRouteInfoDto = tMapService.fetchWalkRouteInfo(
@@ -262,7 +263,7 @@ public class SortService {
                                         walkRouteInfoDto
                                 );
                             }
-                            if (totalRounds == 1) {
+                            if (totalRounds == SearchService.ONE_ROUND) {
                                 CoordinateDto endCoordinate = combination.getSecondStore().getCoordinate();
                                 WalkRouteInfoDto walkRouteInfoDto = tMapService.fetchWalkRouteInfo(
                                         startCoordinate,
