@@ -26,7 +26,7 @@ public class SortService {
         int totalRounds = sortConditionDto.getTotalRounds();
         List<GradeSortCombinationDto> gradeCombinations = generateGradeCombinations(sortConditionDto, totalRounds);
 
-        return sortCombinationsByGrade(gradeCombinations);
+        return sortCombinationsByGrade(gradeCombinations, totalRounds);
     }
 
     public List<DistanceSortCombinationDto> sortStoresByDistance(SortConditionDto<StoreForDistanceSortDto> sortConditionDto) {
@@ -36,7 +36,11 @@ public class SortService {
                 totalRounds
         ).subList(TOP_FIRST, TOP_TWENTIETH);
 
-        return fetchDistancesFromTMapApi(sortConditionDto.getStartCoordinate(), distanceCombinations, totalRounds);
+        return fetchDistancesFromTMapApi(
+                sortConditionDto.getStartCoordinate(),
+                distanceCombinations,
+                totalRounds
+        );
     }
 
     // 테스트를 위해 접근제어자를 public으로 변경
@@ -139,17 +143,39 @@ public class SortService {
         return gradeCombinations;
     }
 
-    private List<GradeSortCombinationDto> sortCombinationsByGrade(List<GradeSortCombinationDto> combinations) {
-        combinations.sort((combination1, combination2) -> {
-            double firstRate = combination1.getFirstStore().getAverageGrade()
-                    + combination1.getSecondStore().getAverageGrade()
-                    + combination1.getThirdStore().getAverageGrade();
-            double secondRate = combination2.getFirstStore().getAverageGrade()
-                    + combination2.getSecondStore().getAverageGrade()
-                    + combination2.getThirdStore().getAverageGrade();
+    private List<GradeSortCombinationDto> sortCombinationsByGrade(
+            List<GradeSortCombinationDto> combinations,
+            int totalRounds) {
+        if (totalRounds == SearchService.THREE_ROUND) {
+            combinations.sort((combination1, combination2) -> {
+                double firstRate = combination1.getFirstStore().getAverageGrade()
+                        + combination1.getSecondStore().getAverageGrade()
+                        + combination1.getThirdStore().getAverageGrade();
+                double secondRate = combination2.getFirstStore().getAverageGrade()
+                        + combination2.getSecondStore().getAverageGrade()
+                        + combination2.getThirdStore().getAverageGrade();
 
-            return Double.compare(secondRate, firstRate);
-        });
+                return Double.compare(secondRate, firstRate);
+            });
+        }
+        if (totalRounds == SearchService.TWO_ROUND) {
+            combinations.sort((combination1, combination2) -> {
+                double firstRate = combination1.getFirstStore().getAverageGrade()
+                        + combination1.getSecondStore().getAverageGrade();
+                double secondRate = combination2.getFirstStore().getAverageGrade()
+                        + combination2.getSecondStore().getAverageGrade();
+
+                return Double.compare(secondRate, firstRate);
+            });
+        }
+        if (totalRounds == SearchService.ONE_ROUND) {
+            combinations.sort((combination1, combination2) -> {
+                double firstRate = combination1.getFirstStore().getAverageGrade();
+                double secondRate = combination2.getFirstStore().getAverageGrade();
+
+                return Double.compare(secondRate, firstRate);
+            });
+        }
 
         return combinations;
     }
