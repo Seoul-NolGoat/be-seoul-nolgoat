@@ -8,9 +8,7 @@ import wad.seoul_nolgoat.service.tMap.TMapService;
 import wad.seoul_nolgoat.service.tMap.dto.WalkRouteInfoDto;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -106,7 +104,17 @@ public class SortService {
         List<GradeSortCombinationDto> gradeCombinations = new ArrayList<>();
         for (StoreForGradeSortDto firstStore : firstStores) {
             for (StoreForGradeSortDto secondStore : secondStores) {
+                if (hasDuplicateStores(firstStore, secondStore)) {
+                    continue;
+                }
                 for (StoreForGradeSortDto thirdStore : thirdStores) {
+                    if (hasDuplicateStores(
+                            firstStore,
+                            secondStore,
+                            thirdStore
+                    )) {
+                        continue;
+                    }
                     gradeCombinations.add(
                             new GradeSortCombinationDto(
                                     firstStore,
@@ -127,6 +135,9 @@ public class SortService {
         List<GradeSortCombinationDto> gradeCombinations = new ArrayList<>();
         for (StoreForGradeSortDto firstStore : firstStores) {
             for (StoreForGradeSortDto secondStore : secondStores) {
+                if (hasDuplicateStores(firstStore, secondStore)) {
+                    continue;
+                }
                 gradeCombinations.add(new GradeSortCombinationDto(firstStore, secondStore));
             }
         }
@@ -188,7 +199,17 @@ public class SortService {
         List<DistanceSortCombinationDto> combinations = new ArrayList<>();
         for (StoreForDistanceSortDto firstStore : firstStores) {
             for (StoreForDistanceSortDto secondStore : secondStores) {
+                if (hasDuplicateStores(firstStore, secondStore)) {
+                    continue;
+                }
                 for (StoreForDistanceSortDto thirdStore : thirdStores) {
+                    if (hasDuplicateStores(
+                            firstStore,
+                            secondStore,
+                            thirdStore
+                    )) {
+                        continue;
+                    }
                     DistanceSortCombinationDto distanceSortCombinationDto = new DistanceSortCombinationDto(
                             firstStore,
                             secondStore,
@@ -217,6 +238,9 @@ public class SortService {
         List<DistanceSortCombinationDto> combinations = new ArrayList<>();
         for (StoreForDistanceSortDto firstStore : firstStores) {
             for (StoreForDistanceSortDto secondStore : secondStores) {
+                if (hasDuplicateStores(firstStore, secondStore)) {
+                    continue;
+                }
                 DistanceSortCombinationDto distanceSortCombinationDto = new DistanceSortCombinationDto(
                         firstStore,
                         secondStore
@@ -310,5 +334,45 @@ public class SortService {
         return combinations.stream()
                 .sorted(Comparator.comparingInt(combination -> combination.getWalkRouteInfoDto().getTotalDistance()))
                 .toList();
+    }
+
+    private boolean hasDuplicateStores(
+            StoreForDistanceSortDto firstStore,
+            StoreForDistanceSortDto secondStore,
+            StoreForDistanceSortDto thirdStore) {
+        Set<Long> storeIds = new HashSet<>();
+        storeIds.add(firstStore.getId());
+        storeIds.add(secondStore.getId());
+        storeIds.add(thirdStore.getId());
+
+        return storeIds.size() != SearchService.THREE_ROUND;
+    }
+
+    private boolean hasDuplicateStores(StoreForDistanceSortDto firstStore, StoreForDistanceSortDto secondStore) {
+        Set<Long> storeIds = new HashSet<>();
+        storeIds.add(firstStore.getId());
+        storeIds.add(secondStore.getId());
+
+        return storeIds.size() != SearchService.TWO_ROUND;
+    }
+
+    private boolean hasDuplicateStores(
+            StoreForGradeSortDto firstStore,
+            StoreForGradeSortDto secondStore,
+            StoreForGradeSortDto thirdStore) {
+        Set<Long> storeIds = new HashSet<>();
+        storeIds.add(firstStore.getId());
+        storeIds.add(secondStore.getId());
+        storeIds.add(thirdStore.getId());
+
+        return storeIds.size() != SearchService.THREE_ROUND;
+    }
+
+    private boolean hasDuplicateStores(StoreForGradeSortDto firstStore, StoreForGradeSortDto secondStore) {
+        Set<Long> storeIds = new HashSet<>();
+        storeIds.add(firstStore.getId());
+        storeIds.add(secondStore.getId());
+
+        return storeIds.size() != SearchService.TWO_ROUND;
     }
 }
