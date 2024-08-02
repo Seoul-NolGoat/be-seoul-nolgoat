@@ -15,200 +15,221 @@ import java.util.List;
 @Service
 public class SearchService {
 
+    public static final int ONE_ROUND = 1;
+    public static final int TWO_ROUND = 2;
+    public static final int THREE_ROUND = 3;
+    private static final int STORE_COMBINATION_SEARCH_LIMIT = 10;
+    private static final String DISTANCE_CRITERIA = "distance";
+    private static final String KAKAO_GRADE_CRITERIA = "kakaoGrade";
+    private static final String NOLGOAT_GRADE_CRITERIA = "nolgoatGrade";
+    private static final int FIRST_CATEGORY = 0;
+    private static final int SECOND_CATEGORY = 1;
+    private static final int THIRD_CATEGORY = 2;
+
+
     private final FilterService filterService;
     private final SortService sortService;
 
     public List<CombinationDto> searchAll(SearchConditionDto searchConditionDto) {
-        if (searchConditionDto.getCriteria().equals("distance")) {
+        if (searchConditionDto.getCriteria().equals(DISTANCE_CRITERIA)) {
             return getCombinationsByDistance(searchConditionDto);
         }
-        if (searchConditionDto.getCriteria().equals("kakaoGrade")) {
+        if (searchConditionDto.getCriteria().equals(KAKAO_GRADE_CRITERIA)) {
             return getCombinationsByKakaoGrade(searchConditionDto);
         }
-        if (searchConditionDto.getCriteria().equals("nolgoatGrade")) {
+        if (searchConditionDto.getCriteria().equals(NOLGOAT_GRADE_CRITERIA)) {
             return getCombinationsByNolgoatGrade(searchConditionDto);
         }
         throw new RuntimeException();
     }
 
     private List<CombinationDto> getCombinationsByDistance(SearchConditionDto searchConditionDto) {
-        if (searchConditionDto.getCategories().size() == 3) {
+        if (searchConditionDto.getCategories().size() == THREE_ROUND) {
             return sortService.sortStoresByDistance(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(0)
+                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(1)
+                                            searchConditionDto.getCategories().get(SECOND_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(2)
+                                            searchConditionDto.getCategories().get(THIRD_CATEGORY)
                                     )
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
+                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
         }
-        if (searchConditionDto.getCategories().size() == 2) {
+        if (searchConditionDto.getCategories().size() == TWO_ROUND) {
             return sortService.sortStoresByDistance(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(0)
+                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(1)
+                                            searchConditionDto.getCategories().get(SECOND_CATEGORY)
                                     )
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
+                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
         }
-        if (searchConditionDto.getCategories().size() == 1) {
+        if (searchConditionDto.getCategories().size() == ONE_ROUND) {
             return sortService.sortStoresByDistance(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(0)
+                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
                                     )
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
+                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
         }
         throw new RuntimeException();
     }
 
     private List<CombinationDto> getCombinationsByKakaoGrade(SearchConditionDto searchConditionDto) {
-        if (searchConditionDto.getCategories().size() == 3) {
+        if (searchConditionDto.getCategories().size() == THREE_ROUND) {
             return sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(0)
+                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(1)
+                                            searchConditionDto.getCategories().get(SECOND_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(2)
+                                            searchConditionDto.getCategories().get(THIRD_CATEGORY)
                                     )
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
+                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
         }
-        if (searchConditionDto.getCategories().size() == 2) {
+        if (searchConditionDto.getCategories().size() == TWO_ROUND) {
             return sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(0)
+                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(1)
+                                            searchConditionDto.getCategories().get(SECOND_CATEGORY)
                                     )
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
+                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
         }
-        if (searchConditionDto.getCategories().size() == 1) {
+        if (searchConditionDto.getCategories().size() == ONE_ROUND) {
             return sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(0)
+                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
                                     )
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
+                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
         }
         throw new RuntimeException();
     }
 
     private List<CombinationDto> getCombinationsByNolgoatGrade(SearchConditionDto searchConditionDto) {
-        if (searchConditionDto.getCategories().size() == 3) {
+        if (searchConditionDto.getCategories().size() == THREE_ROUND) {
             return sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(0)
+                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(1)
+                                            searchConditionDto.getCategories().get(SECOND_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(2)
+                                            searchConditionDto.getCategories().get(THIRD_CATEGORY)
                                     )
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
+                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
         }
-        if (searchConditionDto.getCategories().size() == 2) {
+        if (searchConditionDto.getCategories().size() == TWO_ROUND) {
             return sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(0)
+                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(1)
+                                            searchConditionDto.getCategories().get(SECOND_CATEGORY)
                                     )
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
+                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
         }
-        if (searchConditionDto.getCategories().size() == 1) {
+        if (searchConditionDto.getCategories().size() == ONE_ROUND) {
             return sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
                                             searchConditionDto.getStartCoordinate(),
                                             searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(0)
+                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
                                     )
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
+                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
         }
         throw new RuntimeException();
