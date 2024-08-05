@@ -86,7 +86,7 @@ public class DatabaseSeederService {
                 Optional<CoordinateDto> optionalCoordinates = kakaoMapService.fetchCoordinate(store.getRoadAddress());
                 if (optionalCoordinates.isPresent()) {
                     CoordinateDto coordinates = optionalCoordinates.get();
-                    store.updateCoordinates(coordinates.getLatitude(), coordinates.getLongitude());
+                    store.updateCoordinates(coordinates.getLongitude(), coordinates.getLatitude());
                 }
             }
         });
@@ -96,7 +96,7 @@ public class DatabaseSeederService {
     public CompletableFuture<Void> updateStoreInfoAsync(Store store) {
         return CompletableFuture.runAsync(() -> {
             rateLimiter.acquire(); // RateLimiter 사용
-            if (store.getLongitude() != 0 && store.getLatitude() != 0) {
+            if (store.getLocation() != null) {
                 Optional<StoreAdditionalInfoDto> optionalStoreAdditionalInfo = kakaoMapService.fetchStoreAdditionalInfo(
                         store.getName(),
                         store.getLongitude(),
