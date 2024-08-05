@@ -279,57 +279,47 @@ public class SortService {
             int totalRounds) {
         List<DistanceSortCombinationDto> combinations = distanceSortCombinationDtos.parallelStream()
                 .map(combination -> {
-                            if (totalRounds == SearchService.THREE_ROUND) {
-                                CoordinateDto pass1 = combination.getFirstStore().getCoordinate();
-                                CoordinateDto pass2 = combination.getSecondStore().getCoordinate();
-                                CoordinateDto endCoordinate = combination.getThirdStore().getCoordinate();
-                                WalkRouteInfoDto walkRouteInfoDto = tMapService.fetchWalkRouteInfo(
+                    if (totalRounds == SearchService.THREE_ROUND) {
+                        CoordinateDto pass1 = combination.getFirstStore().getCoordinate();
+                        CoordinateDto pass2 = combination.getSecondStore().getCoordinate();
+                        CoordinateDto endCoordinate = combination.getThirdStore().getCoordinate();
+
+                        return new DistanceSortCombinationDto(
+                                combination.getFirstStore(),
+                                combination.getSecondStore(),
+                                combination.getThirdStore(),
+                                fetchWalkRouteInfo(
                                         startCoordinate,
                                         pass1,
                                         pass2,
                                         endCoordinate
-                                );
+                                )
+                        );
+                    }
+                    if (totalRounds == SearchService.TWO_ROUND) {
+                        CoordinateDto pass = combination.getFirstStore().getCoordinate();
+                        CoordinateDto endCoordinate = combination.getSecondStore().getCoordinate();
 
-                                return new DistanceSortCombinationDto(
-                                        combination.getFirstStore(),
-                                        combination.getSecondStore(),
-                                        combination.getThirdStore(),
-                                        walkRouteInfoDto
-                                );
-                            }
-                            if (totalRounds == SearchService.TWO_ROUND) {
-                                CoordinateDto pass = combination.getFirstStore().getCoordinate();
-                                CoordinateDto endCoordinate = combination.getSecondStore().getCoordinate();
-                                WalkRouteInfoDto walkRouteInfoDto = tMapService.fetchWalkRouteInfo(
+                        return new DistanceSortCombinationDto(
+                                combination.getFirstStore(),
+                                combination.getSecondStore(),
+                                fetchWalkRouteInfo(
                                         startCoordinate,
                                         pass,
                                         endCoordinate
-                                );
+                                )
+                        );
+                    }
+                    if (totalRounds == SearchService.ONE_ROUND) {
+                        CoordinateDto endCoordinate = combination.getFirstStore().getCoordinate();
 
-                                return new DistanceSortCombinationDto(
-                                        combination.getFirstStore(),
-                                        combination.getSecondStore(),
-                                        combination.getThirdStore(),
-                                        walkRouteInfoDto
-                                );
-                            }
-                            if (totalRounds == SearchService.ONE_ROUND) {
-                                CoordinateDto endCoordinate = combination.getSecondStore().getCoordinate();
-                                WalkRouteInfoDto walkRouteInfoDto = tMapService.fetchWalkRouteInfo(
-                                        startCoordinate,
-                                        endCoordinate
-                                );
-
-                                return new DistanceSortCombinationDto(
-                                        combination.getFirstStore(),
-                                        combination.getSecondStore(),
-                                        combination.getThirdStore(),
-                                        walkRouteInfoDto
-                                );
-                            }
-                            throw new RuntimeException();
-                        }
-                ).toList();
+                        return new DistanceSortCombinationDto(
+                                combination.getFirstStore(),
+                                fetchWalkRouteInfo(startCoordinate, endCoordinate)
+                        );
+                    }
+                    throw new RuntimeException("Invalid round number");
+                }).toList();
 
         return combinations.stream()
                 .sorted(Comparator.comparingInt(combination -> combination.getWalkRouteInfoDto().getTotalDistance()))
@@ -368,11 +358,76 @@ public class SortService {
         return storeIds.size() != SearchService.THREE_ROUND;
     }
 
+    private WalkRouteInfoDto fetchWalkRouteInfo(
+            CoordinateDto startCoordinate,
+            CoordinateDto pass1,
+            CoordinateDto pass2,
+            CoordinateDto endCoordinate) {
+        if (isSameLocation(startCoordinate, pass1) && isSameLocation(pass1, pass2) && isSameLocation(pass2, endCoordinate)) {
+            return new WalkRouteInfoDto(0, 0);
+        }
+        if (isSameLocation(startCoordinate, pass1) && isSameLocation(pass1, pass2)) {
+            return tMapService.fetchWalkRouteInfo(pass2, endCoordinate);
+        }
+        if (isSameLocation(pass1, pass2) && isSameLocation(pass2, endCoordinate)) {
+            return tMapService.fetchWalkRouteInfo(startCoordinate, pass1);
+        }
+        if (isSameLocation(startCoordinate, pass1) && isSameLocation(pass2, endCoordinate)) {
+            return tMapService.fetchWalkRouteInfo(startCoordinate, pass1, endCoordinate);
+        }
+        if (isSameLocation(startCoordinate, pass1)) {
+            return tMapService.fetchWalkRouteInfo(pass1, pass2, endCoordinate);
+        }
+        if (isSameLocation(pass1, pass2)) {
+            WalkRouteInfoDto firstWalkRouteInfo = tMapService.fetchWalkRouteInfo(startCoordinate, pass1);
+            WalkRouteInfoDto secondWalkRouteInfo = tMapService.fetchWalkRouteInfo(pass2, endCoordinate);
+
+            return new WalkRouteInfoDto(
+                    firstWalkRouteInfo.getTotalDistance() + secondWalkRouteInfo.getTotalDistance(),
+                    firstWalkRouteInfo.getTotalTime() + secondWalkRouteInfo.getTotalTime()
+            );
+        }
+
+        return tMapService.fetchWalkRouteInfo(startCoordinate, pass1, pass2, endCoordinate);
+    }
+
+    private WalkRouteInfoDto fetchWalkRouteInfo(
+            CoordinateDto startCoordinate,
+            CoordinateDto pass,
+            CoordinateDto endCoordinate) {
+        if (isSameLocation(startCoordinate, pass) && isSameLocation(pass, endCoordinate)) {
+            return new WalkRouteInfoDto(0, 0);
+        }
+        if (isSameLocation(startCoordinate, pass)) {
+            return tMapService.fetchWalkRouteInfo(pass, endCoordinate);
+        }
+        if (isSameLocation(pass, endCoordinate)) {
+            return tMapService.fetchWalkRouteInfo(startCoordinate, pass);
+        }
+
+        return tMapService.fetchWalkRouteInfo(startCoordinate, pass, endCoordinate);
+    }
+
+    private WalkRouteInfoDto fetchWalkRouteInfo(
+            CoordinateDto startCoordinate,
+            CoordinateDto endCoordinate) {
+        if (isSameLocation(startCoordinate, endCoordinate)) {
+            return new WalkRouteInfoDto(0, 0);
+        }
+
+        return tMapService.fetchWalkRouteInfo(startCoordinate, endCoordinate);
+    }
+
     private boolean hasDuplicateStores(StoreForGradeSortDto firstStore, StoreForGradeSortDto secondStore) {
         Set<Long> storeIds = new HashSet<>();
         storeIds.add(firstStore.getId());
         storeIds.add(secondStore.getId());
 
         return storeIds.size() != SearchService.TWO_ROUND;
+    }
+
+    private boolean isSameLocation(CoordinateDto coordinate1, CoordinateDto coordinate2) {
+        return (coordinate1.getLongitude() == coordinate2.getLongitude())
+                && (coordinate1.getLatitude() == coordinate2.getLatitude());
     }
 }
