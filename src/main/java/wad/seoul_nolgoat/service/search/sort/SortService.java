@@ -373,10 +373,13 @@ public class SortService {
             return tMapService.fetchWalkRouteInfo(startCoordinate, pass1);
         }
         if (isSameLocation(startCoordinate, pass1) && isSameLocation(pass2, endCoordinate)) {
-            return tMapService.fetchWalkRouteInfo(startCoordinate, pass1, endCoordinate);
+            return tMapService.fetchWalkRouteInfo(pass1, pass2);
         }
         if (isSameLocation(startCoordinate, pass1)) {
             return tMapService.fetchWalkRouteInfo(pass1, pass2, endCoordinate);
+        }
+        if (isSameLocation(pass2, endCoordinate)) {
+            return tMapService.fetchWalkRouteInfo(startCoordinate, pass1, pass2);
         }
         if (isSameLocation(pass1, pass2)) {
             WalkRouteInfoDto firstWalkRouteInfo = tMapService.fetchWalkRouteInfo(startCoordinate, pass1);
