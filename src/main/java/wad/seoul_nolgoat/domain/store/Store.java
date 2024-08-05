@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import wad.seoul_nolgoat.domain.BaseTimeEntity;
 import wad.seoul_nolgoat.domain.review.Review;
 
@@ -28,8 +31,7 @@ public class Store extends BaseTimeEntity {
     private String phoneNumber;
     private String lotAddress;
     private String roadAddress;
-    private double latitude;
-    private double longitude;
+    private Point location;
     private double kakaoAverageGrade;
     private double nolgoatAverageGrade;
     private String placeUrl;
@@ -69,15 +71,13 @@ public class Store extends BaseTimeEntity {
         this.phoneNumber = phoneNumber;
         this.lotAddress = lotAddress;
         this.roadAddress = roadAddress;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        setLocation(longitude, latitude);
         this.kakaoAverageGrade = kakaoAverageGrade;
         this.placeUrl = placeUrl;
     }
 
-    public void updateCoordinates(double latitude, double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public void updateCoordinates(double longitude, double latitude) {
+        setLocation(longitude, latitude);
     }
 
     public void updateAdditionalInfo(
@@ -95,5 +95,18 @@ public class Store extends BaseTimeEntity {
 
     public void delete() {
         this.isDeleted = true;
+    }
+
+    public double getLongitude() {
+        return location.getX();
+    }
+
+    public double getLatitude() {
+        return location.getY();
+    }
+
+    private void setLocation(double longitude, double latitude) {
+        GeometryFactory geometryFactory = new GeometryFactory();
+        this.location = geometryFactory.createPoint(new Coordinate(longitude, latitude));
     }
 }
