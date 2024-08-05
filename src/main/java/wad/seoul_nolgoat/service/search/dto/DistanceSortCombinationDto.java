@@ -32,6 +32,22 @@ public class DistanceSortCombinationDto {
     public DistanceSortCombinationDto(
             StoreForDistanceSortDto firstStore,
             StoreForDistanceSortDto secondStore,
+            WalkRouteInfoDto walkRouteInfoDto) {
+        this.firstStore = firstStore;
+        this.secondStore = secondStore;
+        this.walkRouteInfoDto = walkRouteInfoDto;
+        this.totalRounds = SearchService.TWO_ROUND;
+    }
+
+    public DistanceSortCombinationDto(StoreForDistanceSortDto firstStore, WalkRouteInfoDto walkRouteInfoDto) {
+        this.firstStore = firstStore;
+        this.walkRouteInfoDto = walkRouteInfoDto;
+        this.totalRounds = SearchService.ONE_ROUND;
+    }
+
+    public DistanceSortCombinationDto(
+            StoreForDistanceSortDto firstStore,
+            StoreForDistanceSortDto secondStore,
             StoreForDistanceSortDto thirdStore) {
         this.firstStore = firstStore;
         this.secondStore = secondStore;
