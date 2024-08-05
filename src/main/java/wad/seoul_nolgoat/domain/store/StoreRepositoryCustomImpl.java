@@ -6,7 +6,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import wad.seoul_nolgoat.service.search.dto.StoreForDistanceSortDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForGradeSortDto;
-import wad.seoul_nolgoat.service.search.sort.DistanceCalculator;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 import java.util.Collections;
@@ -33,8 +32,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                                         store.name,
                                         Projections.constructor(
                                                 CoordinateDto.class,
-                                                store.latitude,
-                                                store.longitude
+                                                numberTemplate(Double.class, "ST_Y({0})", store.location),
+                                                numberTemplate(Double.class, "ST_X({0})", store.location)
                                         )
                                 )
                         )
@@ -60,8 +59,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                                         store.name,
                                         Projections.constructor(
                                                 CoordinateDto.class,
-                                                store.latitude,
-                                                store.longitude
+                                                numberTemplate(Double.class, "ST_Y({0})", store.location),
+                                                numberTemplate(Double.class, "ST_X({0})", store.location)
                                         ),
                                         store.kakaoAverageGrade
                                 )
@@ -88,8 +87,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                                         store.name,
                                         Projections.constructor(
                                                 CoordinateDto.class,
-                                                store.latitude,
-                                                store.longitude
+                                                numberTemplate(Double.class, "ST_Y({0})", store.location),
+                                                numberTemplate(Double.class, "ST_X({0})", store.location)
                                         ),
                                         store.nolgoatAverageGrade
                                 )
@@ -106,12 +105,10 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     private NumberExpression<Double> calculateHaversineDistance(CoordinateDto startCoordinate) {
         return numberTemplate(
                 Double.class,
-                "{0} * acos(cos(radians({1})) * cos(radians({2})) * cos(radians({3}) - radians({4})) + sin(radians({1})) * sin(radians({2})))",
-                DistanceCalculator.EARTH_RADIUS_KM,
+                "ST_Distance_Sphere(Point({0}, {1}), Point(ST_X({2}), ST_Y({2})))",
+                startCoordinate.getLongitude(),
                 startCoordinate.getLatitude(),
-                store.latitude,
-                store.longitude,
-                startCoordinate.getLongitude()
-        );
+                store.location
+        ).divide(1000.0); // km로 변환
     }
 }
