@@ -32,11 +32,11 @@ public class SortService {
         List<DistanceSortCombinationDto> distanceCombinations = generateAndSortDistanceCombinations(
                 sortConditionDto,
                 totalRounds
-        ).subList(TOP_FIRST, TOP_TWENTIETH);
+        );
 
         return fetchDistancesFromTMapApi(
                 sortConditionDto.getStartCoordinate(),
-                distanceCombinations,
+                distanceCombinations.subList(TOP_FIRST, Math.min(distanceCombinations.size(), TOP_TWENTIETH)),
                 totalRounds
         );
     }
