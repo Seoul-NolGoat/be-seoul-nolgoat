@@ -25,6 +25,8 @@ public class SearchService {
     private static final int FIRST_CATEGORY = 0;
     private static final int SECOND_CATEGORY = 1;
     private static final int THIRD_CATEGORY = 2;
+
+    private static final int STORE_COMBINATION_SEARCH_START = 0;
     private static final int STORE_COMBINATION_SEARCH_LIMIT = 10;
 
     private final FilterService filterService;
@@ -45,7 +47,7 @@ public class SearchService {
 
     private List<CombinationDto> getCombinationsByDistance(SearchConditionDto searchConditionDto) {
         if (searchConditionDto.getCategories().size() == THREE_ROUND) {
-            return sortService.sortStoresByDistance(
+            List<CombinationDto> combinationDtos = sortService.sortStoresByDistance(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
@@ -66,11 +68,15 @@ public class SearchService {
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
-                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
+
+            return combinationDtos.subList(
+                    STORE_COMBINATION_SEARCH_START,
+                    Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+            );
         }
         if (searchConditionDto.getCategories().size() == TWO_ROUND) {
-            return sortService.sortStoresByDistance(
+            List<CombinationDto> combinationDtos = sortService.sortStoresByDistance(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
@@ -86,11 +92,15 @@ public class SearchService {
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
-                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
+
+            return combinationDtos.subList(
+                    STORE_COMBINATION_SEARCH_START,
+                    Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+            );
         }
         if (searchConditionDto.getCategories().size() == ONE_ROUND) {
-            return sortService.sortStoresByDistance(
+            List<CombinationDto> combinationDtos = sortService.sortStoresByDistance(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
@@ -101,15 +111,19 @@ public class SearchService {
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
-                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
+
+            return combinationDtos.subList(
+                    STORE_COMBINATION_SEARCH_START,
+                    Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+            );
         }
         throw new RuntimeException();
     }
 
     private List<CombinationDto> getCombinationsByKakaoGrade(SearchConditionDto searchConditionDto) {
         if (searchConditionDto.getCategories().size() == THREE_ROUND) {
-            return sortService.sortStoresByGrade(
+            List<CombinationDto> combinationDtos = sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
@@ -130,11 +144,15 @@ public class SearchService {
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
-                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
+
+            return combinationDtos.subList(
+                    STORE_COMBINATION_SEARCH_START,
+                    Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+            );
         }
         if (searchConditionDto.getCategories().size() == TWO_ROUND) {
-            return sortService.sortStoresByGrade(
+            List<CombinationDto> combinationDtos = sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
@@ -150,11 +168,15 @@ public class SearchService {
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
-                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
+
+            return combinationDtos.subList(
+                    STORE_COMBINATION_SEARCH_START,
+                    Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+            );
         }
         if (searchConditionDto.getCategories().size() == ONE_ROUND) {
-            return sortService.sortStoresByGrade(
+            List<CombinationDto> combinationDtos = sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
@@ -165,15 +187,19 @@ public class SearchService {
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
-                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
+
+            return combinationDtos.subList(
+                    STORE_COMBINATION_SEARCH_START,
+                    Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+            );
         }
         throw new RuntimeException();
     }
 
     private List<CombinationDto> getCombinationsByNolgoatGrade(SearchConditionDto searchConditionDto) {
         if (searchConditionDto.getCategories().size() == THREE_ROUND) {
-            return sortService.sortStoresByGrade(
+            List<CombinationDto> combinationDtos = sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
@@ -194,11 +220,15 @@ public class SearchService {
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
-                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
+
+            return combinationDtos.subList(
+                    STORE_COMBINATION_SEARCH_START,
+                    Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+            );
         }
         if (searchConditionDto.getCategories().size() == TWO_ROUND) {
-            return sortService.sortStoresByGrade(
+            List<CombinationDto> combinationDtos = sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
@@ -214,11 +244,15 @@ public class SearchService {
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
-                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
+
+            return combinationDtos.subList(
+                    STORE_COMBINATION_SEARCH_START,
+                    Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+            );
         }
         if (searchConditionDto.getCategories().size() == ONE_ROUND) {
-            return sortService.sortStoresByGrade(
+            List<CombinationDto> combinationDtos = sortService.sortStoresByGrade(
                             new SortConditionDto<>(
                                     searchConditionDto.getStartCoordinate(),
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
@@ -229,8 +263,12 @@ public class SearchService {
                             )
                     ).stream()
                     .map(CombinationMapper::toCombinationDto)
-                    .limit(STORE_COMBINATION_SEARCH_LIMIT)
                     .toList();
+
+            return combinationDtos.subList(
+                    STORE_COMBINATION_SEARCH_START,
+                    Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+            );
         }
         throw new RuntimeException();
     }
