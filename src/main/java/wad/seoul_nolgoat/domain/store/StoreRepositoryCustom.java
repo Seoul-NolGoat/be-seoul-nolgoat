@@ -25,4 +25,6 @@ public interface StoreRepositoryCustom {
             double radiusRange,
             String category
     );
+
+    List<String> findCategoriesByRadiusRange(CoordinateDto startCoordinate, double radiusRange);
 }

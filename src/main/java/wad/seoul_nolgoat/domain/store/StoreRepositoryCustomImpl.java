@@ -102,6 +102,18 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
         );
     }
 
+    @Override
+    public List<String> findCategoriesByRadiusRange(CoordinateDto startCoordinate, double radiusRange) {
+        return jpaQueryFactory.select(store.category)
+                .from(store)
+                .where(
+                        calculateHaversineDistance(startCoordinate).loe(radiusRange),
+                        store.category.isNotNull()
+                )
+                .distinct()
+                .fetch();
+    }
+
     private NumberExpression<Double> calculateHaversineDistance(CoordinateDto startCoordinate) {
         return numberTemplate(
                 Double.class,
