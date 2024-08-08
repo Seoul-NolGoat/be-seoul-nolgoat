@@ -1,5 +1,7 @@
 package wad.seoul_nolgoat.domain.store;
 
+import java.util.Optional;
+
 public enum StoreCategory {
 
     KOREAN_FOOD("한식"),
@@ -101,5 +103,17 @@ public enum StoreCategory {
 
     public String getPrimaryCategoryName() {
         return categories[0];
+    }
+
+    public static Optional<String[]> findRelatedCategoryNames(String name) {
+        for (StoreCategory category : StoreCategory.values()) {
+            for (String categoryName : category.getCategoryNames()) {
+                if (categoryName.equalsIgnoreCase(name)) {
+                    return Optional.of(category.getCategoryNames());
+                }
+            }
+        }
+
+        return Optional.empty();
     }
 }
