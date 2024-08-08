@@ -2,14 +2,16 @@ package wad.seoul_nolgoat.service.search;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import wad.seoul_nolgoat.domain.store.StoreCategory;
 import wad.seoul_nolgoat.service.search.dto.SortConditionDto;
 import wad.seoul_nolgoat.service.search.filter.FilterService;
 import wad.seoul_nolgoat.service.search.sort.SortService;
 import wad.seoul_nolgoat.util.mapper.CombinationMapper;
+import wad.seoul_nolgoat.web.search.dto.request.PossibleCategoriesConditionDto;
 import wad.seoul_nolgoat.web.search.dto.request.SearchConditionDto;
 import wad.seoul_nolgoat.web.search.dto.response.CombinationDto;
 
-import java.util.List;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -22,12 +24,17 @@ public class SearchService {
     private static final String DISTANCE_CRITERIA = "distance";
     private static final String KAKAO_GRADE_CRITERIA = "kakaoGrade";
     private static final String NOLGOAT_GRADE_CRITERIA = "nolgoatGrade";
+
     private static final int FIRST_CATEGORY = 0;
     private static final int SECOND_CATEGORY = 1;
     private static final int THIRD_CATEGORY = 2;
 
     private static final int STORE_COMBINATION_SEARCH_START = 0;
     private static final int STORE_COMBINATION_SEARCH_LIMIT = 10;
+
+    private static final String SPACE = " ";
+    private static final String EMPTY = "";
+    private static final String DELIMITER = ">";
 
     private final FilterService filterService;
     private final SortService sortService;
@@ -43,6 +50,26 @@ public class SearchService {
             return getCombinationsByNolgoatGrade(searchConditionDto);
         }
         throw new RuntimeException();
+    }
+
+    public List<String> searchPossibleCategories(PossibleCategoriesConditionDto possibleCategoriesConditionDto) {
+        List<String> untokenizedCategories = filterService.findCategoriesByRadiusRange(
+                possibleCategoriesConditionDto.getStartCoordinate(),
+                possibleCategoriesConditionDto.getRadiusRange()
+        );
+        Set<String> possibleCategories = new HashSet<>();
+
+        for (String untokenizedCategory : untokenizedCategories) {
+            String[] tokens = untokenizedCategory.replace(SPACE, EMPTY).split(DELIMITER);
+            for (String token : tokens) {
+                Optional<String[]> optionalRelatedCategories = StoreCategory.findRelatedCategoryNames(token);
+                optionalRelatedCategories.ifPresent(
+                        relatedCategories -> possibleCategories.addAll(Arrays.asList(relatedCategories))
+                );
+            }
+        }
+
+        return new ArrayList<>(possibleCategories);
     }
 
     private List<CombinationDto> getCombinationsByDistance(SearchConditionDto searchConditionDto) {
