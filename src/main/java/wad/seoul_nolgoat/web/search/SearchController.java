@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wad.seoul_nolgoat.service.search.SearchService;
+import wad.seoul_nolgoat.web.search.dto.request.PossibleCategoriesConditionDto;
 import wad.seoul_nolgoat.web.search.dto.request.SearchConditionDto;
 import wad.seoul_nolgoat.web.search.dto.response.CombinationDto;
 
@@ -23,5 +24,12 @@ public class SearchController {
     public ResponseEntity<List<CombinationDto>> searchAll(@ModelAttribute SearchConditionDto searchConditionDto) {
         return ResponseEntity
                 .ok(searchService.searchAll(searchConditionDto));
+    }
+
+    @GetMapping("/possible/categories")
+    public ResponseEntity<List<String>> searchPossibleCategories(
+            @ModelAttribute PossibleCategoriesConditionDto possibleCategoriesConditionDto) {
+        return ResponseEntity
+                .ok(searchService.searchPossibleCategories(possibleCategoriesConditionDto));
     }
 }

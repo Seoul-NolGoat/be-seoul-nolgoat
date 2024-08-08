@@ -47,4 +47,8 @@ public class FilterService {
                 category
         );
     }
+
+    public List<String> findCategoriesByRadiusRange(CoordinateDto startCoordinate, double radiusRange) {
+        return storeRepository.findCategoriesByRadiusRange(startCoordinate, radiusRange);
+    }
 }
