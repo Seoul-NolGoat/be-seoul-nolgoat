@@ -34,7 +34,9 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                                                 CoordinateDto.class,
                                                 numberTemplate(Double.class, "ST_Y({0})", store.location),
                                                 numberTemplate(Double.class, "ST_X({0})", store.location)
-                                        )
+                                        ),
+                                        store.kakaoAverageGrade,
+                                        store.nolgoatAverageGrade
                                 )
                         )
                         .from(store)
@@ -62,7 +64,9 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                                                 numberTemplate(Double.class, "ST_Y({0})", store.location),
                                                 numberTemplate(Double.class, "ST_X({0})", store.location)
                                         ),
-                                        store.kakaoAverageGrade
+                                        store.kakaoAverageGrade,
+                                        store.kakaoAverageGrade,
+                                        store.nolgoatAverageGrade
                                 )
                         )
                         .from(store)
@@ -90,6 +94,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                                                 numberTemplate(Double.class, "ST_Y({0})", store.location),
                                                 numberTemplate(Double.class, "ST_X({0})", store.location)
                                         ),
+                                        store.nolgoatAverageGrade,
+                                        store.kakaoAverageGrade,
                                         store.nolgoatAverageGrade
                                 )
                         )
