@@ -177,9 +177,13 @@ public class SearchService {
                     .map(CombinationMapper::toCombinationDto)
                     .toList();
 
-            return combinationDtos.subList(
-                    STORE_COMBINATION_SEARCH_START,
-                    Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+            return fetchWalkRouteInfoForCombinationDto(
+                    combinationDtos.subList(
+                            STORE_COMBINATION_SEARCH_START,
+                            Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+                    ),
+                    THREE_ROUND,
+                    searchConditionDto.getStartCoordinate()
             );
         }
         if (searchConditionDto.getCategories().size() == TWO_ROUND) {
@@ -201,9 +205,13 @@ public class SearchService {
                     .map(CombinationMapper::toCombinationDto)
                     .toList();
 
-            return combinationDtos.subList(
-                    STORE_COMBINATION_SEARCH_START,
-                    Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+            return fetchWalkRouteInfoForCombinationDto(
+                    combinationDtos.subList(
+                            STORE_COMBINATION_SEARCH_START,
+                            Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+                    ),
+                    TWO_ROUND,
+                    searchConditionDto.getStartCoordinate()
             );
         }
         if (searchConditionDto.getCategories().size() == ONE_ROUND) {
@@ -220,9 +228,13 @@ public class SearchService {
                     .map(CombinationMapper::toCombinationDto)
                     .toList();
 
-            return combinationDtos.subList(
-                    STORE_COMBINATION_SEARCH_START,
-                    Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+            return fetchWalkRouteInfoForCombinationDto(
+                    combinationDtos.subList(
+                            STORE_COMBINATION_SEARCH_START,
+                            Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+                    ),
+                    ONE_ROUND,
+                    searchConditionDto.getStartCoordinate()
             );
         }
         throw new RuntimeException();
@@ -253,9 +265,13 @@ public class SearchService {
                     .map(CombinationMapper::toCombinationDto)
                     .toList();
 
-            return combinationDtos.subList(
-                    STORE_COMBINATION_SEARCH_START,
-                    Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+            return fetchWalkRouteInfoForCombinationDto(
+                    combinationDtos.subList(
+                            STORE_COMBINATION_SEARCH_START,
+                            Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+                    ),
+                    THREE_ROUND,
+                    searchConditionDto.getStartCoordinate()
             );
         }
         if (searchConditionDto.getCategories().size() == TWO_ROUND) {
@@ -277,9 +293,13 @@ public class SearchService {
                     .map(CombinationMapper::toCombinationDto)
                     .toList();
 
-            return combinationDtos.subList(
-                    STORE_COMBINATION_SEARCH_START,
-                    Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+            return fetchWalkRouteInfoForCombinationDto(
+                    combinationDtos.subList(
+                            STORE_COMBINATION_SEARCH_START,
+                            Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+                    ),
+                    TWO_ROUND,
+                    searchConditionDto.getStartCoordinate()
             );
         }
         if (searchConditionDto.getCategories().size() == ONE_ROUND) {
@@ -296,9 +316,13 @@ public class SearchService {
                     .map(CombinationMapper::toCombinationDto)
                     .toList();
 
-            return combinationDtos.subList(
-                    STORE_COMBINATION_SEARCH_START,
-                    Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+            return fetchWalkRouteInfoForCombinationDto(
+                    combinationDtos.subList(
+                            STORE_COMBINATION_SEARCH_START,
+                            Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
+                    ),
+                    ONE_ROUND,
+                    searchConditionDto.getStartCoordinate()
             );
         }
         throw new RuntimeException();
