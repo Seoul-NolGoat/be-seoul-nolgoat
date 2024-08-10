@@ -130,7 +130,75 @@ public class TMapService {
         }
     }
 
+    public WalkRouteInfoDto fetchFullPathWalkRouteInfo(
+            CoordinateDto startCoordinate,
+            CoordinateDto pass1,
+            CoordinateDto pass2,
+            CoordinateDto endCoordinate) {
+        if (isSameLocation(startCoordinate, pass1) && isSameLocation(pass1, pass2) && isSameLocation(pass2, endCoordinate)) {
+            return new WalkRouteInfoDto(0, 0);
+        }
+        if (isSameLocation(startCoordinate, pass1) && isSameLocation(pass1, pass2)) {
+            return fetchWalkRouteInfo(pass2, endCoordinate);
+        }
+        if (isSameLocation(pass1, pass2) && isSameLocation(pass2, endCoordinate)) {
+            return fetchWalkRouteInfo(startCoordinate, pass1);
+        }
+        if (isSameLocation(startCoordinate, pass1) && isSameLocation(pass2, endCoordinate)) {
+            return fetchWalkRouteInfo(pass1, pass2);
+        }
+        if (isSameLocation(startCoordinate, pass1)) {
+            return fetchWalkRouteInfo(pass1, pass2, endCoordinate);
+        }
+        if (isSameLocation(pass2, endCoordinate)) {
+            return fetchWalkRouteInfo(startCoordinate, pass1, pass2);
+        }
+        if (isSameLocation(pass1, pass2)) {
+            WalkRouteInfoDto firstWalkRouteInfo = fetchWalkRouteInfo(startCoordinate, pass1);
+            WalkRouteInfoDto secondWalkRouteInfo = fetchWalkRouteInfo(pass2, endCoordinate);
+
+            return new WalkRouteInfoDto(
+                    firstWalkRouteInfo.getTotalDistance() + secondWalkRouteInfo.getTotalDistance(),
+                    firstWalkRouteInfo.getTotalTime() + secondWalkRouteInfo.getTotalTime()
+            );
+        }
+
+        return fetchWalkRouteInfo(startCoordinate, pass1, pass2, endCoordinate);
+    }
+
+    public WalkRouteInfoDto fetchFullPathWalkRouteInfo(
+            CoordinateDto startCoordinate,
+            CoordinateDto pass,
+            CoordinateDto endCoordinate) {
+        if (isSameLocation(startCoordinate, pass) && isSameLocation(pass, endCoordinate)) {
+            return new WalkRouteInfoDto(0, 0);
+        }
+        if (isSameLocation(startCoordinate, pass)) {
+            return fetchWalkRouteInfo(pass, endCoordinate);
+        }
+        if (isSameLocation(pass, endCoordinate)) {
+            return fetchWalkRouteInfo(startCoordinate, pass);
+        }
+
+        return fetchWalkRouteInfo(startCoordinate, pass, endCoordinate);
+    }
+
+    public WalkRouteInfoDto fetchFullPathWalkRouteInfo(
+            CoordinateDto startCoordinate,
+            CoordinateDto endCoordinate) {
+        if (isSameLocation(startCoordinate, endCoordinate)) {
+            return new WalkRouteInfoDto(0, 0);
+        }
+
+        return fetchWalkRouteInfo(startCoordinate, endCoordinate);
+    }
+
     private String convertCoordinateToString(CoordinateDto coordinate) {
         return coordinate.getLongitude() + COORDINATE_SEPARATOR + coordinate.getLatitude();
+    }
+
+    private boolean isSameLocation(CoordinateDto coordinate1, CoordinateDto coordinate2) {
+        return (coordinate1.getLongitude() == coordinate2.getLongitude())
+                && (coordinate1.getLatitude() == coordinate2.getLatitude());
     }
 }
