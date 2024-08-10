@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.service.search.SearchService;
 import wad.seoul_nolgoat.service.search.dto.*;
 import wad.seoul_nolgoat.service.tMap.TMapService;
-import wad.seoul_nolgoat.service.tMap.dto.WalkRouteInfoDto;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 import java.util.*;
@@ -288,7 +287,7 @@ public class SortService {
                                 combination.getFirstStore(),
                                 combination.getSecondStore(),
                                 combination.getThirdStore(),
-                                fetchWalkRouteInfo(
+                                tMapService.fetchFullPathWalkRouteInfo(
                                         startCoordinate,
                                         pass1,
                                         pass2,
@@ -303,7 +302,7 @@ public class SortService {
                         return new DistanceSortCombinationDto(
                                 combination.getFirstStore(),
                                 combination.getSecondStore(),
-                                fetchWalkRouteInfo(
+                                tMapService.fetchFullPathWalkRouteInfo(
                                         startCoordinate,
                                         pass,
                                         endCoordinate
@@ -315,7 +314,7 @@ public class SortService {
 
                         return new DistanceSortCombinationDto(
                                 combination.getFirstStore(),
-                                fetchWalkRouteInfo(startCoordinate, endCoordinate)
+                                tMapService.fetchFullPathWalkRouteInfo(startCoordinate, endCoordinate)
                         );
                     }
                     throw new RuntimeException("Invalid round number");
@@ -358,79 +357,11 @@ public class SortService {
         return storeIds.size() != SearchService.THREE_ROUND;
     }
 
-    private WalkRouteInfoDto fetchWalkRouteInfo(
-            CoordinateDto startCoordinate,
-            CoordinateDto pass1,
-            CoordinateDto pass2,
-            CoordinateDto endCoordinate) {
-        if (isSameLocation(startCoordinate, pass1) && isSameLocation(pass1, pass2) && isSameLocation(pass2, endCoordinate)) {
-            return new WalkRouteInfoDto(0, 0);
-        }
-        if (isSameLocation(startCoordinate, pass1) && isSameLocation(pass1, pass2)) {
-            return tMapService.fetchWalkRouteInfo(pass2, endCoordinate);
-        }
-        if (isSameLocation(pass1, pass2) && isSameLocation(pass2, endCoordinate)) {
-            return tMapService.fetchWalkRouteInfo(startCoordinate, pass1);
-        }
-        if (isSameLocation(startCoordinate, pass1) && isSameLocation(pass2, endCoordinate)) {
-            return tMapService.fetchWalkRouteInfo(pass1, pass2);
-        }
-        if (isSameLocation(startCoordinate, pass1)) {
-            return tMapService.fetchWalkRouteInfo(pass1, pass2, endCoordinate);
-        }
-        if (isSameLocation(pass2, endCoordinate)) {
-            return tMapService.fetchWalkRouteInfo(startCoordinate, pass1, pass2);
-        }
-        if (isSameLocation(pass1, pass2)) {
-            WalkRouteInfoDto firstWalkRouteInfo = tMapService.fetchWalkRouteInfo(startCoordinate, pass1);
-            WalkRouteInfoDto secondWalkRouteInfo = tMapService.fetchWalkRouteInfo(pass2, endCoordinate);
-
-            return new WalkRouteInfoDto(
-                    firstWalkRouteInfo.getTotalDistance() + secondWalkRouteInfo.getTotalDistance(),
-                    firstWalkRouteInfo.getTotalTime() + secondWalkRouteInfo.getTotalTime()
-            );
-        }
-
-        return tMapService.fetchWalkRouteInfo(startCoordinate, pass1, pass2, endCoordinate);
-    }
-
-    private WalkRouteInfoDto fetchWalkRouteInfo(
-            CoordinateDto startCoordinate,
-            CoordinateDto pass,
-            CoordinateDto endCoordinate) {
-        if (isSameLocation(startCoordinate, pass) && isSameLocation(pass, endCoordinate)) {
-            return new WalkRouteInfoDto(0, 0);
-        }
-        if (isSameLocation(startCoordinate, pass)) {
-            return tMapService.fetchWalkRouteInfo(pass, endCoordinate);
-        }
-        if (isSameLocation(pass, endCoordinate)) {
-            return tMapService.fetchWalkRouteInfo(startCoordinate, pass);
-        }
-
-        return tMapService.fetchWalkRouteInfo(startCoordinate, pass, endCoordinate);
-    }
-
-    private WalkRouteInfoDto fetchWalkRouteInfo(
-            CoordinateDto startCoordinate,
-            CoordinateDto endCoordinate) {
-        if (isSameLocation(startCoordinate, endCoordinate)) {
-            return new WalkRouteInfoDto(0, 0);
-        }
-
-        return tMapService.fetchWalkRouteInfo(startCoordinate, endCoordinate);
-    }
-
     private boolean hasDuplicateStores(StoreForGradeSortDto firstStore, StoreForGradeSortDto secondStore) {
         Set<Long> storeIds = new HashSet<>();
         storeIds.add(firstStore.getId());
         storeIds.add(secondStore.getId());
 
         return storeIds.size() != SearchService.TWO_ROUND;
-    }
-
-    private boolean isSameLocation(CoordinateDto coordinate1, CoordinateDto coordinate2) {
-        return (coordinate1.getLongitude() == coordinate2.getLongitude())
-                && (coordinate1.getLatitude() == coordinate2.getLatitude());
     }
 }

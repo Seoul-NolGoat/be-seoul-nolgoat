@@ -6,12 +6,15 @@ import wad.seoul_nolgoat.domain.store.StoreCategory;
 import wad.seoul_nolgoat.service.search.dto.SortConditionDto;
 import wad.seoul_nolgoat.service.search.filter.FilterService;
 import wad.seoul_nolgoat.service.search.sort.SortService;
+import wad.seoul_nolgoat.service.tMap.TMapService;
 import wad.seoul_nolgoat.util.mapper.CombinationMapper;
+import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 import wad.seoul_nolgoat.web.search.dto.request.PossibleCategoriesConditionDto;
 import wad.seoul_nolgoat.web.search.dto.request.SearchConditionDto;
 import wad.seoul_nolgoat.web.search.dto.response.CombinationDto;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -38,6 +41,7 @@ public class SearchService {
 
     private final FilterService filterService;
     private final SortService sortService;
+    private final TMapService tMapService;
 
     public List<CombinationDto> searchAll(SearchConditionDto searchConditionDto) {
         if (searchConditionDto.getCriteria().equals(DISTANCE_CRITERIA)) {
@@ -298,5 +302,46 @@ public class SearchService {
             );
         }
         throw new RuntimeException();
+    }
+
+    private List<CombinationDto> fetchWalkRouteInfoForCombinationDto(List<CombinationDto> combinationDtos, int totalRounds, CoordinateDto startCoordinate) {
+        return combinationDtos.stream()
+                .map(combination -> {
+                    if (totalRounds == THREE_ROUND) {
+                        CoordinateDto pass1 = combination.getFirstStore().getCoordinate();
+                        CoordinateDto pass2 = combination.getSecondStore().getCoordinate();
+                        CoordinateDto endCoordinate = combination.getThirdStore().getCoordinate();
+                        combination.setWalkRouteInfoDto(tMapService.fetchWalkRouteInfo(
+                                startCoordinate,
+                                pass1,
+                                pass2,
+                                endCoordinate
+                        ));
+
+                        return combination;
+                    }
+                    if (totalRounds == TWO_ROUND) {
+                        CoordinateDto pass = combination.getFirstStore().getCoordinate();
+                        CoordinateDto endCoordinate = combination.getSecondStore().getCoordinate();
+                        combination.setWalkRouteInfoDto(tMapService.fetchWalkRouteInfo(
+                                startCoordinate,
+                                pass,
+                                endCoordinate
+                        ));
+
+                        return combination;
+                    }
+                    if (totalRounds == ONE_ROUND) {
+                        CoordinateDto endCoordinate = combination.getFirstStore().getCoordinate();
+                        combination.setWalkRouteInfoDto(tMapService.fetchWalkRouteInfo(
+                                startCoordinate,
+                                endCoordinate
+                        ));
+
+                        return combination;
+                    }
+                    throw new RuntimeException("Invalid round number");
+                })
+                .collect(Collectors.toList());
     }
 }
