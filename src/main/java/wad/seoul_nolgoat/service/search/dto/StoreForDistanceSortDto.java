@@ -14,4 +14,6 @@ public class StoreForDistanceSortDto {
     private Long id;
     private String name;
     private CoordinateDto coordinate;
+    private double kakaoAverageGrade;
+    private double nolgoatAverageGrade;
 }
