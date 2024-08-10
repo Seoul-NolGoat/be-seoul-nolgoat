@@ -12,18 +12,21 @@ public class CombinationMapper {
             return new CombinationDto(
                     StoreMapper.toStoreForCombinationDto(distanceSortCombinationDto.getFirstStore()),
                     StoreMapper.toStoreForCombinationDto(distanceSortCombinationDto.getSecondStore()),
-                    StoreMapper.toStoreForCombinationDto(distanceSortCombinationDto.getThirdStore())
+                    StoreMapper.toStoreForCombinationDto(distanceSortCombinationDto.getThirdStore()),
+                    distanceSortCombinationDto.getWalkRouteInfoDto()
             );
         }
         if (distanceSortCombinationDto.getTotalRounds() == SearchService.TWO_ROUND) {
             return new CombinationDto(
                     StoreMapper.toStoreForCombinationDto(distanceSortCombinationDto.getFirstStore()),
-                    StoreMapper.toStoreForCombinationDto(distanceSortCombinationDto.getSecondStore())
+                    StoreMapper.toStoreForCombinationDto(distanceSortCombinationDto.getSecondStore()),
+                    distanceSortCombinationDto.getWalkRouteInfoDto()
             );
         }
         if (distanceSortCombinationDto.getTotalRounds() == SearchService.ONE_ROUND) {
             return new CombinationDto(
-                    StoreMapper.toStoreForCombinationDto(distanceSortCombinationDto.getFirstStore())
+                    StoreMapper.toStoreForCombinationDto(distanceSortCombinationDto.getFirstStore()),
+                    distanceSortCombinationDto.getWalkRouteInfoDto()
             );
         }
         throw new RuntimeException();

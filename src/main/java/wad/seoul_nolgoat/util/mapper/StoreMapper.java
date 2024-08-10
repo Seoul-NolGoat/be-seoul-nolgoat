@@ -33,7 +33,9 @@ public class StoreMapper {
         return new StoreForCombinationDto(
                 storeForDistanceSortDto.getId(),
                 storeForDistanceSortDto.getName(),
-                storeForDistanceSortDto.getCoordinate()
+                storeForDistanceSortDto.getCoordinate(),
+                storeForDistanceSortDto.getKakaoAverageGrade(),
+                storeForDistanceSortDto.getNolgoatAverageGrade()
         );
     }
 
@@ -41,7 +43,9 @@ public class StoreMapper {
         return new StoreForCombinationDto(
                 storeForGradeSortDto.getId(),
                 storeForGradeSortDto.getName(),
-                storeForGradeSortDto.getCoordinate()
+                storeForGradeSortDto.getCoordinate(),
+                storeForGradeSortDto.getKakaoAverageGrade(),
+                storeForGradeSortDto.getNolgoatAverageGrade()
         );
     }
 }
