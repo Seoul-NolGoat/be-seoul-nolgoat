@@ -11,4 +11,6 @@ public class StoreForCombinationDto {
     private final Long id;
     private final String name;
     private final CoordinateDto coordinate;
+    private final double kakaoAverageGrade;
+    private final double nolgoatAverageGrade;
 }

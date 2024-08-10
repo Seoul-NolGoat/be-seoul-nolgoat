@@ -15,4 +15,6 @@ public class StoreForGradeSortDto {
     private String name;
     private CoordinateDto coordinate;
     private double averageGrade;
+    private double kakaoAverageGrade;
+    private double nolgoatAverageGrade;
 }
