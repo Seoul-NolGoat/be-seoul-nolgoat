@@ -7,3 +7,4 @@ spring:
       - kakao-config.yml
       - seoul-config.yml
       - t-config.yml
+      - oauth2-config.yml
