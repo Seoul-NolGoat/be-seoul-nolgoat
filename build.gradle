@@ -29,6 +29,17 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.google.guava:guava:32.0.0-android' // RateLimiter 사용을 위한 Guava 라이브러리
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // Point 자료형을 포함한 지리 공간 데이터 처리
+    implementation 'org.locationtech.jts:jts-core:1.18.0'
+    implementation 'org.hibernate:hibernate-spatial:6.5.2.Final'
+
+    // JWT 지원
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
     // compile-only dependencies
     compileOnly 'org.projectlombok:lombok'
@@ -43,10 +54,6 @@ dependencies {
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-
-    // Point 자료형
-    implementation 'org.locationtech.jts:jts-core:1.18.0'
-    implementation 'org.hibernate:hibernate-spatial:6.5.2.Final'
 
     // test implementation dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
