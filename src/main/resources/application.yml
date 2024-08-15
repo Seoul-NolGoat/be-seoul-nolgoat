@@ -8,3 +8,4 @@ spring:
       - seoul-config.yml
       - t-config.yml
       - oauth2-config.yml
+      - jwt-config.yml
