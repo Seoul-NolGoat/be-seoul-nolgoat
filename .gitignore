@@ -3,6 +3,7 @@
 /src/main/resources/kakao-config.yml
 /src/main/resources/seoul-config.yml
 /src/main/resources/t-config.yml
+/src/main/resources/oauth2-config.yml
 
 ### build ###
 .gradle
