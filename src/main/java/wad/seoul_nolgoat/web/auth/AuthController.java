@@ -17,7 +17,12 @@ public class AuthController {
     private final AuthService authService;
 
     @GetMapping("/user_profile")
-    public ResponseEntity<UserProfileDto> showUserProfile(@RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<UserProfileDto> showUserProfile(@RequestHeader(value = "Authorization", required = false) String authorization) {
+        if (authorization == null || authorization.isBlank()) {
+            return ResponseEntity
+                    .noContent()
+                    .build();
+        }
         return ResponseEntity
                 .ok(authService.findLoginUserByAuthorization(authorization));
     }
