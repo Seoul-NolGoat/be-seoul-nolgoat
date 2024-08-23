@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserProfileDto {
 
-    private final String username;
+    private final String loginId;
     private final String nickname;
     private final String profileImage;
 }
