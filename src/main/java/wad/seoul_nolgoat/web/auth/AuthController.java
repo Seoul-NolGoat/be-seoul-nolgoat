@@ -1,27 +1,24 @@
 package wad.seoul_nolgoat.web.auth;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import wad.seoul_nolgoat.web.auth.dto.request.CustomUser;
+import wad.seoul_nolgoat.service.auth.AuthService;
 import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;
 
-@RestController("/api")
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/api")
 public class AuthController {
 
+    private final AuthService authService;
+
     @GetMapping("/user_profile")
-    public ResponseEntity<UserProfileDto> showUserProfile(@AuthenticationPrincipal CustomUser loginUser) {
-        if (loginUser == null) {
-            return ResponseEntity
-                    .noContent()
-                    .build();
-        }
+    public ResponseEntity<UserProfileDto> showUserProfile(@RequestHeader("Authorization") String authorization) {
         return ResponseEntity
-                .ok(new UserProfileDto(
-                        loginUser.getLoginId(),
-                        loginUser.getNickname(),
-                        loginUser.getProfileImage()
-                ));
+                .ok(authService.findLoginUserByAuthorization(authorization));
     }
 }
