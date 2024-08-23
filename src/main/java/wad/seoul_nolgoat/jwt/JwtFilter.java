@@ -28,7 +28,6 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = request.getHeader(AUTHORIZATION_HEADER);
-
         if (authorization == null || !authorization.startsWith(BEARER_PREFIX)) {
             log.info(TOKEN_INVALID_MESSAGE);
             filterChain.doFilter(request, response); // 다음 필터로 전달
@@ -43,11 +42,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         OAuth2UserImpl oAuth2User = new OAuth2UserImpl(
-                new OAuth2UserDto(
-                        jwtUtil.getLoginId(token),
-                        jwtUtil.getNickname(token),
-                        jwtUtil.getProfileImage(token)
-                )
+                new OAuth2UserDto(jwtUtil.getLoginId(token))
         );
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(
