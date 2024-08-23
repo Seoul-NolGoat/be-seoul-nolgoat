@@ -55,25 +55,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                             null
                     )
             );
-            OAuth2UserDto oAuth2UserDto = new OAuth2UserDto(
-                    uniqueProviderId,
-                    nickname,
-                    profileImage
-            );
+            OAuth2UserDto oAuth2UserDto = new OAuth2UserDto(uniqueProviderId);
             return new OAuth2UserImpl(oAuth2UserDto);
         }
-
         User user = userRepository.findByLoginId(uniqueProviderId).get();
         user.update(
                 null,
                 nickname,
                 profileImage
         );
-        OAuth2UserDto oAuth2UserDto = new OAuth2UserDto(
-                uniqueProviderId,
-                nickname,
-                profileImage
-        );
+        OAuth2UserDto oAuth2UserDto = new OAuth2UserDto(uniqueProviderId);
         return new OAuth2UserImpl(oAuth2UserDto);
     }
 }

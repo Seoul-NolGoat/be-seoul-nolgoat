@@ -24,12 +24,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         OAuth2UserImpl oAuth2User = (OAuth2UserImpl) authentication.getPrincipal();
-        String jwt = jwtUtil.createJwt(
-                oAuth2User.getName(),
-                oAuth2User.getNickname(),
-                oAuth2User.getProfileImage(),
-                JWT_EXPIRATION_TIME
-        );
+        String jwt = jwtUtil.createJwt(oAuth2User.getName(), JWT_EXPIRATION_TIME);
         response.sendRedirect(REDIRECT_URL + jwt);
     }
 }

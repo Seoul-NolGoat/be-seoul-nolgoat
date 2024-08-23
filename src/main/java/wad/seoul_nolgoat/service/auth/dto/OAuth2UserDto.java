@@ -8,6 +8,4 @@ import lombok.RequiredArgsConstructor;
 public class OAuth2UserDto {
 
     private final String uniqueProviderId;
-    private final String nickname;
-    private final String profileImage;
 }

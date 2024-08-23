@@ -21,7 +21,6 @@ public class JwtUtil {
         );
     }
 
-    //
     public String getLoginId(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)
@@ -29,24 +28,6 @@ public class JwtUtil {
                 .parseSignedClaims(token)
                 .getPayload()
                 .get("loginId", String.class);
-    }
-
-    public String getNickname(String token) {
-        return Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .get("nickname", String.class);
-    }
-
-    public String getProfileImage(String token) {
-        return Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .get("profileImage", String.class);
     }
 
     public boolean isExpired(String token) {
@@ -59,16 +40,9 @@ public class JwtUtil {
                 .before(new Date());
     }
 
-    public String createJwt(
-            String loginId,
-            String nickname,
-            String profileImage,
-            Long expiredMs
-    ) {
+    public String createJwt(String loginId, Long expiredMs) {
         return Jwts.builder()
                 .claim("loginId", loginId)
-                .claim("nickname", nickname)
-                .claim("profileImage", profileImage)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
