@@ -12,6 +12,14 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
+    public static final Long ACCESS_JWT_EXPIRATION_TIME = 10 * 60 * 1000L; // 10 minutes
+    public static final Long REFRESH_JWT_EXPIRATION_TIME = 24 * 60 * 60 * 1000L; // 24 hours
+    public static final String CLAIM_TYPE_ACCESS = "access";
+    public static final String CLAIM_TYPE_REFRESH = "refresh";
+
+    private static final String CLAIM_TYPE = "type";
+    private static final String CLAIM_LOGIN_ID = "loginId";
+
     private final SecretKey secretKey;
 
     public JwtUtil(@Value("${spring.jwt.secret}") String secret) {
@@ -21,13 +29,22 @@ public class JwtUtil {
         );
     }
 
+    public String getType(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get(CLAIM_TYPE, String.class);
+    }
+
     public String getLoginId(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
-                .get("loginId", String.class);
+                .get(CLAIM_LOGIN_ID, String.class);
     }
 
     public boolean isExpired(String token) {
@@ -40,9 +57,10 @@ public class JwtUtil {
                 .before(new Date());
     }
 
-    public String createJwt(String loginId, Long expiredMs) {
+    public String createJwt(String type, String loginId, Long expiredMs) {
         return Jwts.builder()
-                .claim("loginId", loginId)
+                .claim(CLAIM_TYPE, type)
+                .claim(CLAIM_LOGIN_ID, loginId)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
