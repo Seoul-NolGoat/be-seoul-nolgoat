@@ -1,5 +1,6 @@
 package wad.seoul_nolgoat.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import wad.seoul_nolgoat.service.auth.AuthService;
 import wad.seoul_nolgoat.service.auth.dto.OAuth2UserDto;
 import wad.seoul_nolgoat.service.auth.dto.OAuth2UserImpl;
 
@@ -18,31 +20,23 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String BEARER_PREFIX = "Bearer ";
-    private static final String TOKEN_INVALID_MESSAGE = "token is null or invalid";
-    private static final String TOKEN_EXPIRED_MESSAGE = "token has expired";
-
-    private final JwtUtil jwtUtil;
+    private final AuthService authService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorization = request.getHeader(AUTHORIZATION_HEADER);
-        if (authorization == null || !authorization.startsWith(BEARER_PREFIX)) {
-            log.info(TOKEN_INVALID_MESSAGE);
+        String authorization = request.getHeader(AuthService.AUTHORIZATION_HEADER_TYPE);
+        if (authService.isInvalidAuthorization(authorization)) {
             filterChain.doFilter(request, response); // 다음 필터로 전달
             return;
         }
 
-        String token = authorization.split(" ")[1];
-        if (jwtUtil.isExpired(token)) {
-            log.info(TOKEN_EXPIRED_MESSAGE);
-            filterChain.doFilter(request, response);
-            return;
+        String accessToken = authorization.split(" ")[1];
+        if (authService.isExpiredToken(accessToken)) {
+            throw new ExpiredJwtException(null, null, "jwt has expired"); // 정확한 사용법인지 모르겠음 => 커스텀 예외를 사용할 예정
         }
 
         OAuth2UserImpl oAuth2User = new OAuth2UserImpl(
-                new OAuth2UserDto(jwtUtil.getLoginId(token))
+                new OAuth2UserDto(authService.getLoginIdFromToken(accessToken))
         );
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(
