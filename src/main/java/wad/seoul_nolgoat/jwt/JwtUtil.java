@@ -12,8 +12,8 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    public static final Long ACCESS_JWT_EXPIRATION_TIME = 10 * 60 * 1000L; // 10 minutes
-    public static final Long REFRESH_JWT_EXPIRATION_TIME = 24 * 60 * 60 * 1000L; // 24 hours
+    public static final Long ACCESS_TOKEN_EXPIRATION_TIME = 10 * 60 * 1000L; // 10 minutes
+    public static final Long REFRESH_TOKEN_EXPIRATION_TIME = 24 * 60 * 60 * 1000L; // 24 hours
     public static final String CLAIM_TYPE_ACCESS = "access";
     public static final String CLAIM_TYPE_REFRESH = "refresh";
 
