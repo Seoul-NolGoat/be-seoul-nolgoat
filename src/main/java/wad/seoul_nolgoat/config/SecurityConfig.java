@@ -9,8 +9,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import wad.seoul_nolgoat.jwt.JwtFilter;
-import wad.seoul_nolgoat.jwt.JwtUtil;
+import wad.seoul_nolgoat.service.auth.AuthService;
+import wad.seoul_nolgoat.service.auth.CustomLogoutFilter;
 import wad.seoul_nolgoat.service.auth.CustomOAuth2UserService;
 import wad.seoul_nolgoat.service.auth.CustomSuccessHandler;
 
@@ -20,7 +22,7 @@ public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
-    private final JwtUtil jwtUtil;
+    private final AuthService authService;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -42,7 +44,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/reviews/**", "/api/search/**").authenticated()
                         .anyRequest().permitAll()
                 )
-                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(authService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new CustomLogoutFilter(authService), LogoutFilter.class)
                 .sessionManagement(s -> s
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
