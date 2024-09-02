@@ -8,6 +8,9 @@ import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.store.StoreRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
+import wad.seoul_nolgoat.exception.ErrorMessages;
+import wad.seoul_nolgoat.exception.StoreNotFoundException;
+import wad.seoul_nolgoat.exception.UserNotFoundException;
 
 @RequiredArgsConstructor
 @Service
@@ -18,8 +21,10 @@ public class BookmarkService {
     private final StoreRepository storeRepository;
 
     public Long save(Long userId, Long storeId) {
-        User user = userRepository.findById(userId).get();
-        Store store = storeRepository.findById(storeId).get();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND_MESSAGE));
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreNotFoundException(ErrorMessages.STORE_NOT_FOUND_MESSAGE));
 
         return bookmarkRepository.save(
                 new Bookmark(

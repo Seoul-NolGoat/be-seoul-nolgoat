@@ -9,6 +9,10 @@ import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.store.StoreRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
+import wad.seoul_nolgoat.exception.ErrorMessages;
+import wad.seoul_nolgoat.exception.ReviewNotFoundException;
+import wad.seoul_nolgoat.exception.StoreNotFoundException;
+import wad.seoul_nolgoat.exception.UserNotFoundException;
 import wad.seoul_nolgoat.util.mapper.ReviewMapper;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewUpdateDto;
@@ -28,8 +32,10 @@ public class ReviewService {
             Long userId,
             Long storeId,
             ReviewSaveDto reviewSaveDto) {
-        User user = userRepository.findById(userId).get();
-        Store store = storeRepository.findById(storeId).get();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND_MESSAGE));
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreNotFoundException(ErrorMessages.STORE_NOT_FOUND_MESSAGE));
 
         return reviewRepository.save(
                 ReviewMapper.toEntity(
@@ -50,12 +56,14 @@ public class ReviewService {
 
     @Transactional
     public void update(Long reviewId, ReviewUpdateDto reviewUpdateDto) {
-        Review review = reviewRepository.findById(reviewId).get();
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException(ErrorMessages.REVIEW_NOT_FOUND_MESSAGE));
         review.update(reviewUpdateDto.getGrade(), reviewUpdateDto.getContent());
     }
 
     public void deleteById(Long reviewId) {
-        Review review = reviewRepository.findById(reviewId).get();
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException(ErrorMessages.REVIEW_NOT_FOUND_MESSAGE));
         review.delete();
         reviewRepository.deleteById(reviewId);
     }

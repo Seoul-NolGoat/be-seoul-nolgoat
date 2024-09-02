@@ -10,6 +10,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
+import wad.seoul_nolgoat.exception.ErrorMessages;
+import wad.seoul_nolgoat.exception.UserNotFoundException;
 import wad.seoul_nolgoat.service.auth.dto.*;
 
 @Slf4j
@@ -58,7 +60,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             OAuth2UserDto oAuth2UserDto = new OAuth2UserDto(uniqueProviderId);
             return new OAuth2UserImpl(oAuth2UserDto);
         }
-        User user = userRepository.findByLoginId(uniqueProviderId).get();
+        User user = userRepository.findByLoginId(uniqueProviderId)
+                .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND_MESSAGE));
         user.update(
                 null,
                 nickname,
