@@ -4,17 +4,15 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.user.UserService;
+import wad.seoul_nolgoat.util.ValidationUtil;
 import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
 import wad.seoul_nolgoat.web.user.dto.request.UserUpdateDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserDetailsDto;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
@@ -30,18 +28,9 @@ public class UserController {
             UriComponentsBuilder uriComponentsBuilder
     ) {
         if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            bindingResult.getAllErrors()
-                    .forEach(error ->
-                            errors.put(
-                                    ((FieldError) error).getField(),
-                                    error.getDefaultMessage()
-                            )
-                    );
-
             return ResponseEntity
                     .badRequest()
-                    .body(errors);
+                    .body(ValidationUtil.extractErrors(bindingResult));
         }
         Long userId = userService.save(userSaveDto);
         URI location = uriComponentsBuilder.path("/api/users/{userId}")
@@ -66,18 +55,9 @@ public class UserController {
             BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            bindingResult.getAllErrors()
-                    .forEach(error ->
-                            errors.put(
-                                    ((FieldError) error).getField(),
-                                    error.getDefaultMessage()
-                            )
-                    );
-            
             return ResponseEntity
                     .badRequest()
-                    .body(errors);
+                    .body(ValidationUtil.extractErrors(bindingResult));
         }
         userService.update(userId, userUpdateDto);
 
