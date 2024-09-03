@@ -1,10 +1,13 @@
 package wad.seoul_nolgoat.web.review;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.review.ReviewService;
+import wad.seoul_nolgoat.util.ValidationUtil;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewUpdateDto;
 import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
@@ -20,11 +23,17 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping("/{userId}/{storeId}")
-    public ResponseEntity<Void> createReview(
+    public ResponseEntity<?> createReview(
             @PathVariable Long userId,
             @PathVariable Long storeId,
-            @RequestBody ReviewSaveDto reviewSaveDto,
+            @Valid @RequestBody ReviewSaveDto reviewSaveDto,
+            BindingResult bindingResult,
             UriComponentsBuilder uriComponentsBuilder) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(ValidationUtil.extractErrors(bindingResult));
+        }
         Long reviewId = reviewService.save(
                 userId,
                 storeId,
@@ -46,7 +55,15 @@ public class ReviewController {
     }
 
     @PutMapping("/{reviewId}")
-    public ResponseEntity<Void> update(@PathVariable Long reviewId, @RequestBody ReviewUpdateDto reviewUpdateDto) {
+    public ResponseEntity<?> update(
+            @PathVariable Long reviewId,
+            @Valid @RequestBody ReviewUpdateDto reviewUpdateDto,
+            BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(ValidationUtil.extractErrors(bindingResult));
+        }
         reviewService.update(reviewId, reviewUpdateDto);
 
         return ResponseEntity
