@@ -58,7 +58,11 @@ public class ReviewService {
     public void update(Long reviewId, ReviewUpdateDto reviewUpdateDto) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException(ErrorMessages.REVIEW_NOT_FOUND_MESSAGE));
-        review.update(reviewUpdateDto.getGrade(), reviewUpdateDto.getContent());
+        review.update(
+                reviewUpdateDto.getGrade(),
+                reviewUpdateDto.getContent(),
+                reviewUpdateDto.getImageUrl()
+        );
     }
 
     public void deleteById(Long reviewId) {
