@@ -17,8 +17,9 @@ public class Review extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double grade;
+    private int grade;
     private String content;
+    private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -29,20 +30,27 @@ public class Review extends BaseTimeEntity {
     private Store store;
 
     public Review(
-            double grade,
+            int grade,
             String content,
+            String imageUrl,
             User user,
             Store store) {
         this.grade = grade;
         this.content = content;
+        this.imageUrl = imageUrl;
         this.user = user;
         this.store = store;
         store.getReviews().add(this);
     }
 
-    public void update(double grade, String content) {
+    public void update(
+            int grade,
+            String content,
+            String imageUrl
+    ) {
         this.grade = grade;
         this.content = content;
+        this.imageUrl = imageUrl;
     }
 
     public void delete() {
