@@ -1,7 +1,10 @@
 package wad.seoul_nolgoat.web.user;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.user.UserService;
@@ -10,6 +13,8 @@ import wad.seoul_nolgoat.web.user.dto.request.UserUpdateDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserDetailsDto;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
@@ -19,7 +24,25 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<Void> createUser(@RequestBody UserSaveDto userSaveDto, UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<?> createUser(
+            @Valid @RequestBody UserSaveDto userSaveDto,
+            BindingResult bindingResult,
+            UriComponentsBuilder uriComponentsBuilder
+    ) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getAllErrors()
+                    .forEach(error ->
+                            errors.put(
+                                    ((FieldError) error).getField(),
+                                    error.getDefaultMessage()
+                            )
+                    );
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(errors);
+        }
         Long userId = userService.save(userSaveDto);
         URI location = uriComponentsBuilder.path("/api/users/{userId}")
                 .buildAndExpand(userId)
@@ -37,7 +60,25 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<Void> update(@PathVariable Long userId, @RequestBody UserUpdateDto userUpdateDto) {
+    public ResponseEntity<?> update(
+            @PathVariable Long userId,
+            @Valid @RequestBody UserUpdateDto userUpdateDto,
+            BindingResult bindingResult
+    ) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getAllErrors()
+                    .forEach(error ->
+                            errors.put(
+                                    ((FieldError) error).getField(),
+                                    error.getDefaultMessage()
+                            )
+                    );
+            
+            return ResponseEntity
+                    .badRequest()
+                    .body(errors);
+        }
         userService.update(userId, userUpdateDto);
 
         return ResponseEntity
