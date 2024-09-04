@@ -9,6 +9,7 @@ import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.store.StoreRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
+import wad.seoul_nolgoat.service.s3.S3Service;
 import wad.seoul_nolgoat.service.store.StoreService;
 import wad.seoul_nolgoat.util.mapper.ReviewMapper;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
@@ -26,6 +27,7 @@ public class ReviewService {
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
     private final StoreService storeService;
+    private final S3Service s3Service;
 
     public Long save(
             Long userId,
@@ -68,6 +70,14 @@ public class ReviewService {
 
     public void deleteById(Long reviewId) {
         Review review = reviewRepository.findById(reviewId).get();
+
+        // accommodation averageGrade 업데이트
+        storeService.updateAverageGradeOnReviewDelete(review.getStore().getId(), review.getGrade());
+        // s3 이미지 파일 삭제
+        if (review.hasImageUrl()) {
+            s3Service.deleteFile(review.getImageUrl());
+        }
+
         review.delete();
         reviewRepository.deleteById(reviewId);
     }
