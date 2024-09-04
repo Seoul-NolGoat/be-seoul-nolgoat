@@ -19,6 +19,7 @@ public class Review extends BaseTimeEntity {
 
     private double grade;
     private String content;
+    private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -40,6 +41,20 @@ public class Review extends BaseTimeEntity {
         store.getReviews().add(this);
     }
 
+    public Review(
+            int grade,
+            String content,
+            String imageUrl,
+            User user,
+            Store store) {
+        this.grade = grade;
+        this.content = content;
+        this.imageUrl = imageUrl;
+        this.user = user;
+        this.store = store;
+        store.getReviews().add(this);
+    }
+
     public void update(double grade, String content) {
         this.grade = grade;
         this.content = content;
@@ -47,5 +62,9 @@ public class Review extends BaseTimeEntity {
 
     public void delete() {
         store.getReviews().remove(this);
+    }
+
+    public boolean hasImageUrl() {
+        return this.imageUrl != null && !this.imageUrl.isEmpty();
     }
 }
