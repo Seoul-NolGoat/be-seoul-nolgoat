@@ -43,4 +43,15 @@ public class StoreService {
         Store store = storeRepository.findById(storeId).get();
         store.delete();
     }
+
+    // Review 추가시 Accommodation averageGrade 업데이트
+    @Transactional
+    public void updateAverageGradeOnReviewAdd(Long storeId, double addedGrade) {
+        Store store = storeRepository.findById(storeId).get();
+        double previousAverageGrade = store.getNolgoatAverageGrade();
+        int reviewCount = store.getReviews().size();
+
+        double updatedAverageGrade = (previousAverageGrade * reviewCount + addedGrade) / (reviewCount + 1);
+        storeRepository.updateNolgoatAverageGrade(storeId, updatedAverageGrade);
+    }
 }
