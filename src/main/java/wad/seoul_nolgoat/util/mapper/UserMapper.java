@@ -30,6 +30,7 @@ public class UserMapper {
 
     public static UserProfileDto toUserProfileDto(User user) {
         return new UserProfileDto(
+                user.getId(),
                 user.getLoginId(),
                 user.getNickname(),
                 user.getProfileImage()
