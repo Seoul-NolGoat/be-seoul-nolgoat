@@ -42,7 +42,7 @@ public class Review extends BaseTimeEntity {
     }
 
     public Review(
-            int grade,
+            double grade,
             String content,
             String imageUrl,
             User user,

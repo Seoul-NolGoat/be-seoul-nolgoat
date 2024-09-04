@@ -7,12 +7,25 @@ import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
 import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForStoreDto;
 import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
 
+import java.util.Optional;
+
 public class ReviewMapper {
 
     public static Review toEntity(
             User user,
             Store store,
+            Optional<String> optionalImageUrl,
             ReviewSaveDto reviewSaveDto) {
+        if (optionalImageUrl.isPresent()) {
+            return new Review(
+                    reviewSaveDto.getGrade(),
+                    reviewSaveDto.getContent(),
+                    optionalImageUrl.get(),
+                    user,
+                    store
+            );
+        }
+
         return new Review(
                 reviewSaveDto.getGrade(),
                 reviewSaveDto.getContent(),
