@@ -6,12 +6,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.review.ReviewService;
-import wad.seoul_nolgoat.service.s3.S3Service;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewUpdateDto;
 import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +20,6 @@ import java.util.Optional;
 public class ReviewController {
 
     private final ReviewService reviewService;
-    private final S3Service s3Service;
 
     @PostMapping("/{userId}/{storeId}")
     public ResponseEntity<Void> createReview(
@@ -31,19 +28,10 @@ public class ReviewController {
             @RequestPart(value = "file", required = false) MultipartFile file,
             @RequestPart("review") ReviewSaveDto reviewSaveDto,
             UriComponentsBuilder uriComponentsBuilder) {
-        Optional<String> optionalImageUrl = Optional.empty();
-        if (file != null && !file.isEmpty()) {
-            try {
-                optionalImageUrl = Optional.of(s3Service.saveFile(file));
-            } catch (IOException e) {
-                throw new RuntimeException();
-            }
-        }
-
         Long reviewId = reviewService.save(
                 userId,
                 storeId,
-                optionalImageUrl,
+                Optional.ofNullable(file),
                 reviewSaveDto
         );
         URI location = uriComponentsBuilder.path("/api/reviews/{reviewId}")
