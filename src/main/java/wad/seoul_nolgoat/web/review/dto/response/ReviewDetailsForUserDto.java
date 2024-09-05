@@ -9,6 +9,7 @@ public class ReviewDetailsForUserDto {
 
     private final double grade;
     private final String content;
+    private final String imageUrl;
     private final Long storeId;
     private final String storeName;
 }
