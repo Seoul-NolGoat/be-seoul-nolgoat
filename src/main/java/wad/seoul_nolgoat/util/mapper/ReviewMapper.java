@@ -17,7 +17,8 @@ public class ReviewMapper {
             User user,
             Store store,
             Optional<String> optionalImageUrl,
-            ReviewSaveDto reviewSaveDto) {
+            ReviewSaveDto reviewSaveDto
+    ) {
         if (optionalImageUrl.isPresent()) {
             return new Review(
                     reviewSaveDto.getGrade(),

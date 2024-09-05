@@ -35,7 +35,8 @@ public class ReviewService {
             Long userId,
             Long storeId,
             Optional<MultipartFile> optionalMultipartFile,
-            ReviewSaveDto reviewSaveDto) {
+            ReviewSaveDto reviewSaveDto
+    ) {
         if (reviewRepository.existsByUserIdAndStoreId(userId, storeId)) {
             throw new RuntimeException("하나의 상점에 한사람 당 한개의 리뷰만 작성 가능");
         }

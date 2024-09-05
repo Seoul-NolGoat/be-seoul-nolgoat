@@ -33,7 +33,8 @@ public class Review extends BaseTimeEntity {
             int grade,
             String content,
             User user,
-            Store store) {
+            Store store
+    ) {
         this.grade = grade;
         this.content = content;
         this.user = user;
@@ -46,7 +47,8 @@ public class Review extends BaseTimeEntity {
             String content,
             String imageUrl,
             User user,
-            Store store) {
+            Store store
+    ) {
         this.grade = grade;
         this.content = content;
         this.imageUrl = imageUrl;
