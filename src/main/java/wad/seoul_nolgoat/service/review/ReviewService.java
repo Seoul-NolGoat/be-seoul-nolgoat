@@ -3,6 +3,7 @@ package wad.seoul_nolgoat.service.review;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import wad.seoul_nolgoat.domain.review.Review;
 import wad.seoul_nolgoat.domain.review.ReviewRepository;
 import wad.seoul_nolgoat.domain.store.Store;
@@ -16,6 +17,7 @@ import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewUpdateDto;
 import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,11 +34,20 @@ public class ReviewService {
     public Long save(
             Long userId,
             Long storeId,
-            Optional<String> optionalImageUrl,
+            Optional<MultipartFile> optionalMultipartFile,
             ReviewSaveDto reviewSaveDto) {
-//        if (reviewRepository.existsByUserIdAndStoreId(userId, storeId)) {
-//            throw new RuntimeException("하나의 상점에 한사람 당 한개의 리뷰만 작성 가능");
-//        }
+        if (reviewRepository.existsByUserIdAndStoreId(userId, storeId)) {
+            throw new RuntimeException("하나의 상점에 한사람 당 한개의 리뷰만 작성 가능");
+        }
+
+        Optional<String> optionalImageUrl = Optional.empty();
+        if (optionalMultipartFile.isPresent()) {
+            try {
+                optionalImageUrl = Optional.of(s3Service.saveFile(optionalMultipartFile.get()));
+            } catch (IOException e) {
+                throw new RuntimeException();
+            }
+        }
 
         // accommodation averageGrade 업데이트
         storeService.updateAverageGradeOnReviewAdd(storeId, reviewSaveDto.getGrade());
