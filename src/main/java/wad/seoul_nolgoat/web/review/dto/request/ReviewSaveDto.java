@@ -7,6 +7,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReviewSaveDto {
 
-    private final double grade;
+    private final int grade;
     private final String content;
 }

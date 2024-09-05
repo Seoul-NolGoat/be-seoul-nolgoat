@@ -17,7 +17,7 @@ public class Review extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double grade;
+    private int grade;
     private String content;
     private String imageUrl;
 
@@ -30,7 +30,7 @@ public class Review extends BaseTimeEntity {
     private Store store;
 
     public Review(
-            double grade,
+            int grade,
             String content,
             User user,
             Store store) {
@@ -42,7 +42,7 @@ public class Review extends BaseTimeEntity {
     }
 
     public Review(
-            double grade,
+            int grade,
             String content,
             String imageUrl,
             User user,
@@ -55,7 +55,7 @@ public class Review extends BaseTimeEntity {
         store.getReviews().add(this);
     }
 
-    public void update(double grade, String content) {
+    public void update(int grade, String content) {
         this.grade = grade;
         this.content = content;
     }
