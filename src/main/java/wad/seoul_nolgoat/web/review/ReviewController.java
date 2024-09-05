@@ -27,7 +27,8 @@ public class ReviewController {
             @PathVariable Long storeId,
             @RequestPart(value = "file", required = false) MultipartFile file,
             @RequestPart("review") ReviewSaveDto reviewSaveDto,
-            UriComponentsBuilder uriComponentsBuilder) {
+            UriComponentsBuilder uriComponentsBuilder
+    ) {
         Long reviewId = reviewService.save(
                 userId,
                 storeId,
