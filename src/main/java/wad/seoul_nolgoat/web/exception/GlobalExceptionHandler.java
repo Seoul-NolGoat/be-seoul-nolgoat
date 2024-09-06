@@ -44,4 +44,39 @@ public class GlobalExceptionHandler {
                 .badRequest()
                 .body(new ErrorResult(e.getMessage()));
     }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResult> handleTokenExpiredException(TokenExpiredException e) {
+        return ResponseEntity
+                .badRequest()
+                .body(new ErrorResult(e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResult> handleUnsupportedProviderException(UnsupportedProviderException e) {
+        return ResponseEntity
+                .badRequest()
+                .body(new ErrorResult(e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResult> handleAddressConversionException(AddressConversionException e) {
+        return ResponseEntity
+                .badRequest()
+                .body(new ErrorResult(e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResult> handleWalkingDistanceCalculationException(WalkingDistanceCalculationException e) {
+        return ResponseEntity
+                .badRequest()
+                .body(new ErrorResult(e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResult> handleTMapApiException(TMapApiException e) {
+        return ResponseEntity
+                .badRequest()
+                .body(new ErrorResult(e.getMessage()));
+    }
 }
