@@ -1,5 +1,6 @@
 package wad.seoul_nolgoat.web.exception;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -12,21 +13,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleUserNotFoundException(UserNotFoundException e) {
         return ResponseEntity
-                .badRequest()
+                .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResult(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleStoreNotFoundException(StoreNotFoundException e) {
         return ResponseEntity
-                .badRequest()
+                .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResult(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleReviewNotFoundException(ReviewNotFoundException e) {
         return ResponseEntity
-                .badRequest()
+                .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResult(e.getMessage()));
     }
 
