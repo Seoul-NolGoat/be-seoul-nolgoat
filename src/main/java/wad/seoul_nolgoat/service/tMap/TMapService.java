@@ -10,6 +10,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import wad.seoul_nolgoat.exception.ErrorMessages;
+import wad.seoul_nolgoat.exception.TMapApiException;
+import wad.seoul_nolgoat.exception.WalkingDistanceCalculationException;
 import wad.seoul_nolgoat.service.tMap.dto.WalkRouteInfoDto;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
@@ -123,10 +126,9 @@ public class TMapService {
                     return new WalkRouteInfoDto(properties.get(TOTAL_DISTANCE_PATH).asInt(), properties.get(TOTAL_TIME_PATH).asInt());
                 }
             }
-
-            throw new RuntimeException("totalDistance not found in the response");
+            throw new WalkingDistanceCalculationException(ErrorMessages.WALKING_DISTANCE_CALCULATION_FAILED_MESSAGE);
         } catch (Exception e) {
-            throw new RuntimeException("TMap API error", e);
+            throw new TMapApiException(ErrorMessages.TMAP_API_CALL_FAILED_MESSAGE);
         }
     }
 

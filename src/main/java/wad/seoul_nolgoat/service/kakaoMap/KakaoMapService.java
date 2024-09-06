@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import wad.seoul_nolgoat.exception.AddressConversionException;
+import wad.seoul_nolgoat.exception.ErrorMessages;
 import wad.seoul_nolgoat.service.kakaoMap.dto.StoreAdditionalInfoDto;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
@@ -183,7 +185,7 @@ public class KakaoMapService {
 
             return Optional.empty();
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new AddressConversionException(ErrorMessages.ADDRESS_CONVERSION_FAILED_MESSAGE);
         }
     }
 
