@@ -14,7 +14,8 @@ public class GradeSortCombinationDto {
     public GradeSortCombinationDto(
             StoreForGradeSortDto firstStore,
             StoreForGradeSortDto secondStore,
-            StoreForGradeSortDto thirdStore) {
+            StoreForGradeSortDto thirdStore
+    ) {
         this.firstStore = firstStore;
         this.secondStore = secondStore;
         this.thirdStore = thirdStore;

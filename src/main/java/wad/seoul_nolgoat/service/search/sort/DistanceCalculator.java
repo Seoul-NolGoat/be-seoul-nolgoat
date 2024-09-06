@@ -15,7 +15,8 @@ public class DistanceCalculator {
             StoreForDistanceSortDto firstStore,
             StoreForDistanceSortDto secondStore,
             StoreForDistanceSortDto thirdStore,
-            CoordinateDto startCoordinate) {
+            CoordinateDto startCoordinate
+    ) {
         CoordinateDto firstCoordinate = firstStore.getCoordinate();
         CoordinateDto secondCoordinate = secondStore.getCoordinate();
         CoordinateDto thirdCoordinate = thirdStore.getCoordinate();
@@ -28,7 +29,8 @@ public class DistanceCalculator {
     public double calculateTotalDistance(
             StoreForDistanceSortDto firstStore,
             StoreForDistanceSortDto secondStore,
-            CoordinateDto startCoordinate) {
+            CoordinateDto startCoordinate
+    ) {
         CoordinateDto firstCoordinate = firstStore.getCoordinate();
         CoordinateDto secondCoordinate = secondStore.getCoordinate();
 

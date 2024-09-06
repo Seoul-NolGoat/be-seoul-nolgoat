@@ -12,7 +12,8 @@ public class ReviewMapper {
     public static Review toEntity(
             User user,
             Store store,
-            ReviewSaveDto reviewSaveDto) {
+            ReviewSaveDto reviewSaveDto
+    ) {
         return new Review(
                 reviewSaveDto.getGrade(),
                 reviewSaveDto.getContent(),

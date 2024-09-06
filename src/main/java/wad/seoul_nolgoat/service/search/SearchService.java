@@ -334,7 +334,8 @@ public class SearchService {
     private List<CombinationDto> fetchWalkRouteInfoForCombinationDto(
             List<CombinationDto> combinationDtos,
             int totalRounds,
-            CoordinateDto startCoordinate) {
+            CoordinateDto startCoordinate
+    ) {
         return combinationDtos.stream()
                 .map(combination -> {
                     if (totalRounds == THREE_ROUND) {

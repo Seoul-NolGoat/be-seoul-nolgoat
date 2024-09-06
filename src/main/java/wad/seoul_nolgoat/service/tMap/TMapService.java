@@ -62,7 +62,8 @@ public class TMapService {
     public WalkRouteInfoDto fetchWalkRouteInfo(
             CoordinateDto startCoordinate,
             CoordinateDto waypointCoordinate1,
-            CoordinateDto endCoordinate) {
+            CoordinateDto endCoordinate
+    ) {
         List<String> passList = new ArrayList<>();
         passList.add(convertCoordinateToString(waypointCoordinate1));
 
@@ -77,7 +78,8 @@ public class TMapService {
             CoordinateDto startCoordinate,
             CoordinateDto waypointCoordinate1,
             CoordinateDto waypointCoordinate2,
-            CoordinateDto endCoordinate) {
+            CoordinateDto endCoordinate
+    ) {
         List<String> passList = new ArrayList<>();
         passList.add(convertCoordinateToString(waypointCoordinate1));
         passList.add(convertCoordinateToString(waypointCoordinate2));
@@ -92,7 +94,8 @@ public class TMapService {
     public WalkRouteInfoDto fetchWalkRouteInfo(
             CoordinateDto startCoordinate,
             CoordinateDto endCoordinate,
-            List<String> passList) {
+            List<String> passList
+    ) {
         try {
             Map<String, String> requestBodyMap = new HashMap<>();
             requestBodyMap.put("startX", String.valueOf(startCoordinate.getLongitude()));
@@ -136,7 +139,8 @@ public class TMapService {
             CoordinateDto startCoordinate,
             CoordinateDto pass1,
             CoordinateDto pass2,
-            CoordinateDto endCoordinate) {
+            CoordinateDto endCoordinate
+    ) {
         if (isSameLocation(startCoordinate, pass1) && isSameLocation(pass1, pass2) && isSameLocation(pass2, endCoordinate)) {
             return new WalkRouteInfoDto(0, 0);
         }
@@ -171,7 +175,8 @@ public class TMapService {
     public WalkRouteInfoDto fetchFullPathWalkRouteInfo(
             CoordinateDto startCoordinate,
             CoordinateDto pass,
-            CoordinateDto endCoordinate) {
+            CoordinateDto endCoordinate
+    ) {
         if (isSameLocation(startCoordinate, pass) && isSameLocation(pass, endCoordinate)) {
             return new WalkRouteInfoDto(0, 0);
         }
@@ -187,7 +192,8 @@ public class TMapService {
 
     public WalkRouteInfoDto fetchFullPathWalkRouteInfo(
             CoordinateDto startCoordinate,
-            CoordinateDto endCoordinate) {
+            CoordinateDto endCoordinate
+    ) {
         if (isSameLocation(startCoordinate, endCoordinate)) {
             return new WalkRouteInfoDto(0, 0);
         }

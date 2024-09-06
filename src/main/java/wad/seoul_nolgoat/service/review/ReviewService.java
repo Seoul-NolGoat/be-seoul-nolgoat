@@ -31,7 +31,8 @@ public class ReviewService {
     public Long save(
             Long userId,
             Long storeId,
-            ReviewSaveDto reviewSaveDto) {
+            ReviewSaveDto reviewSaveDto
+    ) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND_MESSAGE));
         Store store = storeRepository.findById(storeId)

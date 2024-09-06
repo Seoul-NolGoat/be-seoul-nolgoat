@@ -100,7 +100,8 @@ public class KakaoMapService {
     public Optional<StoreAdditionalInfoDto> fetchStoreAdditionalInfo(
             String name,
             Double longitude,
-            Double latitude) {
+            Double latitude
+    ) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(AUTHORIZATION, KAKAO_AUTHORIZATION_START + apiKey);
 

@@ -28,7 +28,8 @@ public class SearchController {
 
     @GetMapping("/possible/categories")
     public ResponseEntity<List<String>> searchPossibleCategories(
-            @ModelAttribute PossibleCategoriesConditionDto possibleCategoriesConditionDto) {
+            @ModelAttribute PossibleCategoriesConditionDto possibleCategoriesConditionDto
+    ) {
         return ResponseEntity
                 .ok(searchService.searchPossibleCategories(possibleCategoriesConditionDto));
     }

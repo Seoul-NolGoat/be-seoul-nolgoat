@@ -18,7 +18,8 @@ public class FilterService {
     public List<StoreForDistanceSortDto> filterByRadiusRangeAndCategoryForDistanceSort(
             CoordinateDto startCoordinate,
             double radiusRange,
-            String category) {
+            String category
+    ) {
         return storeRepository.findByRadiusRangeAndCategoryForDistanceSort(
                 startCoordinate,
                 radiusRange,
@@ -29,7 +30,8 @@ public class FilterService {
     public List<StoreForGradeSortDto> filterByRadiusRangeAndCategoryForKakaoGradeSort(
             CoordinateDto startCoordinate,
             double radiusRange,
-            String category) {
+            String category
+    ) {
         return storeRepository.findByRadiusRangeAndCategoryForKakaoGradeSort(
                 startCoordinate,
                 radiusRange,
@@ -40,7 +42,8 @@ public class FilterService {
     public List<StoreForGradeSortDto> filterByRadiusRangeAndCategoryForNolgoatGradeSort(
             CoordinateDto startCoordinate,
             double radiusRange,
-            String category) {
+            String category
+    ) {
         return storeRepository.findByRadiusRangeAndCategoryForNolgoatGradeSort(
                 startCoordinate,
                 radiusRange,

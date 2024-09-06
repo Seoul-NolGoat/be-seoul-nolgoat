@@ -28,7 +28,8 @@ public class ReviewController {
             @PathVariable Long storeId,
             @Valid @RequestBody ReviewSaveDto reviewSaveDto,
             BindingResult bindingResult,
-            UriComponentsBuilder uriComponentsBuilder) {
+            UriComponentsBuilder uriComponentsBuilder
+    ) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity
                     .badRequest()
@@ -58,7 +59,8 @@ public class ReviewController {
     public ResponseEntity<?> update(
             @PathVariable Long reviewId,
             @Valid @RequestBody ReviewUpdateDto reviewUpdateDto,
-            BindingResult bindingResult) {
+            BindingResult bindingResult
+    ) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity
                     .badRequest()
