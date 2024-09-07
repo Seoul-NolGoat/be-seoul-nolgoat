@@ -1,6 +1,5 @@
 package wad.seoul_nolgoat.jwt;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import wad.seoul_nolgoat.exception.ErrorMessages;
+import wad.seoul_nolgoat.exception.auth.TokenExpiredException;
 import wad.seoul_nolgoat.service.auth.AuthService;
 import wad.seoul_nolgoat.service.auth.dto.OAuth2UserDto;
 import wad.seoul_nolgoat.service.auth.dto.OAuth2UserImpl;
@@ -32,7 +33,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String accessToken = authorization.split(" ")[1];
         if (authService.isExpiredToken(accessToken)) {
-            throw new ExpiredJwtException(null, null, "jwt has expired"); // 정확한 사용법인지 모르겠음 => 커스텀 예외를 사용할 예정
+            throw new TokenExpiredException(ErrorMessages.TOKEN_EXPIRED_MESSAGE);
         }
 
         OAuth2UserImpl oAuth2User = new OAuth2UserImpl(

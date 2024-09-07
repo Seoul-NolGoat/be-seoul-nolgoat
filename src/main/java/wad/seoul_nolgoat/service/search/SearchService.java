@@ -3,6 +3,9 @@ package wad.seoul_nolgoat.service.search;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.domain.store.StoreCategory;
+import wad.seoul_nolgoat.exception.ErrorMessages;
+import wad.seoul_nolgoat.exception.search.InvalidRoundException;
+import wad.seoul_nolgoat.exception.search.InvalidSearchCriteriaException;
 import wad.seoul_nolgoat.service.search.dto.SortConditionDto;
 import wad.seoul_nolgoat.service.search.filter.FilterService;
 import wad.seoul_nolgoat.service.search.sort.SortService;
@@ -53,7 +56,7 @@ public class SearchService {
         if (searchConditionDto.getCriteria().equals(NOLGOAT_GRADE_CRITERIA)) {
             return getCombinationsByNolgoatGrade(searchConditionDto);
         }
-        throw new RuntimeException();
+        throw new InvalidSearchCriteriaException(ErrorMessages.INVALID_SEARCH_CRITERIA);
     }
 
     public List<String> searchPossibleCategories(PossibleCategoriesConditionDto possibleCategoriesConditionDto) {
@@ -149,7 +152,7 @@ public class SearchService {
                     Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
             );
         }
-        throw new RuntimeException();
+        throw new InvalidRoundException(ErrorMessages.INVALID_GATHERING_ROUND);
     }
 
     private List<CombinationDto> getCombinationsByKakaoGrade(SearchConditionDto searchConditionDto) {
@@ -237,7 +240,7 @@ public class SearchService {
                     searchConditionDto.getStartCoordinate()
             );
         }
-        throw new RuntimeException();
+        throw new InvalidRoundException(ErrorMessages.INVALID_GATHERING_ROUND);
     }
 
     private List<CombinationDto> getCombinationsByNolgoatGrade(SearchConditionDto searchConditionDto) {
@@ -325,13 +328,14 @@ public class SearchService {
                     searchConditionDto.getStartCoordinate()
             );
         }
-        throw new RuntimeException();
+        throw new InvalidRoundException(ErrorMessages.INVALID_GATHERING_ROUND);
     }
 
     private List<CombinationDto> fetchWalkRouteInfoForCombinationDto(
             List<CombinationDto> combinationDtos,
             int totalRounds,
-            CoordinateDto startCoordinate) {
+            CoordinateDto startCoordinate
+    ) {
         return combinationDtos.stream()
                 .map(combination -> {
                     if (totalRounds == THREE_ROUND) {
@@ -367,7 +371,7 @@ public class SearchService {
 
                         return combination;
                     }
-                    throw new RuntimeException("Invalid round number");
+                    throw new InvalidRoundException(ErrorMessages.INVALID_GATHERING_ROUND);
                 })
                 .collect(Collectors.toList());
     }

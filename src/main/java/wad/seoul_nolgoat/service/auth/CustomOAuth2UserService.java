@@ -5,11 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
+import wad.seoul_nolgoat.exception.ErrorMessages;
+import wad.seoul_nolgoat.exception.auth.UnsupportedProviderException;
+import wad.seoul_nolgoat.exception.notfound.UserNotFoundException;
 import wad.seoul_nolgoat.service.auth.dto.*;
 
 @Slf4j
@@ -19,7 +21,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     public static final String KAKAO = "kakao";
     public static final String GOOGLE = "google";
-    public static final String UNSUPPORTED_PROVIDER_ERROR = "Unsupported_provider";
     public static final String PROVIDER_ID_DELIMITER = "_";
 
     private final UserRepository userRepository;
@@ -36,7 +37,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return processOAuth2User(new GoogleResponse(oAuth2User.getAttributes()));
         }
         log.error("Unsupported OAuth2 provider: {}", registrationId);
-        throw new OAuth2AuthenticationException(new OAuth2Error(UNSUPPORTED_PROVIDER_ERROR));
+        throw new UnsupportedProviderException(ErrorMessages.UNSUPPORTED_PROVIDER_MESSAGE);
     }
 
     private OAuth2User processOAuth2User(OAuth2Response oAuth2Response) {
@@ -58,7 +59,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             OAuth2UserDto oAuth2UserDto = new OAuth2UserDto(uniqueProviderId);
             return new OAuth2UserImpl(oAuth2UserDto);
         }
-        User user = userRepository.findByLoginId(uniqueProviderId).get();
+        User user = userRepository.findByLoginId(uniqueProviderId)
+                .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND_MESSAGE));
         user.update(
                 null,
                 nickname,

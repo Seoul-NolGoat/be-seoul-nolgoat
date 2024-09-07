@@ -19,7 +19,8 @@ public class CombinationDto {
             StoreForCombinationDto firstStore,
             StoreForCombinationDto secondStore,
             StoreForCombinationDto thirdStore,
-            WalkRouteInfoDto walkRouteInfoDto) {
+            WalkRouteInfoDto walkRouteInfoDto
+    ) {
         this.firstStore = firstStore;
         this.secondStore = secondStore;
         this.thirdStore = thirdStore;
@@ -29,7 +30,8 @@ public class CombinationDto {
     public CombinationDto(
             StoreForCombinationDto firstStore,
             StoreForCombinationDto secondStore,
-            StoreForCombinationDto thirdStore) {
+            StoreForCombinationDto thirdStore
+    ) {
         this.firstStore = firstStore;
         this.secondStore = secondStore;
         this.thirdStore = thirdStore;
@@ -38,7 +40,8 @@ public class CombinationDto {
     public CombinationDto(
             StoreForCombinationDto firstStore,
             StoreForCombinationDto secondStore,
-            WalkRouteInfoDto walkRouteInfoDto) {
+            WalkRouteInfoDto walkRouteInfoDto
+    ) {
         this.firstStore = firstStore;
         this.secondStore = secondStore;
         this.walkRouteInfoDto = walkRouteInfoDto;

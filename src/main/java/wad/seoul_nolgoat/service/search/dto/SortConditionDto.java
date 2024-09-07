@@ -19,7 +19,8 @@ public class SortConditionDto<T> {
             CoordinateDto startCoordinate,
             List<T> firstFilteredStores,
             List<T> secondFilteredStores,
-            List<T> thirdFilteredStores) {
+            List<T> thirdFilteredStores
+    ) {
         this.startCoordinate = startCoordinate;
         this.firstFilteredStores = firstFilteredStores;
         this.secondFilteredStores = secondFilteredStores;
@@ -30,7 +31,8 @@ public class SortConditionDto<T> {
     public SortConditionDto(
             CoordinateDto startCoordinate,
             List<T> firstFilteredStores,
-            List<T> secondFilteredStores) {
+            List<T> secondFilteredStores
+    ) {
         this.startCoordinate = startCoordinate;
         this.firstFilteredStores = firstFilteredStores;
         this.secondFilteredStores = secondFilteredStores;

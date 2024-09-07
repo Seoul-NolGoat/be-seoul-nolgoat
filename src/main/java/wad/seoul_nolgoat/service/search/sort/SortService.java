@@ -2,6 +2,8 @@ package wad.seoul_nolgoat.service.search.sort;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import wad.seoul_nolgoat.exception.ErrorMessages;
+import wad.seoul_nolgoat.exception.search.InvalidRoundException;
 import wad.seoul_nolgoat.service.search.SearchService;
 import wad.seoul_nolgoat.service.search.dto.*;
 import wad.seoul_nolgoat.service.tMap.TMapService;
@@ -43,7 +45,8 @@ public class SortService {
     // 테스트를 위해 접근제어자를 public으로 변경
     public List<DistanceSortCombinationDto> generateAndSortDistanceCombinations(
             SortConditionDto<StoreForDistanceSortDto> sortConditionDto,
-            int totalRounds) {
+            int totalRounds
+    ) {
         if (totalRounds == SearchService.THREE_ROUND) {
             return createDistanceCombinationsForThreeRounds(
                     sortConditionDto.getFirstFilteredStores(),
@@ -71,12 +74,13 @@ public class SortService {
                     .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistance))
                     .toList();
         }
-        throw new RuntimeException();
+        throw new InvalidRoundException(ErrorMessages.INVALID_GATHERING_ROUND);
     }
 
     private List<GradeSortCombinationDto> generateGradeCombinations(
             SortConditionDto<StoreForGradeSortDto> sortConditionDto,
-            int totalRounds) {
+            int totalRounds
+    ) {
         if (totalRounds == SearchService.THREE_ROUND) {
             return createGradeCombinationsForThreeRounds(
                     sortConditionDto.getFirstFilteredStores(),
@@ -93,13 +97,14 @@ public class SortService {
         if (totalRounds == SearchService.ONE_ROUND) {
             return createGradeCombinationsForOneRound(sortConditionDto.getFirstFilteredStores());
         }
-        throw new RuntimeException();
+        throw new InvalidRoundException(ErrorMessages.INVALID_GATHERING_ROUND);
     }
 
     private List<GradeSortCombinationDto> createGradeCombinationsForThreeRounds(
             List<StoreForGradeSortDto> firstStores,
             List<StoreForGradeSortDto> secondStores,
-            List<StoreForGradeSortDto> thirdStores) {
+            List<StoreForGradeSortDto> thirdStores
+    ) {
         List<GradeSortCombinationDto> gradeCombinations = new ArrayList<>();
         for (StoreForGradeSortDto firstStore : firstStores) {
             for (StoreForGradeSortDto secondStore : secondStores) {
@@ -130,7 +135,8 @@ public class SortService {
 
     private List<GradeSortCombinationDto> createGradeCombinationsForTwoRounds(
             List<StoreForGradeSortDto> firstStores,
-            List<StoreForGradeSortDto> secondStores) {
+            List<StoreForGradeSortDto> secondStores
+    ) {
         List<GradeSortCombinationDto> gradeCombinations = new ArrayList<>();
         for (StoreForGradeSortDto firstStore : firstStores) {
             for (StoreForGradeSortDto secondStore : secondStores) {
@@ -155,7 +161,8 @@ public class SortService {
 
     private List<GradeSortCombinationDto> sortCombinationsByGrade(
             List<GradeSortCombinationDto> combinations,
-            int totalRounds) {
+            int totalRounds
+    ) {
         if (totalRounds == SearchService.THREE_ROUND) {
             combinations.sort((combination1, combination2) -> {
                 double firstRate = combination1.getFirstStore().getAverageGrade()
@@ -194,7 +201,8 @@ public class SortService {
             List<StoreForDistanceSortDto> firstStores,
             List<StoreForDistanceSortDto> secondStores,
             List<StoreForDistanceSortDto> thirdStores,
-            CoordinateDto coordinateDto) {
+            CoordinateDto coordinateDto
+    ) {
         List<DistanceSortCombinationDto> combinations = new ArrayList<>();
         for (StoreForDistanceSortDto firstStore : firstStores) {
             for (StoreForDistanceSortDto secondStore : secondStores) {
@@ -232,7 +240,8 @@ public class SortService {
     private List<DistanceSortCombinationDto> createDistanceCombinationsForTwoRounds(
             List<StoreForDistanceSortDto> firstStores,
             List<StoreForDistanceSortDto> secondStores,
-            CoordinateDto coordinateDto) {
+            CoordinateDto coordinateDto
+    ) {
         DistanceCalculator distanceCalculator = new DistanceCalculator();
         List<DistanceSortCombinationDto> combinations = new ArrayList<>();
         for (StoreForDistanceSortDto firstStore : firstStores) {
@@ -258,7 +267,8 @@ public class SortService {
 
     private List<DistanceSortCombinationDto> createDistanceCombinationsForOneRound(
             List<StoreForDistanceSortDto> firstStores,
-            CoordinateDto coordinateDto) {
+            CoordinateDto coordinateDto
+    ) {
         DistanceCalculator distanceCalculator = new DistanceCalculator();
         List<DistanceSortCombinationDto> combinations = new ArrayList<>();
         for (StoreForDistanceSortDto firstStore : firstStores) {
@@ -275,7 +285,8 @@ public class SortService {
     private List<DistanceSortCombinationDto> fetchDistancesFromTMapApi(
             CoordinateDto startCoordinate,
             List<DistanceSortCombinationDto> distanceSortCombinationDtos,
-            int totalRounds) {
+            int totalRounds
+    ) {
         List<DistanceSortCombinationDto> combinations = distanceSortCombinationDtos.parallelStream()
                 .map(combination -> {
                     if (totalRounds == SearchService.THREE_ROUND) {
@@ -317,7 +328,7 @@ public class SortService {
                                 tMapService.fetchFullPathWalkRouteInfo(startCoordinate, endCoordinate)
                         );
                     }
-                    throw new RuntimeException("Invalid round number");
+                    throw new InvalidRoundException(ErrorMessages.INVALID_GATHERING_ROUND);
                 }).toList();
 
         return combinations.stream()
@@ -328,7 +339,8 @@ public class SortService {
     private boolean hasDuplicateStores(
             StoreForDistanceSortDto firstStore,
             StoreForDistanceSortDto secondStore,
-            StoreForDistanceSortDto thirdStore) {
+            StoreForDistanceSortDto thirdStore
+    ) {
         Set<Long> storeIds = new HashSet<>();
         storeIds.add(firstStore.getId());
         storeIds.add(secondStore.getId());
@@ -348,7 +360,8 @@ public class SortService {
     private boolean hasDuplicateStores(
             StoreForGradeSortDto firstStore,
             StoreForGradeSortDto secondStore,
-            StoreForGradeSortDto thirdStore) {
+            StoreForGradeSortDto thirdStore
+    ) {
         Set<Long> storeIds = new HashSet<>();
         storeIds.add(firstStore.getId());
         storeIds.add(secondStore.getId());

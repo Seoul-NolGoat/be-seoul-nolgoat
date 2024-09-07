@@ -62,7 +62,8 @@ public class SeoulStoreService {
     public Optional<List<Store>> fetchSeoulStoreInfo(
             StoreType storeType,
             int startIdx,
-            int endIdx) {
+            int endIdx
+    ) {
         try {
             String code = storeTypeCodeMap.get(storeType);
 

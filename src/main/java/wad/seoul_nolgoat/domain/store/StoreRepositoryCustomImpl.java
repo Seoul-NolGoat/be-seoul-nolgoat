@@ -23,7 +23,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     public List<StoreForDistanceSortDto> findByRadiusRangeAndCategoryForDistanceSort(
             CoordinateDto startCoordinate,
             double radiusRange,
-            String category) {
+            String category
+    ) {
         return Collections.unmodifiableList(
                 jpaQueryFactory.select(
                                 Projections.constructor(
@@ -52,7 +53,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     public List<StoreForGradeSortDto> findByRadiusRangeAndCategoryForKakaoGradeSort(
             CoordinateDto startCoordinate,
             double radiusRange,
-            String category) {
+            String category
+    ) {
         return Collections.unmodifiableList(
                 jpaQueryFactory.select(
                                 Projections.constructor(
@@ -82,7 +84,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     public List<StoreForGradeSortDto> findByRadiusRangeAndCategoryForNolgoatGradeSort(
             CoordinateDto startCoordinate,
             double radiusRange,
-            String category) {
+            String category
+    ) {
         return Collections.unmodifiableList(
                 jpaQueryFactory.select(
                                 Projections.constructor(

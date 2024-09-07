@@ -34,7 +34,8 @@ public class User extends BaseTimeEntity {
             String nickname,
             String profileImage,
             String gender,
-            LocalDate birthDate) {
+            LocalDate birthDate
+    ) {
         this.loginId = loginId;
         this.password = password;
         this.nickname = nickname;

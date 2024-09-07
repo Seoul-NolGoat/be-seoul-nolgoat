@@ -8,6 +8,8 @@ import wad.seoul_nolgoat.domain.refresh.RefreshToken;
 import wad.seoul_nolgoat.domain.refresh.RefreshTokenRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
+import wad.seoul_nolgoat.exception.ErrorMessages;
+import wad.seoul_nolgoat.exception.notfound.UserNotFoundException;
 import wad.seoul_nolgoat.jwt.JwtUtil;
 import wad.seoul_nolgoat.util.mapper.UserMapper;
 import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;
@@ -35,7 +37,8 @@ public class AuthService {
 
     public UserProfileDto findLoginUserByAuthorization(String authorization) {
         String token = authorization.split(" ")[1];
-        User user = userRepository.findByLoginId(jwtUtil.getLoginId(token)).get();
+        User user = userRepository.findByLoginId(jwtUtil.getLoginId(token))
+                .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND_MESSAGE));
 
         return UserMapper.toUserProfileDto(user);
     }
@@ -80,7 +83,7 @@ public class AuthService {
         if (!isExistRefresh) {
             log.info(NON_EXISTENT_REFRESH_TOKEN_MESSAGE);
         }
-        
+
         return isExistRefresh;
     }
 

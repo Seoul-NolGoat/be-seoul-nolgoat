@@ -19,7 +19,8 @@ public class BookmarkController {
     public ResponseEntity<Void> createBookmark(
             @PathVariable Long userId,
             @PathVariable Long storeId,
-            UriComponentsBuilder uriComponentsBuilder) {
+            UriComponentsBuilder uriComponentsBuilder
+    ) {
         Long bookmarkId = bookmarkService.save(userId, storeId);
         URI location = uriComponentsBuilder.path("/api/bookmarks/{bookmarkId}")
                 .buildAndExpand(bookmarkId)

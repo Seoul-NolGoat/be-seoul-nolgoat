@@ -45,7 +45,8 @@ public class Store extends BaseTimeEntity {
             String name,
             String managementNumber,
             String lotAddress,
-            String roadAddress) {
+            String roadAddress
+    ) {
         this.storeType = storeType;
         this.name = name;
         this.managementNumber = managementNumber;

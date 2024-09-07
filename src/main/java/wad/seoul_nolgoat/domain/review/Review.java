@@ -32,11 +32,13 @@ public class Review extends BaseTimeEntity {
     public Review(
             int grade,
             String content,
+            String imageUrl,
             User user,
             Store store
     ) {
         this.grade = grade;
         this.content = content;
+        this.imageUrl = imageUrl;
         this.user = user;
         this.store = store;
         store.getReviews().add(this);
@@ -45,13 +47,11 @@ public class Review extends BaseTimeEntity {
     public Review(
             int grade,
             String content,
-            String imageUrl,
             User user,
             Store store
     ) {
         this.grade = grade;
         this.content = content;
-        this.imageUrl = imageUrl;
         this.user = user;
         this.store = store;
         store.getReviews().add(this);
