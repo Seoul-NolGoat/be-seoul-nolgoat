@@ -43,49 +43,49 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleInvalidSearchCriteriaException(InvalidSearchCriteriaException e) {
         return ResponseEntity
-                .badRequest()
+                .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResult(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleInvalidRoundException(InvalidRoundException e) {
         return ResponseEntity
-                .badRequest()
+                .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResult(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleTokenExpiredException(TokenExpiredException e) {
         return ResponseEntity
-                .badRequest()
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResult(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleUnsupportedProviderException(UnsupportedProviderException e) {
         return ResponseEntity
-                .badRequest()
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResult(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleAddressConversionException(AddressConversionException e) {
         return ResponseEntity
-                .badRequest()
+                .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResult(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleWalkingDistanceCalculationException(WalkingDistanceCalculationException e) {
         return ResponseEntity
-                .badRequest()
+                .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResult(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleTMapApiException(TMapApiException e) {
         return ResponseEntity
-                .badRequest()
+                .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResult(e.getMessage()));
     }
 }
