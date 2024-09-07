@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ErrorMessages;
-import wad.seoul_nolgoat.exception.UserNotFoundException;
+import wad.seoul_nolgoat.exception.notfound.UserNotFoundException;
 import wad.seoul_nolgoat.util.mapper.UserMapper;
 import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
 import wad.seoul_nolgoat.web.user.dto.request.UserUpdateDto;

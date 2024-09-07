@@ -1,7 +1,7 @@
 package wad.seoul_nolgoat.util.mapper;
 
 import wad.seoul_nolgoat.exception.ErrorMessages;
-import wad.seoul_nolgoat.exception.InvalidRoundException;
+import wad.seoul_nolgoat.exception.search.InvalidRoundException;
 import wad.seoul_nolgoat.service.search.SearchService;
 import wad.seoul_nolgoat.service.search.dto.DistanceSortCombinationDto;
 import wad.seoul_nolgoat.service.search.dto.GradeSortCombinationDto;

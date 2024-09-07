@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.exception;
+package wad.seoul_nolgoat.exception.mapapi;
 
 public class AddressConversionException extends RuntimeException {
 

@@ -10,7 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import wad.seoul_nolgoat.exception.ErrorMessages;
-import wad.seoul_nolgoat.exception.TokenExpiredException;
+import wad.seoul_nolgoat.exception.auth.TokenExpiredException;
 import wad.seoul_nolgoat.service.auth.AuthService;
 import wad.seoul_nolgoat.service.auth.dto.OAuth2UserDto;
 import wad.seoul_nolgoat.service.auth.dto.OAuth2UserImpl;

@@ -4,7 +4,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wad.seoul_nolgoat.exception.*;
+import wad.seoul_nolgoat.exception.auth.TokenExpiredException;
+import wad.seoul_nolgoat.exception.auth.UnsupportedProviderException;
+import wad.seoul_nolgoat.exception.mapapi.AddressConversionException;
+import wad.seoul_nolgoat.exception.mapapi.TMapApiException;
+import wad.seoul_nolgoat.exception.mapapi.WalkingDistanceCalculationException;
+import wad.seoul_nolgoat.exception.notfound.ReviewNotFoundException;
+import wad.seoul_nolgoat.exception.notfound.StoreNotFoundException;
+import wad.seoul_nolgoat.exception.notfound.UserNotFoundException;
+import wad.seoul_nolgoat.exception.search.InvalidRoundException;
+import wad.seoul_nolgoat.exception.search.InvalidSearchCriteriaException;
 import wad.seoul_nolgoat.web.exception.dto.response.ErrorResult;
 
 @RestControllerAdvice

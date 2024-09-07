@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.store.StoreRepository;
 import wad.seoul_nolgoat.exception.ErrorMessages;
-import wad.seoul_nolgoat.exception.StoreNotFoundException;
+import wad.seoul_nolgoat.exception.notfound.StoreNotFoundException;
 import wad.seoul_nolgoat.service.store.dto.StoreUpdateDto;
 import wad.seoul_nolgoat.util.mapper.StoreMapper;
 import wad.seoul_nolgoat.web.store.dto.response.StoreDetailsDto;

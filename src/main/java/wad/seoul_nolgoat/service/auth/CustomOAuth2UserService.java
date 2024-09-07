@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ErrorMessages;
-import wad.seoul_nolgoat.exception.UnsupportedProviderException;
-import wad.seoul_nolgoat.exception.UserNotFoundException;
+import wad.seoul_nolgoat.exception.auth.UnsupportedProviderException;
+import wad.seoul_nolgoat.exception.notfound.UserNotFoundException;
 import wad.seoul_nolgoat.service.auth.dto.*;
 
 @Slf4j

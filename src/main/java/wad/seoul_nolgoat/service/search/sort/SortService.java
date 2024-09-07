@@ -3,7 +3,7 @@ package wad.seoul_nolgoat.service.search.sort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.exception.ErrorMessages;
-import wad.seoul_nolgoat.exception.InvalidRoundException;
+import wad.seoul_nolgoat.exception.search.InvalidRoundException;
 import wad.seoul_nolgoat.service.search.SearchService;
 import wad.seoul_nolgoat.service.search.dto.*;
 import wad.seoul_nolgoat.service.tMap.TMapService;

@@ -9,7 +9,7 @@ import wad.seoul_nolgoat.domain.refresh.RefreshTokenRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ErrorMessages;
-import wad.seoul_nolgoat.exception.UserNotFoundException;
+import wad.seoul_nolgoat.exception.notfound.UserNotFoundException;
 import wad.seoul_nolgoat.jwt.JwtUtil;
 import wad.seoul_nolgoat.util.mapper.UserMapper;
 import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;

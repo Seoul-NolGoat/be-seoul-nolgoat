@@ -11,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import wad.seoul_nolgoat.exception.ErrorMessages;
-import wad.seoul_nolgoat.exception.TMapApiException;
-import wad.seoul_nolgoat.exception.WalkingDistanceCalculationException;
+import wad.seoul_nolgoat.exception.mapapi.TMapApiException;
+import wad.seoul_nolgoat.exception.mapapi.WalkingDistanceCalculationException;
 import wad.seoul_nolgoat.service.tMap.dto.WalkRouteInfoDto;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 

@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.exception;
+package wad.seoul_nolgoat.exception.search;
 
 public class InvalidSearchCriteriaException extends RuntimeException {
 
