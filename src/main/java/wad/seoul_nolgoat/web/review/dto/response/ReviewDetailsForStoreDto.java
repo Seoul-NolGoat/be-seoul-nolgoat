@@ -8,8 +8,11 @@ import lombok.RequiredArgsConstructor;
 public class ReviewDetailsForStoreDto {
 
     private final Long id;
-    private final double grade;
+    private final int grade;
     private final String content;
+    private final String imageUrl;
+    private final Long userId;
     private final String userNickname;
     private final String userProfileImage;
+    private final String createDate;
 }

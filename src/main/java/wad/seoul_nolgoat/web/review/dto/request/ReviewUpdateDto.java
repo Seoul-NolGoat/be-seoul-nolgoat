@@ -18,6 +18,4 @@ public class ReviewUpdateDto {
     @NotBlank
     @Size(max = 150)
     private final String content;
-
-    private final String imageUrl;
 }

@@ -5,6 +5,8 @@
 /src/main/resources/t-config.yml
 /src/main/resources/oauth2-config.yml
 /src/main/resources/jwt-config.yml
+/src/main/resources/s3-config.yml
+/src/main/resources/multipart-config.yml
 
 ### build ###
 .gradle

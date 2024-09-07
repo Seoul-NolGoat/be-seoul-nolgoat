@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.review.ReviewService;
 import wad.seoul_nolgoat.util.ValidationUtil;
@@ -14,6 +15,7 @@ import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/reviews")
@@ -26,7 +28,8 @@ public class ReviewController {
     public ResponseEntity<?> createReview(
             @PathVariable Long userId,
             @PathVariable Long storeId,
-            @Valid @RequestBody ReviewSaveDto reviewSaveDto,
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            @Valid @RequestPart("review") ReviewSaveDto reviewSaveDto,
             BindingResult bindingResult,
             UriComponentsBuilder uriComponentsBuilder
     ) {
@@ -38,6 +41,7 @@ public class ReviewController {
         Long reviewId = reviewService.save(
                 userId,
                 storeId,
+                Optional.ofNullable(file),
                 reviewSaveDto
         );
         URI location = uriComponentsBuilder.path("/api/reviews/{reviewId}")
@@ -55,6 +59,7 @@ public class ReviewController {
                 .ok(reviewService.findByUserId(userId));
     }
 
+    // 현재 사용하지 않음
     @PutMapping("/{reviewId}")
     public ResponseEntity<?> update(
             @PathVariable Long reviewId,

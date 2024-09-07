@@ -9,3 +9,5 @@ spring:
       - t-config.yml
       - oauth2-config.yml
       - jwt-config.yml
+      - s3-config.yml
+      - multipart-config.yml

@@ -48,4 +48,42 @@ public class StoreService {
                 .orElseThrow(() -> new StoreNotFoundException(ErrorMessages.STORE_NOT_FOUND_MESSAGE));
         store.delete();
     }
+
+    // Review 추가시 Accommodation averageGrade 업데이트
+    @Transactional
+    public void updateAverageGradeOnReviewAdd(Long storeId, double addedGrade) {
+        Store store = storeRepository.findById(storeId).get();
+        double previousAverageGrade = store.getNolgoatAverageGrade();
+        int reviewCount = store.getReviews().size();
+
+        double updatedAverageGrade = (previousAverageGrade * reviewCount + addedGrade) / (reviewCount + 1);
+        storeRepository.updateNolgoatAverageGrade(storeId, updatedAverageGrade);
+    }
+
+    // Review 업데이트시 Accommodation averageGrade 업데이트
+    @Transactional
+    public void updateAverageGradeOnReviewUpdate(Long storeId, double gradeDifference) {
+        Store store = storeRepository.findById(storeId).get();
+        double previousAverageGrade = store.getNolgoatAverageGrade();
+        int reviewCount = store.getReviews().size();
+
+        double updatedAverageGrade = (previousAverageGrade * reviewCount + gradeDifference) / reviewCount;
+        storeRepository.updateNolgoatAverageGrade(storeId, updatedAverageGrade);
+    }
+
+    // Review 삭제시 Accommodation averageGrade 업데이트
+    @Transactional
+    public void updateAverageGradeOnReviewDelete(Long storeId, double deletedGrade) {
+        Store store = storeRepository.findById(storeId).get();
+        double previousAverageGrade = store.getNolgoatAverageGrade();
+        int reviewCount = store.getReviews().size();
+
+        if (reviewCount == 1) {
+            storeRepository.updateNolgoatAverageGrade(storeId, 0);
+            return;
+        }
+
+        double updatedAverageGrade = (previousAverageGrade * reviewCount - deletedGrade) / (reviewCount - 1);
+        storeRepository.updateNolgoatAverageGrade(storeId, updatedAverageGrade);
+    }
 }
