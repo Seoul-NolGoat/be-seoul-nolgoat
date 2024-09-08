@@ -2,7 +2,6 @@ package wad.seoul_nolgoat.service.search.sort;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import wad.seoul_nolgoat.exception.ErrorMessages;
 import wad.seoul_nolgoat.exception.search.InvalidRoundException;
 import wad.seoul_nolgoat.service.search.SearchService;
 import wad.seoul_nolgoat.service.search.dto.*;
@@ -74,7 +73,7 @@ public class SortService {
                     .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistance))
                     .toList();
         }
-        throw new InvalidRoundException(ErrorMessages.INVALID_GATHERING_ROUND);
+        throw new InvalidRoundException();
     }
 
     private List<GradeSortCombinationDto> generateGradeCombinations(
@@ -97,7 +96,7 @@ public class SortService {
         if (totalRounds == SearchService.ONE_ROUND) {
             return createGradeCombinationsForOneRound(sortConditionDto.getFirstFilteredStores());
         }
-        throw new InvalidRoundException(ErrorMessages.INVALID_GATHERING_ROUND);
+        throw new InvalidRoundException();
     }
 
     private List<GradeSortCombinationDto> createGradeCombinationsForThreeRounds(
@@ -328,7 +327,7 @@ public class SortService {
                                 tMapService.fetchFullPathWalkRouteInfo(startCoordinate, endCoordinate)
                         );
                     }
-                    throw new InvalidRoundException(ErrorMessages.INVALID_GATHERING_ROUND);
+                    throw new InvalidRoundException();
                 }).toList();
 
         return combinations.stream()
