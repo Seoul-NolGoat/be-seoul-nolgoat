@@ -1,6 +1,5 @@
 package wad.seoul_nolgoat.web.exception;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -22,70 +21,70 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleUserNotFoundException(UserNotFoundException e) {
         return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
+                .status(e.getHttpStatus())
                 .body(new ErrorResult(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleStoreNotFoundException(StoreNotFoundException e) {
         return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
+                .status(e.getHttpStatus())
                 .body(new ErrorResult(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleReviewNotFoundException(ReviewNotFoundException e) {
         return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
+                .status(e.getHttpStatus())
                 .body(new ErrorResult(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleInvalidSearchCriteriaException(InvalidSearchCriteriaException e) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(e.getHttpStatus())
                 .body(new ErrorResult(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleInvalidRoundException(InvalidRoundException e) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(e.getHttpStatus())
                 .body(new ErrorResult(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleTokenExpiredException(TokenExpiredException e) {
         return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
+                .status(e.getHttpStatus())
                 .body(new ErrorResult(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleUnsupportedProviderException(UnsupportedProviderException e) {
         return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
+                .status(e.getHttpStatus())
                 .body(new ErrorResult(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleAddressConversionException(AddressConversionException e) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(e.getHttpStatus())
                 .body(new ErrorResult(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleWalkingDistanceCalculationException(WalkingDistanceCalculationException e) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(e.getHttpStatus())
                 .body(new ErrorResult(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleTMapApiException(TMapApiException e) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(e.getHttpStatus())
                 .body(new ErrorResult(e.getMessage()));
     }
 }
