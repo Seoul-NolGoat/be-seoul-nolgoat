@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.store.StoreRepository;
-import wad.seoul_nolgoat.exception.ErrorMessages;
 import wad.seoul_nolgoat.exception.notfound.StoreNotFoundException;
 import wad.seoul_nolgoat.service.store.dto.StoreUpdateDto;
 import wad.seoul_nolgoat.util.mapper.StoreMapper;
@@ -19,7 +18,7 @@ public class StoreService {
 
     public StoreDetailsDto findByStoreId(Long storeId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreNotFoundException(ErrorMessages.STORE_NOT_FOUND_MESSAGE));
+                .orElseThrow(StoreNotFoundException::new);
 
         return StoreMapper.toStoreDetailsDto(store);
     }
@@ -27,7 +26,7 @@ public class StoreService {
     @Transactional
     public void update(StoreUpdateDto storeUpdateDto) {
         Store store = storeRepository.findById(storeUpdateDto.getId())
-                .orElseThrow(() -> new StoreNotFoundException(ErrorMessages.STORE_NOT_FOUND_MESSAGE));
+                .orElseThrow(StoreNotFoundException::new);
         store.update(
                 storeUpdateDto.getName(),
                 storeUpdateDto.getCategory(),
@@ -45,7 +44,7 @@ public class StoreService {
     @Transactional
     public void deleteById(Long storeId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreNotFoundException(ErrorMessages.STORE_NOT_FOUND_MESSAGE));
+                .orElseThrow(StoreNotFoundException::new);
         store.delete();
     }
 

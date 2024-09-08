@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
-import wad.seoul_nolgoat.exception.ErrorMessages;
 import wad.seoul_nolgoat.exception.notfound.UserNotFoundException;
 import wad.seoul_nolgoat.util.mapper.UserMapper;
 import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
@@ -24,7 +23,7 @@ public class UserService {
 
     public UserDetailsDto findByUserId(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND_MESSAGE));
+                .orElseThrow(UserNotFoundException::new);
 
         return UserMapper.toUserDetailsDto(user);
     }
@@ -32,7 +31,7 @@ public class UserService {
     @Transactional
     public void update(Long userId, UserUpdateDto userUpdateDto) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND_MESSAGE));
+                .orElseThrow(UserNotFoundException::new);
         user.update(
                 userUpdateDto.getPassword(),
                 userUpdateDto.getNickname(),
@@ -43,7 +42,7 @@ public class UserService {
     @Transactional
     public void deleteById(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND_MESSAGE));
+                .orElseThrow(UserNotFoundException::new);
         user.delete();
     }
 }

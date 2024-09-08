@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import wad.seoul_nolgoat.exception.ErrorMessages;
 import wad.seoul_nolgoat.exception.auth.TokenExpiredException;
 import wad.seoul_nolgoat.service.auth.AuthService;
 import wad.seoul_nolgoat.service.auth.dto.OAuth2UserDto;
@@ -33,7 +32,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String accessToken = authorization.split(" ")[1];
         if (authService.isExpiredToken(accessToken)) {
-            throw new TokenExpiredException(ErrorMessages.TOKEN_EXPIRED_MESSAGE);
+            throw new TokenExpiredException();
         }
 
         OAuth2UserImpl oAuth2User = new OAuth2UserImpl(

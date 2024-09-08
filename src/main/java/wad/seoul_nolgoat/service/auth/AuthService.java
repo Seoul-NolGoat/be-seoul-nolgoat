@@ -8,7 +8,6 @@ import wad.seoul_nolgoat.domain.refresh.RefreshToken;
 import wad.seoul_nolgoat.domain.refresh.RefreshTokenRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
-import wad.seoul_nolgoat.exception.ErrorMessages;
 import wad.seoul_nolgoat.exception.notfound.UserNotFoundException;
 import wad.seoul_nolgoat.jwt.JwtUtil;
 import wad.seoul_nolgoat.util.mapper.UserMapper;
@@ -38,7 +37,7 @@ public class AuthService {
     public UserProfileDto findLoginUserByAuthorization(String authorization) {
         String token = authorization.split(" ")[1];
         User user = userRepository.findByLoginId(jwtUtil.getLoginId(token))
-                .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND_MESSAGE));
+                .orElseThrow(UserNotFoundException::new);
 
         return UserMapper.toUserProfileDto(user);
     }

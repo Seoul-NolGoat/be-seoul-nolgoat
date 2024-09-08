@@ -3,7 +3,6 @@ package wad.seoul_nolgoat.service.search;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.domain.store.StoreCategory;
-import wad.seoul_nolgoat.exception.ErrorMessages;
 import wad.seoul_nolgoat.exception.search.InvalidRoundException;
 import wad.seoul_nolgoat.exception.search.InvalidSearchCriteriaException;
 import wad.seoul_nolgoat.service.search.dto.SortConditionDto;
@@ -56,7 +55,7 @@ public class SearchService {
         if (searchConditionDto.getCriteria().equals(NOLGOAT_GRADE_CRITERIA)) {
             return getCombinationsByNolgoatGrade(searchConditionDto);
         }
-        throw new InvalidSearchCriteriaException(ErrorMessages.INVALID_SEARCH_CRITERIA);
+        throw new InvalidSearchCriteriaException();
     }
 
     public List<String> searchPossibleCategories(PossibleCategoriesConditionDto possibleCategoriesConditionDto) {
@@ -152,7 +151,7 @@ public class SearchService {
                     Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
             );
         }
-        throw new InvalidRoundException(ErrorMessages.INVALID_GATHERING_ROUND);
+        throw new InvalidRoundException();
     }
 
     private List<CombinationDto> getCombinationsByKakaoGrade(SearchConditionDto searchConditionDto) {
@@ -240,7 +239,7 @@ public class SearchService {
                     searchConditionDto.getStartCoordinate()
             );
         }
-        throw new InvalidRoundException(ErrorMessages.INVALID_GATHERING_ROUND);
+        throw new InvalidRoundException();
     }
 
     private List<CombinationDto> getCombinationsByNolgoatGrade(SearchConditionDto searchConditionDto) {
@@ -328,7 +327,7 @@ public class SearchService {
                     searchConditionDto.getStartCoordinate()
             );
         }
-        throw new InvalidRoundException(ErrorMessages.INVALID_GATHERING_ROUND);
+        throw new InvalidRoundException();
     }
 
     private List<CombinationDto> fetchWalkRouteInfoForCombinationDto(
@@ -371,7 +370,7 @@ public class SearchService {
 
                         return combination;
                     }
-                    throw new InvalidRoundException(ErrorMessages.INVALID_GATHERING_ROUND);
+                    throw new InvalidRoundException();
                 })
                 .collect(Collectors.toList());
     }
