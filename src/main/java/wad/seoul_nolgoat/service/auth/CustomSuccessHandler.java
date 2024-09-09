@@ -4,6 +4,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,10 @@ import java.net.URLEncoder;
 @Component
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private static final String BASE_URL = "http://localhost:3000/loginSuccess";
+    @Value("${app.urls.frontend-base-url}")
+    private String frontendBaseUrl;
+
+    private static final String SUCCESS_URL = "/loginSuccess";
     private static final String CHARSET = "UTF-8";
 
     private final AuthService authService;
@@ -28,9 +32,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String refreshToken = authService.createRefreshToken(oAuth2User.getName());
         authService.saveRefreshToken(refreshToken);
 
+        String successBaseUrl = frontendBaseUrl + SUCCESS_URL;
+
         String url = String.format(
                 "%s?access=%s&refresh=%s",
-                BASE_URL,
+                successBaseUrl,
                 URLEncoder.encode(accessToken, CHARSET),
                 URLEncoder.encode(refreshToken, CHARSET)
         );
