@@ -15,7 +15,7 @@ public class BookmarkController {
 
     private final BookmarkService bookmarkService;
 
-    @PostMapping("/{userId}{storeId}")
+    @PostMapping("/{userId}/{storeId}")
     public ResponseEntity<Void> createBookmark(
             @PathVariable Long userId,
             @PathVariable Long storeId,
