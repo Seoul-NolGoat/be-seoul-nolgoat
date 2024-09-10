@@ -37,9 +37,9 @@ public class BookmarkController {
                 .ok(bookmarkService.checkIfBookmarked(userId, storeId));
     }
 
-    @DeleteMapping("/{bookmarkId}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long bookmarkId) {
-        bookmarkService.deleteById(bookmarkId);
+    @DeleteMapping("/{userId}/{storeId}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long userId, @PathVariable Long storeId) {
+        bookmarkService.deleteById(userId, storeId);
 
         return ResponseEntity
                 .noContent()

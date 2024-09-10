@@ -37,7 +37,11 @@ public class BookmarkService {
         return bookmarkRepository.existsByUserIdAndStoreId(userId, storeId);
     }
 
-    public void deleteById(Long bookmarkId) {
-        bookmarkRepository.deleteById(bookmarkId);
+    public void deleteById(Long userId, Long storeId) {
+        if (!bookmarkRepository.existsByUserIdAndStoreId(userId, storeId)) {
+            throw new RuntimeException("존재하지 않는 북마크입니다.");
+        }
+
+        bookmarkRepository.deleteByUserIdAndStoreId(userId, storeId);
     }
 }
