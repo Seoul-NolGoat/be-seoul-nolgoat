@@ -31,6 +31,12 @@ public class BookmarkController {
                 .build();
     }
 
+    @GetMapping("/{userId}/{storeId}")
+    public ResponseEntity<Boolean> checkIfBookmarked(@PathVariable Long userId, @PathVariable Long storeId) {
+        return ResponseEntity
+                .ok(bookmarkService.checkIfBookmarked(userId, storeId));
+    }
+
     @DeleteMapping("/{bookmarkId}")
     public ResponseEntity<Void> deleteById(@PathVariable Long bookmarkId) {
         bookmarkService.deleteById(bookmarkId);

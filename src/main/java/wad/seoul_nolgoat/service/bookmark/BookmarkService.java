@@ -33,6 +33,10 @@ public class BookmarkService {
         ).getId();
     }
 
+    public boolean checkIfBookmarked(Long userId, Long storeId) {
+        return bookmarkRepository.existsByUserIdAndStoreId(userId, storeId);
+    }
+
     public void deleteById(Long bookmarkId) {
         bookmarkRepository.deleteById(bookmarkId);
     }
