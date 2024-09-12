@@ -6,7 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
+
+    List<Bookmark> findByUserId(Long userId);
 
     boolean existsByUserIdAndStoreId(Long userId, Long storeId);
 
