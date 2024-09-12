@@ -10,6 +10,10 @@ import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.notfound.StoreNotFoundException;
 import wad.seoul_nolgoat.exception.notfound.UserNotFoundException;
+import wad.seoul_nolgoat.util.mapper.StoreMapper;
+import wad.seoul_nolgoat.web.store.dto.response.StoreForBookmarkDto;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -33,15 +37,23 @@ public class BookmarkService {
         ).getId();
     }
 
-    public boolean checkIfBookmarked(Long userId, Long storeId) {
-        return bookmarkRepository.existsByUserIdAndStoreId(userId, storeId);
-    }
-
     public void deleteById(Long userId, Long storeId) {
         if (!bookmarkRepository.existsByUserIdAndStoreId(userId, storeId)) {
             throw new RuntimeException("존재하지 않는 북마크입니다.");
         }
 
         bookmarkRepository.deleteByUserIdAndStoreId(userId, storeId);
+    }
+
+    public boolean checkIfBookmarked(Long userId, Long storeId) {
+        return bookmarkRepository.existsByUserIdAndStoreId(userId, storeId);
+    }
+
+    public List<StoreForBookmarkDto> findBookmarkedStoresByUserId(Long userId) {
+        List<Bookmark> bookmarks = bookmarkRepository.findByUserId(userId);
+
+        return bookmarks.stream()
+                .map(bookmark -> StoreMapper.toStoreForBookmarkDto(bookmark.getStore()))
+                .toList();
     }
 }
