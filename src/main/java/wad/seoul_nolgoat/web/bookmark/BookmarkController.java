@@ -31,12 +31,6 @@ public class BookmarkController {
                 .build();
     }
 
-    @GetMapping("/{userId}/{storeId}")
-    public ResponseEntity<Boolean> checkIfBookmarked(@PathVariable Long userId, @PathVariable Long storeId) {
-        return ResponseEntity
-                .ok(bookmarkService.checkIfBookmarked(userId, storeId));
-    }
-
     @DeleteMapping("/{userId}/{storeId}")
     public ResponseEntity<Void> deleteById(@PathVariable Long userId, @PathVariable Long storeId) {
         bookmarkService.deleteById(userId, storeId);
@@ -44,5 +38,11 @@ public class BookmarkController {
         return ResponseEntity
                 .noContent()
                 .build();
+    }
+
+    @GetMapping("/{userId}/{storeId}")
+    public ResponseEntity<Boolean> checkIfBookmarked(@PathVariable Long userId, @PathVariable Long storeId) {
+        return ResponseEntity
+                .ok(bookmarkService.checkIfBookmarked(userId, storeId));
     }
 }
