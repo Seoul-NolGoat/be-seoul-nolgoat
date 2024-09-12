@@ -4,6 +4,7 @@ import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.service.search.dto.StoreForDistanceSortDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForGradeSortDto;
 import wad.seoul_nolgoat.web.store.dto.response.StoreDetailsDto;
+import wad.seoul_nolgoat.web.store.dto.response.StoreForBookmarkDto;
 import wad.seoul_nolgoat.web.store.dto.response.StoreForCombinationDto;
 
 public class StoreMapper {
@@ -46,6 +47,18 @@ public class StoreMapper {
                 storeForGradeSortDto.getCoordinate(),
                 storeForGradeSortDto.getKakaoAverageGrade(),
                 storeForGradeSortDto.getNolgoatAverageGrade()
+        );
+    }
+
+    public static StoreForBookmarkDto toStoreForBookmarkDto(Store store) {
+        return new StoreForBookmarkDto(
+                store.getId(),
+                store.getStoreType(),
+                store.getName(),
+                store.getLotAddress(),
+                store.getRoadAddress(),
+                store.getKakaoAverageGrade(),
+                store.getNolgoatAverageGrade()
         );
     }
 }
