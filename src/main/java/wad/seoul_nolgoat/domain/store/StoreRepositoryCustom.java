@@ -2,6 +2,7 @@ package wad.seoul_nolgoat.domain.store;
 
 import wad.seoul_nolgoat.service.search.dto.StoreForDistanceSortDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForGradeSortDto;
+import wad.seoul_nolgoat.service.search.dto.StoreForPossibleCategoriesDto;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 import java.util.List;
@@ -44,5 +45,5 @@ public interface StoreRepositoryCustom {
             StoreType storeType
     );
 
-    List<String> findCategoriesByRadiusRange(CoordinateDto startCoordinate, double radiusRange);
+    List<StoreForPossibleCategoriesDto> findCategoriesByRadiusRange(CoordinateDto startCoordinate, double radiusRange);
 }

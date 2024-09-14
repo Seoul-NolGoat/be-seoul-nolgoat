@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import wad.seoul_nolgoat.service.search.dto.StoreForDistanceSortDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForGradeSortDto;
+import wad.seoul_nolgoat.service.search.dto.StoreForPossibleCategoriesDto;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 import java.util.Collections;
@@ -173,12 +174,19 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     }
 
     @Override
-    public List<String> findCategoriesByRadiusRange(CoordinateDto startCoordinate, double radiusRange) {
-        return jpaQueryFactory.select(store.category)
+    public List<StoreForPossibleCategoriesDto> findCategoriesByRadiusRange(CoordinateDto startCoordinate, double radiusRange) {
+        return jpaQueryFactory.select(
+                        Projections.constructor(
+                                StoreForPossibleCategoriesDto.class,
+                                store.storeType,
+                                store.category
+                        )
+                )
                 .from(store)
                 .where(
                         calculateHaversineDistance(startCoordinate).loe(radiusRange),
-                        store.category.isNotNull()
+                        store.category.isNotNull(),
+                        store.storeType.isNotNull()
                 )
                 .distinct()
                 .fetch();
