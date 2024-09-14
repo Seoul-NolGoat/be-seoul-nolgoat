@@ -174,25 +174,6 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     }
 
     @Override
-    public List<StoreForPossibleCategoriesDto> findCategoriesByRadiusRange(CoordinateDto startCoordinate, double radiusRange) {
-        return jpaQueryFactory.select(
-                        Projections.constructor(
-                                StoreForPossibleCategoriesDto.class,
-                                store.storeType,
-                                store.category
-                        )
-                )
-                .from(store)
-                .where(
-                        calculateHaversineDistance(startCoordinate).loe(radiusRange),
-                        store.category.isNotNull(),
-                        store.storeType.isNotNull()
-                )
-                .distinct()
-                .fetch();
-    }
-
-    @Override
     public List<StoreForGradeSortDto> findByRadiusRangeAndStoreTypeForNolgoatGradeSort(
             CoordinateDto startCoordinate,
             double radiusRange,
@@ -221,6 +202,25 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         )
                         .fetch()
         );
+    }
+
+    @Override
+    public List<StoreForPossibleCategoriesDto> findCategoriesByRadiusRange(CoordinateDto startCoordinate, double radiusRange) {
+        return jpaQueryFactory.select(
+                        Projections.constructor(
+                                StoreForPossibleCategoriesDto.class,
+                                store.storeType,
+                                store.category
+                        )
+                )
+                .from(store)
+                .where(
+                        calculateHaversineDistance(startCoordinate).loe(radiusRange),
+                        store.category.isNotNull(),
+                        store.storeType.isNotNull()
+                )
+                .distinct()
+                .fetch();
     }
 
     private NumberExpression<Double> calculateHaversineDistance(CoordinateDto startCoordinate) {
