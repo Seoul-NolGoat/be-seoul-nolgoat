@@ -6,5 +6,9 @@ public enum StoreType {
     CAFE,
     PCROOM,
     KARAOKE,
-    BILLIARD
+    BILLIARD;
+
+    public static StoreType getStoreTypeByName(String storeTypeName) {
+        return StoreType.valueOf(storeTypeName.toUpperCase());
+    }
 }
