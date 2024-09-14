@@ -14,16 +14,34 @@ public interface StoreRepositoryCustom {
             String category
     );
 
+    List<StoreForDistanceSortDto> findByRadiusRangeAndStoreTypeForDistanceSort(
+            CoordinateDto startCoordinate,
+            double radiusRange,
+            StoreType storeType
+    );
+
     List<StoreForGradeSortDto> findByRadiusRangeAndCategoryForKakaoGradeSort(
             CoordinateDto startCoordinate,
             double radiusRange,
             String category
     );
 
+    List<StoreForGradeSortDto> findByRadiusRangeAndStoreTypeForKakaoGradeSort(
+            CoordinateDto startCoordinate,
+            double radiusRange,
+            StoreType storeType
+    );
+
     List<StoreForGradeSortDto> findByRadiusRangeAndCategoryForNolgoatGradeSort(
             CoordinateDto startCoordinate,
             double radiusRange,
             String category
+    );
+
+    List<StoreForGradeSortDto> findByRadiusRangeAndStoreTypeForNolgoatGradeSort(
+            CoordinateDto startCoordinate,
+            double radiusRange,
+            StoreType storeType
     );
 
     List<String> findCategoriesByRadiusRange(CoordinateDto startCoordinate, double radiusRange);
