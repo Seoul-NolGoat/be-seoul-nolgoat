@@ -3,9 +3,11 @@ package wad.seoul_nolgoat.service.search;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.domain.store.StoreCategory;
+import wad.seoul_nolgoat.domain.store.StoreType;
 import wad.seoul_nolgoat.exception.search.InvalidRoundException;
 import wad.seoul_nolgoat.exception.search.InvalidSearchCriteriaException;
 import wad.seoul_nolgoat.service.search.dto.SortConditionDto;
+import wad.seoul_nolgoat.service.search.dto.StoreForPossibleCategoriesDto;
 import wad.seoul_nolgoat.service.search.filter.FilterService;
 import wad.seoul_nolgoat.service.search.sort.SortService;
 import wad.seoul_nolgoat.service.tMap.TMapService;
@@ -59,14 +61,19 @@ public class SearchService {
     }
 
     public List<String> searchPossibleCategories(PossibleCategoriesConditionDto possibleCategoriesConditionDto) {
-        List<String> untokenizedCategories = filterService.findCategoriesByRadiusRange(
+        List<StoreForPossibleCategoriesDto> untokenizedCategories = filterService.findCategoriesByRadiusRange(
                 possibleCategoriesConditionDto.getStartCoordinate(),
                 possibleCategoriesConditionDto.getRadiusRange()
         );
         Set<String> possibleCategories = new HashSet<>();
 
-        for (String untokenizedCategory : untokenizedCategories) {
-            String[] tokens = untokenizedCategory.replace(SPACE, EMPTY).split(DELIMITER);
+        for (StoreForPossibleCategoriesDto untokenizedCategory : untokenizedCategories) {
+            if (!untokenizedCategory.getStoreType().equals(StoreType.RESTAURANT)) {
+                possibleCategories.add(untokenizedCategory.getStoreType().name());
+                continue;
+            }
+
+            String[] tokens = untokenizedCategory.getCategory().replace(SPACE, EMPTY).split(DELIMITER);
             for (String token : tokens) {
                 Optional<String[]> optionalRelatedCategories = StoreCategory.findRelatedCategoryNames(token);
                 optionalRelatedCategories.ifPresent(
