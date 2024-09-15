@@ -3,9 +3,11 @@ package wad.seoul_nolgoat.service.search;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.domain.store.StoreCategory;
+import wad.seoul_nolgoat.domain.store.StoreType;
 import wad.seoul_nolgoat.exception.search.InvalidRoundException;
 import wad.seoul_nolgoat.exception.search.InvalidSearchCriteriaException;
 import wad.seoul_nolgoat.service.search.dto.SortConditionDto;
+import wad.seoul_nolgoat.service.search.dto.StoreForPossibleCategoriesDto;
 import wad.seoul_nolgoat.service.search.filter.FilterService;
 import wad.seoul_nolgoat.service.search.sort.SortService;
 import wad.seoul_nolgoat.service.tMap.TMapService;
@@ -46,27 +48,33 @@ public class SearchService {
     private final TMapService tMapService;
 
     public List<CombinationDto> searchAll(SearchConditionDto searchConditionDto) {
-        if (searchConditionDto.getCriteria().equals(DISTANCE_CRITERIA)) {
+        String criteria = searchConditionDto.getCriteria();
+        if (criteria.equals(DISTANCE_CRITERIA)) {
             return getCombinationsByDistance(searchConditionDto);
         }
-        if (searchConditionDto.getCriteria().equals(KAKAO_GRADE_CRITERIA)) {
+        if (criteria.equals(KAKAO_GRADE_CRITERIA)) {
             return getCombinationsByKakaoGrade(searchConditionDto);
         }
-        if (searchConditionDto.getCriteria().equals(NOLGOAT_GRADE_CRITERIA)) {
+        if (criteria.equals(NOLGOAT_GRADE_CRITERIA)) {
             return getCombinationsByNolgoatGrade(searchConditionDto);
         }
         throw new InvalidSearchCriteriaException();
     }
 
     public List<String> searchPossibleCategories(PossibleCategoriesConditionDto possibleCategoriesConditionDto) {
-        List<String> untokenizedCategories = filterService.findCategoriesByRadiusRange(
+        List<StoreForPossibleCategoriesDto> untokenizedCategories = filterService.findCategoriesByRadiusRange(
                 possibleCategoriesConditionDto.getStartCoordinate(),
                 possibleCategoriesConditionDto.getRadiusRange()
         );
         Set<String> possibleCategories = new HashSet<>();
 
-        for (String untokenizedCategory : untokenizedCategories) {
-            String[] tokens = untokenizedCategory.replace(SPACE, EMPTY).split(DELIMITER);
+        for (StoreForPossibleCategoriesDto untokenizedCategory : untokenizedCategories) {
+            if (!untokenizedCategory.getStoreType().equals(StoreType.RESTAURANT)) {
+                possibleCategories.add(untokenizedCategory.getStoreType().name());
+                continue;
+            }
+
+            String[] tokens = untokenizedCategory.getCategory().replace(SPACE, EMPTY).split(DELIMITER);
             for (String token : tokens) {
                 Optional<String[]> optionalRelatedCategories = StoreCategory.findRelatedCategoryNames(token);
                 optionalRelatedCategories.ifPresent(
@@ -79,24 +87,29 @@ public class SearchService {
     }
 
     private List<CombinationDto> getCombinationsByDistance(SearchConditionDto searchConditionDto) {
-        if (searchConditionDto.getCategories().size() == THREE_ROUND) {
+        List<String> categories = searchConditionDto.getCategories();
+        int categoryCount = categories.size();
+        CoordinateDto startCoordinate = searchConditionDto.getStartCoordinate();
+        double radiusRange = searchConditionDto.getRadiusRange();
+
+        if (categoryCount == THREE_ROUND) {
             List<CombinationDto> combinationDtos = sortService.sortStoresByDistance(
                             new SortConditionDto<>(
-                                    searchConditionDto.getStartCoordinate(),
+                                    startCoordinate,
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(FIRST_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(SECOND_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(SECOND_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(THIRD_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(THIRD_CATEGORY)
                                     )
                             )
                     ).stream()
@@ -108,19 +121,19 @@ public class SearchService {
                     Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
             );
         }
-        if (searchConditionDto.getCategories().size() == TWO_ROUND) {
+        if (categoryCount == TWO_ROUND) {
             List<CombinationDto> combinationDtos = sortService.sortStoresByDistance(
                             new SortConditionDto<>(
-                                    searchConditionDto.getStartCoordinate(),
+                                    startCoordinate,
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(FIRST_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(SECOND_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(SECOND_CATEGORY)
                                     )
                             )
                     ).stream()
@@ -132,14 +145,14 @@ public class SearchService {
                     Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
             );
         }
-        if (searchConditionDto.getCategories().size() == ONE_ROUND) {
+        if (categoryCount == ONE_ROUND) {
             List<CombinationDto> combinationDtos = sortService.sortStoresByDistance(
                             new SortConditionDto<>(
-                                    searchConditionDto.getStartCoordinate(),
+                                    startCoordinate,
                                     filterService.filterByRadiusRangeAndCategoryForDistanceSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(FIRST_CATEGORY)
                                     )
                             )
                     ).stream()
@@ -155,24 +168,29 @@ public class SearchService {
     }
 
     private List<CombinationDto> getCombinationsByKakaoGrade(SearchConditionDto searchConditionDto) {
-        if (searchConditionDto.getCategories().size() == THREE_ROUND) {
+        List<String> categories = searchConditionDto.getCategories();
+        int categoryCount = categories.size();
+        CoordinateDto startCoordinate = searchConditionDto.getStartCoordinate();
+        double radiusRange = searchConditionDto.getRadiusRange();
+
+        if (categoryCount == THREE_ROUND) {
             List<CombinationDto> combinationDtos = sortService.sortStoresByGrade(
                             new SortConditionDto<>(
-                                    searchConditionDto.getStartCoordinate(),
+                                    startCoordinate,
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(FIRST_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(SECOND_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(SECOND_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(THIRD_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(THIRD_CATEGORY)
                                     )
                             )
                     ).stream()
@@ -185,22 +203,22 @@ public class SearchService {
                             Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
                     ),
                     THREE_ROUND,
-                    searchConditionDto.getStartCoordinate()
+                    startCoordinate
             );
         }
-        if (searchConditionDto.getCategories().size() == TWO_ROUND) {
+        if (categoryCount == TWO_ROUND) {
             List<CombinationDto> combinationDtos = sortService.sortStoresByGrade(
                             new SortConditionDto<>(
-                                    searchConditionDto.getStartCoordinate(),
+                                    startCoordinate,
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(FIRST_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(SECOND_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(SECOND_CATEGORY)
                                     )
                             )
                     ).stream()
@@ -213,17 +231,17 @@ public class SearchService {
                             Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
                     ),
                     TWO_ROUND,
-                    searchConditionDto.getStartCoordinate()
+                    startCoordinate
             );
         }
-        if (searchConditionDto.getCategories().size() == ONE_ROUND) {
+        if (categoryCount == ONE_ROUND) {
             List<CombinationDto> combinationDtos = sortService.sortStoresByGrade(
                             new SortConditionDto<>(
-                                    searchConditionDto.getStartCoordinate(),
+                                    startCoordinate,
                                     filterService.filterByRadiusRangeAndCategoryForKakaoGradeSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(FIRST_CATEGORY)
                                     )
                             )
                     ).stream()
@@ -236,31 +254,36 @@ public class SearchService {
                             Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
                     ),
                     ONE_ROUND,
-                    searchConditionDto.getStartCoordinate()
+                    startCoordinate
             );
         }
         throw new InvalidRoundException();
     }
 
     private List<CombinationDto> getCombinationsByNolgoatGrade(SearchConditionDto searchConditionDto) {
-        if (searchConditionDto.getCategories().size() == THREE_ROUND) {
+        List<String> categories = searchConditionDto.getCategories();
+        int categoryCount = categories.size();
+        CoordinateDto startCoordinate = searchConditionDto.getStartCoordinate();
+        double radiusRange = searchConditionDto.getRadiusRange();
+
+        if (categoryCount == THREE_ROUND) {
             List<CombinationDto> combinationDtos = sortService.sortStoresByGrade(
                             new SortConditionDto<>(
-                                    searchConditionDto.getStartCoordinate(),
+                                    startCoordinate,
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(FIRST_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(SECOND_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(SECOND_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(THIRD_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(THIRD_CATEGORY)
                                     )
                             )
                     ).stream()
@@ -273,22 +296,22 @@ public class SearchService {
                             Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
                     ),
                     THREE_ROUND,
-                    searchConditionDto.getStartCoordinate()
+                    startCoordinate
             );
         }
-        if (searchConditionDto.getCategories().size() == TWO_ROUND) {
+        if (categoryCount == TWO_ROUND) {
             List<CombinationDto> combinationDtos = sortService.sortStoresByGrade(
                             new SortConditionDto<>(
-                                    searchConditionDto.getStartCoordinate(),
+                                    startCoordinate,
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(FIRST_CATEGORY)
                                     ),
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(SECOND_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(SECOND_CATEGORY)
                                     )
                             )
                     ).stream()
@@ -301,17 +324,17 @@ public class SearchService {
                             Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
                     ),
                     TWO_ROUND,
-                    searchConditionDto.getStartCoordinate()
+                    startCoordinate
             );
         }
-        if (searchConditionDto.getCategories().size() == ONE_ROUND) {
+        if (categoryCount == ONE_ROUND) {
             List<CombinationDto> combinationDtos = sortService.sortStoresByGrade(
                             new SortConditionDto<>(
-                                    searchConditionDto.getStartCoordinate(),
+                                    startCoordinate,
                                     filterService.filterByRadiusRangeAndCategoryForNolgoatGradeSort(
-                                            searchConditionDto.getStartCoordinate(),
-                                            searchConditionDto.getRadiusRange(),
-                                            searchConditionDto.getCategories().get(FIRST_CATEGORY)
+                                            startCoordinate,
+                                            radiusRange,
+                                            categories.get(FIRST_CATEGORY)
                                     )
                             )
                     ).stream()
@@ -324,7 +347,7 @@ public class SearchService {
                             Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
                     ),
                     ONE_ROUND,
-                    searchConditionDto.getStartCoordinate()
+                    startCoordinate
             );
         }
         throw new InvalidRoundException();

@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import wad.seoul_nolgoat.service.search.dto.StoreForDistanceSortDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForGradeSortDto;
+import wad.seoul_nolgoat.service.search.dto.StoreForPossibleCategoriesDto;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 import java.util.Collections;
@@ -50,6 +51,36 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     }
 
     @Override
+    public List<StoreForDistanceSortDto> findByRadiusRangeAndStoreTypeForDistanceSort(
+            CoordinateDto startCoordinate,
+            double radiusRange,
+            StoreType storeType
+    ) {
+        return Collections.unmodifiableList(
+                jpaQueryFactory.select(
+                                Projections.constructor(
+                                        StoreForDistanceSortDto.class,
+                                        store.id,
+                                        store.name,
+                                        Projections.constructor(
+                                                CoordinateDto.class,
+                                                numberTemplate(Double.class, "ST_Y({0})", store.location),
+                                                numberTemplate(Double.class, "ST_X({0})", store.location)
+                                        ),
+                                        store.kakaoAverageGrade,
+                                        store.nolgoatAverageGrade
+                                )
+                        )
+                        .from(store)
+                        .where(
+                                calculateHaversineDistance(startCoordinate).loe(radiusRange),
+                                store.storeType.eq(storeType)
+                        )
+                        .fetch()
+        );
+    }
+
+    @Override
     public List<StoreForGradeSortDto> findByRadiusRangeAndCategoryForKakaoGradeSort(
             CoordinateDto startCoordinate,
             double radiusRange,
@@ -75,6 +106,37 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         .where(
                                 calculateHaversineDistance(startCoordinate).loe(radiusRange),
                                 store.category.contains(category)
+                        )
+                        .fetch()
+        );
+    }
+
+    @Override
+    public List<StoreForGradeSortDto> findByRadiusRangeAndStoreTypeForKakaoGradeSort(
+            CoordinateDto startCoordinate,
+            double radiusRange,
+            StoreType storeType
+    ) {
+        return Collections.unmodifiableList(
+                jpaQueryFactory.select(
+                                Projections.constructor(
+                                        StoreForGradeSortDto.class,
+                                        store.id,
+                                        store.name,
+                                        Projections.constructor(
+                                                CoordinateDto.class,
+                                                numberTemplate(Double.class, "ST_Y({0})", store.location),
+                                                numberTemplate(Double.class, "ST_X({0})", store.location)
+                                        ),
+                                        store.kakaoAverageGrade,
+                                        store.kakaoAverageGrade,
+                                        store.nolgoatAverageGrade
+                                )
+                        )
+                        .from(store)
+                        .where(
+                                calculateHaversineDistance(startCoordinate).loe(radiusRange),
+                                store.storeType.eq(storeType)
                         )
                         .fetch()
         );
@@ -112,12 +174,50 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     }
 
     @Override
-    public List<String> findCategoriesByRadiusRange(CoordinateDto startCoordinate, double radiusRange) {
-        return jpaQueryFactory.select(store.category)
+    public List<StoreForGradeSortDto> findByRadiusRangeAndStoreTypeForNolgoatGradeSort(
+            CoordinateDto startCoordinate,
+            double radiusRange,
+            StoreType storeType
+    ) {
+        return Collections.unmodifiableList(
+                jpaQueryFactory.select(
+                                Projections.constructor(
+                                        StoreForGradeSortDto.class,
+                                        store.id,
+                                        store.name,
+                                        Projections.constructor(
+                                                CoordinateDto.class,
+                                                numberTemplate(Double.class, "ST_Y({0})", store.location),
+                                                numberTemplate(Double.class, "ST_X({0})", store.location)
+                                        ),
+                                        store.nolgoatAverageGrade,
+                                        store.kakaoAverageGrade,
+                                        store.nolgoatAverageGrade
+                                )
+                        )
+                        .from(store)
+                        .where(
+                                calculateHaversineDistance(startCoordinate).loe(radiusRange),
+                                store.storeType.eq(storeType)
+                        )
+                        .fetch()
+        );
+    }
+
+    @Override
+    public List<StoreForPossibleCategoriesDto> findCategoriesByRadiusRange(CoordinateDto startCoordinate, double radiusRange) {
+        return jpaQueryFactory.select(
+                        Projections.constructor(
+                                StoreForPossibleCategoriesDto.class,
+                                store.storeType,
+                                store.category
+                        )
+                )
                 .from(store)
                 .where(
                         calculateHaversineDistance(startCoordinate).loe(radiusRange),
-                        store.category.isNotNull()
+                        store.category.isNotNull(),
+                        store.storeType.isNotNull()
                 )
                 .distinct()
                 .fetch();
