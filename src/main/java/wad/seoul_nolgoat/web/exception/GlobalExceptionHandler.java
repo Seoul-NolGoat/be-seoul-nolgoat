@@ -8,6 +8,7 @@ import wad.seoul_nolgoat.exception.auth.UnsupportedProviderException;
 import wad.seoul_nolgoat.exception.mapapi.AddressConversionException;
 import wad.seoul_nolgoat.exception.mapapi.TMapApiException;
 import wad.seoul_nolgoat.exception.mapapi.WalkingDistanceCalculationException;
+import wad.seoul_nolgoat.exception.notfound.InquiryNotFoundException;
 import wad.seoul_nolgoat.exception.notfound.ReviewNotFoundException;
 import wad.seoul_nolgoat.exception.notfound.StoreNotFoundException;
 import wad.seoul_nolgoat.exception.notfound.UserNotFoundException;
@@ -34,6 +35,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleReviewNotFoundException(ReviewNotFoundException e) {
+        return ResponseEntity
+                .status(e.getHttpStatus())
+                .body(new ErrorResult(e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResult> handleInquiryNotFoundException(InquiryNotFoundException e) {
         return ResponseEntity
                 .status(e.getHttpStatus())
                 .body(new ErrorResult(e.getMessage()));
