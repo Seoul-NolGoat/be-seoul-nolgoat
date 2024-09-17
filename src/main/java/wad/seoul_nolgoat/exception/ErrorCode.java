@@ -18,7 +18,8 @@ public enum ErrorCode {
     UNSUPPORTED_PROVIDER(HttpStatus.UNAUTHORIZED, "지원하지 않는 제공자입니다."),
     ADDRESS_CONVERSION_FAILED(HttpStatus.BAD_REQUEST, "주소로 변환할 수 없습니다."),
     WALKING_DISTANCE_CALCULATION_FAILED(HttpStatus.BAD_REQUEST, "도보 거리를 계산할 수 없습니다."),
-    TMAP_API_CALL_FAILED(HttpStatus.BAD_REQUEST, "TMap API 호출에 실패했습니다.");
+    TMAP_API_CALL_FAILED(HttpStatus.BAD_REQUEST, "TMap API 호출에 실패했습니다."),
+    DUPLICATE_REVIEW(HttpStatus.CONFLICT, "상점에는 한 명당 리뷰를 한 개만 작성할 수 있습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

@@ -10,6 +10,7 @@ import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.store.StoreRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
+import wad.seoul_nolgoat.exception.duplicate.ReviewDuplicateException;
 import wad.seoul_nolgoat.exception.notfound.ReviewNotFoundException;
 import wad.seoul_nolgoat.exception.notfound.StoreNotFoundException;
 import wad.seoul_nolgoat.exception.notfound.UserNotFoundException;
@@ -41,7 +42,7 @@ public class ReviewService {
             ReviewSaveDto reviewSaveDto
     ) {
         if (reviewRepository.existsByUserIdAndStoreId(userId, storeId)) {
-            throw new RuntimeException("하나의 상점에 한사람 당 한개의 리뷰만 작성 가능");
+            throw new ReviewDuplicateException();
         }
 
         Optional<String> optionalImageUrl = Optional.empty();
