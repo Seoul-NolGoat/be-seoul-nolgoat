@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wad.seoul_nolgoat.exception.auth.TokenExpiredException;
 import wad.seoul_nolgoat.exception.auth.UnsupportedProviderException;
+import wad.seoul_nolgoat.exception.duplicate.ReviewDuplicateException;
 import wad.seoul_nolgoat.exception.mapapi.AddressConversionException;
 import wad.seoul_nolgoat.exception.mapapi.TMapApiException;
 import wad.seoul_nolgoat.exception.mapapi.WalkingDistanceCalculationException;
@@ -91,6 +92,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleTMapApiException(TMapApiException e) {
+        return ResponseEntity
+                .status(e.getHttpStatus())
+                .body(new ErrorResult(e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResult> handleReviewDuplicateException(ReviewDuplicateException e) {
         return ResponseEntity
                 .status(e.getHttpStatus())
                 .body(new ErrorResult(e.getMessage()));
