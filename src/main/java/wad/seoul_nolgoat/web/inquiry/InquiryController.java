@@ -10,8 +10,10 @@ import wad.seoul_nolgoat.util.ValidationUtil;
 import wad.seoul_nolgoat.web.inquiry.dto.request.InquirySaveDto;
 import wad.seoul_nolgoat.web.inquiry.dto.request.InquiryUpdateDto;
 import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryDetailsDto;
+import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryListDto;
 
 import java.net.URI;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/inquiries")
@@ -40,6 +42,12 @@ public class InquiryController {
     public ResponseEntity<InquiryDetailsDto> showInquiryByInquiryId(@PathVariable Long inquiryId) {
         return ResponseEntity
                 .ok(inquiryService.findByInquiryId(inquiryId));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<InquiryListDto>> showAllInquiries() {
+        return ResponseEntity
+                .ok(inquiryService.findAllInquiry());
     }
 
     @PutMapping("/{inquiryId}")
