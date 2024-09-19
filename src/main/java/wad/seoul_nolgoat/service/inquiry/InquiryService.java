@@ -13,6 +13,10 @@ import wad.seoul_nolgoat.util.mapper.InquiryMapper;
 import wad.seoul_nolgoat.web.inquiry.dto.request.InquirySaveDto;
 import wad.seoul_nolgoat.web.inquiry.dto.request.InquiryUpdateDto;
 import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryDetailsDto;
+import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryListDto;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -33,6 +37,14 @@ public class InquiryService {
                 .orElseThrow(InquiryNotFoundException::new);
 
         return InquiryMapper.toInquiryDetailsDto(inquiry);
+    }
+
+    public List<InquiryListDto> findAllInquiry() {
+        List<Inquiry> inquiries = inquiryRepository.findAll();
+
+        return inquiries.stream()
+                .map(InquiryMapper::toInquiryListDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional
