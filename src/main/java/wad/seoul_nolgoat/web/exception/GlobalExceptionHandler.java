@@ -9,10 +9,7 @@ import wad.seoul_nolgoat.exception.duplicate.ReviewDuplicateException;
 import wad.seoul_nolgoat.exception.mapapi.AddressConversionException;
 import wad.seoul_nolgoat.exception.mapapi.TMapApiException;
 import wad.seoul_nolgoat.exception.mapapi.WalkingDistanceCalculationException;
-import wad.seoul_nolgoat.exception.notfound.InquiryNotFoundException;
-import wad.seoul_nolgoat.exception.notfound.ReviewNotFoundException;
-import wad.seoul_nolgoat.exception.notfound.StoreNotFoundException;
-import wad.seoul_nolgoat.exception.notfound.UserNotFoundException;
+import wad.seoul_nolgoat.exception.notfound.*;
 import wad.seoul_nolgoat.exception.search.InvalidRoundException;
 import wad.seoul_nolgoat.exception.search.InvalidSearchCriteriaException;
 import wad.seoul_nolgoat.web.exception.dto.response.ErrorResult;
@@ -43,6 +40,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> handleInquiryNotFoundException(InquiryNotFoundException e) {
+        return ResponseEntity
+                .status(e.getHttpStatus())
+                .body(new ErrorResult(e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResult> handleNoticeNotFoundException(NoticeNotFoundException e) {
         return ResponseEntity
                 .status(e.getHttpStatus())
                 .body(new ErrorResult(e.getMessage()));
