@@ -76,4 +76,10 @@ public class NoticeController {
                 .noContent()
                 .build();
     }
+
+    @PutMapping("/{noticeId}/views")
+    public ResponseEntity<Void> increaseViews(@PathVariable Long noticeId) {
+        noticeService.increaseViews(noticeId);
+        return ResponseEntity.noContent().build();
+    }
 }
