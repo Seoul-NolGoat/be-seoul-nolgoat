@@ -65,4 +65,11 @@ public class NoticeService {
 
         noticeRepository.deleteById(noticeId);
     }
+
+    @Transactional
+    public void increaseViews(Long noticeId) {
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(NoticeNotFoundException::new);
+        notice.increaseViews();
+    }
 }
