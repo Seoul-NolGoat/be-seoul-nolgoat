@@ -86,6 +86,17 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
+        Double baseKakaoAverageGrade = jpaQueryFactory.select(store.kakaoAverageGrade)
+                .from(store)
+                .where(
+                        calculateHaversineDistance(startCoordinate).loe(radiusRange),
+                        store.category.contains(category)
+                )
+                .orderBy(store.kakaoAverageGrade.desc())
+                .limit(1)
+                .offset(9)
+                .fetchOne();
+
         return Collections.unmodifiableList(
                 jpaQueryFactory.select(
                                 Projections.constructor(
@@ -105,7 +116,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         .from(store)
                         .where(
                                 calculateHaversineDistance(startCoordinate).loe(radiusRange),
-                                store.category.contains(category)
+                                store.category.contains(category),
+                                store.kakaoAverageGrade.goe(baseKakaoAverageGrade)
                         )
                         .fetch()
         );
@@ -117,6 +129,17 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             StoreType storeType
     ) {
+        Double baseKakaoAverageGrade = jpaQueryFactory.select(store.kakaoAverageGrade)
+                .from(store)
+                .where(
+                        calculateHaversineDistance(startCoordinate).loe(radiusRange),
+                        store.storeType.eq(storeType)
+                )
+                .orderBy(store.kakaoAverageGrade.desc())
+                .limit(1)
+                .offset(9)
+                .fetchOne();
+
         return Collections.unmodifiableList(
                 jpaQueryFactory.select(
                                 Projections.constructor(
@@ -136,7 +159,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         .from(store)
                         .where(
                                 calculateHaversineDistance(startCoordinate).loe(radiusRange),
-                                store.storeType.eq(storeType)
+                                store.storeType.eq(storeType),
+                                store.kakaoAverageGrade.goe(baseKakaoAverageGrade)
                         )
                         .fetch()
         );
@@ -148,6 +172,17 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
+        Double baseNolgoatAverageGrade = jpaQueryFactory.select(store.nolgoatAverageGrade)
+                .from(store)
+                .where(
+                        calculateHaversineDistance(startCoordinate).loe(radiusRange),
+                        store.category.contains(category)
+                )
+                .orderBy(store.nolgoatAverageGrade.desc())
+                .limit(1)
+                .offset(9)
+                .fetchOne();
+
         return Collections.unmodifiableList(
                 jpaQueryFactory.select(
                                 Projections.constructor(
@@ -167,7 +202,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         .from(store)
                         .where(
                                 calculateHaversineDistance(startCoordinate).loe(radiusRange),
-                                store.category.contains(category)
+                                store.category.contains(category),
+                                store.nolgoatAverageGrade.goe(baseNolgoatAverageGrade)
                         )
                         .fetch()
         );
@@ -179,6 +215,17 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             StoreType storeType
     ) {
+        Double baseNolgoatAverageGrade = jpaQueryFactory.select(store.nolgoatAverageGrade)
+                .from(store)
+                .where(
+                        calculateHaversineDistance(startCoordinate).loe(radiusRange),
+                        store.storeType.eq(storeType)
+                )
+                .orderBy(store.nolgoatAverageGrade.desc())
+                .limit(1)
+                .offset(9)
+                .fetchOne();
+
         return Collections.unmodifiableList(
                 jpaQueryFactory.select(
                                 Projections.constructor(
@@ -198,7 +245,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         .from(store)
                         .where(
                                 calculateHaversineDistance(startCoordinate).loe(radiusRange),
-                                store.storeType.eq(storeType)
+                                store.storeType.eq(storeType),
+                                store.nolgoatAverageGrade.goe(baseNolgoatAverageGrade)
                         )
                         .fetch()
         );
