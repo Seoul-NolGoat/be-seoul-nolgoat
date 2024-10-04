@@ -9,6 +9,7 @@ import wad.seoul_nolgoat.service.tMap.TMapService;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -23,8 +24,10 @@ public class SortService {
     public List<GradeSortCombinationDto> sortStoresByGrade(SortConditionDto<StoreForGradeSortDto> sortConditionDto) {
         int totalRounds = sortConditionDto.getTotalRounds();
         List<GradeSortCombinationDto> gradeCombinations = generateGradeCombinations(sortConditionDto, totalRounds);
+        sortCombinationsByGrade(gradeCombinations);
+        List<GradeSortCombinationDto> filteredGradeCombinations = filterByBaseTotalGrade(gradeCombinations);
 
-        return sortCombinationsByGrade(gradeCombinations, totalRounds);
+        return groupAndShuffleByGrade(filteredGradeCombinations);
     }
 
     public List<DistanceSortCombinationDto> sortStoresByDistance(SortConditionDto<StoreForDistanceSortDto> sortConditionDto) {
@@ -158,42 +161,34 @@ public class SortService {
         return gradeCombinations;
     }
 
-    private List<GradeSortCombinationDto> sortCombinationsByGrade(
-            List<GradeSortCombinationDto> combinations,
-            int totalRounds
-    ) {
-        if (totalRounds == SearchService.THREE_ROUND) {
-            combinations.sort((combination1, combination2) -> {
-                double firstRate = combination1.getFirstStore().getAverageGrade()
-                        + combination1.getSecondStore().getAverageGrade()
-                        + combination1.getThirdStore().getAverageGrade();
-                double secondRate = combination2.getFirstStore().getAverageGrade()
-                        + combination2.getSecondStore().getAverageGrade()
-                        + combination2.getThirdStore().getAverageGrade();
+    private void sortCombinationsByGrade(List<GradeSortCombinationDto> combinations) {
+        combinations.sort((combination1, combination2) -> {
+            double firstRate = combination1.getTotalGrade();
+            double secondRate = combination2.getTotalGrade();
 
-                return Double.compare(secondRate, firstRate);
-            });
-        }
-        if (totalRounds == SearchService.TWO_ROUND) {
-            combinations.sort((combination1, combination2) -> {
-                double firstRate = combination1.getFirstStore().getAverageGrade()
-                        + combination1.getSecondStore().getAverageGrade();
-                double secondRate = combination2.getFirstStore().getAverageGrade()
-                        + combination2.getSecondStore().getAverageGrade();
+            return Double.compare(secondRate, firstRate);
+        });
+    }
 
-                return Double.compare(secondRate, firstRate);
-            });
-        }
-        if (totalRounds == SearchService.ONE_ROUND) {
-            combinations.sort((combination1, combination2) -> {
-                double firstRate = combination1.getFirstStore().getAverageGrade();
-                double secondRate = combination2.getFirstStore().getAverageGrade();
+    // 10번째 조합의 총 평점을 기준으로 잡고 그 점수 이상인 조합들을 추출
+    private List<GradeSortCombinationDto> filterByBaseTotalGrade(List<GradeSortCombinationDto> gradeCombinations) {
+        double baseTotalGrade = gradeCombinations.get(Math.min(9, gradeCombinations.size())).getTotalGrade();
 
-                return Double.compare(secondRate, firstRate);
-            });
-        }
+        return gradeCombinations.stream()
+                .filter(combination -> combination.getTotalGrade() >= baseTotalGrade)
+                .toList();
+    }
 
-        return combinations;
+    // 평점별로 그룹화
+    // 앞 순서의 가게가 상위권에 쏠리지 않도록 그룹내에서 순서를 무작위로 설정
+    private List<GradeSortCombinationDto> groupAndShuffleByGrade(List<GradeSortCombinationDto> filteredGradeCombinations) {
+        Map<Double, List<GradeSortCombinationDto>> groupedByGrade = filteredGradeCombinations.stream()
+                .collect(Collectors.groupingBy(GradeSortCombinationDto::getTotalGrade, LinkedHashMap::new, Collectors.toList()));
+        groupedByGrade.forEach((totalGrade, group) -> Collections.shuffle(group));
+
+        return groupedByGrade.values().stream()
+                .flatMap(List::stream)
+                .toList();
     }
 
     private List<DistanceSortCombinationDto> createDistanceCombinationsForThreeRounds(
