@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.domain.store.StoreCategory;
 import wad.seoul_nolgoat.domain.store.StoreType;
-import wad.seoul_nolgoat.exception.search.InvalidRoundException;
-import wad.seoul_nolgoat.exception.search.InvalidSearchCriteriaException;
+import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.search.dto.SortConditionDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForPossibleCategoriesDto;
 import wad.seoul_nolgoat.service.search.filter.FilterService;
@@ -19,6 +18,9 @@ import wad.seoul_nolgoat.web.search.dto.response.CombinationDto;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_GATHERING_ROUND;
+import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_SEARCH_CRITERIA;
 
 @RequiredArgsConstructor
 @Service
@@ -58,7 +60,7 @@ public class SearchService {
         if (criteria.equals(NOLGOAT_GRADE_CRITERIA)) {
             return getCombinationsByNolgoatGrade(searchConditionDto);
         }
-        throw new InvalidSearchCriteriaException();
+        throw new ApiException(INVALID_SEARCH_CRITERIA);
     }
 
     public List<String> searchPossibleCategories(PossibleCategoriesConditionDto possibleCategoriesConditionDto) {
@@ -164,7 +166,7 @@ public class SearchService {
                     Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
             );
         }
-        throw new InvalidRoundException();
+        throw new ApiException(INVALID_GATHERING_ROUND);
     }
 
     private List<CombinationDto> getCombinationsByKakaoGrade(SearchConditionDto searchConditionDto) {
@@ -257,7 +259,7 @@ public class SearchService {
                     startCoordinate
             );
         }
-        throw new InvalidRoundException();
+        throw new ApiException(INVALID_GATHERING_ROUND);
     }
 
     private List<CombinationDto> getCombinationsByNolgoatGrade(SearchConditionDto searchConditionDto) {
@@ -350,7 +352,7 @@ public class SearchService {
                     startCoordinate
             );
         }
-        throw new InvalidRoundException();
+        throw new ApiException(INVALID_GATHERING_ROUND);
     }
 
     private List<CombinationDto> fetchWalkRouteInfoForCombinationDto(
@@ -393,7 +395,7 @@ public class SearchService {
 
                         return combination;
                     }
-                    throw new InvalidRoundException();
+                    throw new ApiException(INVALID_GATHERING_ROUND);
                 })
                 .collect(Collectors.toList());
     }

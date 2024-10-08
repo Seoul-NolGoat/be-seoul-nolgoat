@@ -9,9 +9,11 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
-import wad.seoul_nolgoat.exception.auth.UnsupportedProviderException;
-import wad.seoul_nolgoat.exception.notfound.UserNotFoundException;
+import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.auth.dto.*;
+
+import static wad.seoul_nolgoat.exception.ErrorCode.UNSUPPORTED_PROVIDER;
+import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,7 +38,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return processOAuth2User(new GoogleResponse(oAuth2User.getAttributes()));
         }
         log.error("Unsupported OAuth2 provider: {}", registrationId);
-        throw new UnsupportedProviderException();
+        throw new ApiException(UNSUPPORTED_PROVIDER);
     }
 
     private OAuth2User processOAuth2User(OAuth2Response oAuth2Response) {
@@ -59,7 +61,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return new OAuth2UserImpl(oAuth2UserDto);
         }
         User user = userRepository.findByLoginId(uniqueProviderId)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         user.update(
                 null,
                 nickname,

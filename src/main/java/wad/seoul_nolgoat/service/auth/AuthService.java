@@ -8,12 +8,14 @@ import wad.seoul_nolgoat.domain.refresh.RefreshToken;
 import wad.seoul_nolgoat.domain.refresh.RefreshTokenRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
-import wad.seoul_nolgoat.exception.notfound.UserNotFoundException;
+import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.jwt.JwtUtil;
 import wad.seoul_nolgoat.util.mapper.UserMapper;
 import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;
 
 import java.util.Date;
+
+import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,7 +39,7 @@ public class AuthService {
     public UserProfileDto findLoginUserByAuthorization(String authorization) {
         String token = authorization.split(" ")[1];
         User user = userRepository.findByLoginId(jwtUtil.getLoginId(token))
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
         return UserMapper.toUserProfileDto(user);
     }
