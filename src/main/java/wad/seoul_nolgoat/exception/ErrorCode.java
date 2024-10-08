@@ -35,7 +35,10 @@ public enum ErrorCode {
     // 지도 관련
     TMAP_API_CALL_FAILED(HttpStatus.BAD_REQUEST, "MAP001", "TMap API 호출에 실패했습니다."),
     ADDRESS_CONVERSION_FAILED(HttpStatus.BAD_REQUEST, "MAP002", "주소로 변환할 수 없습니다."),
-    WALKING_DISTANCE_CALCULATION_FAILED(HttpStatus.BAD_REQUEST, "MAP003", "도보 거리를 계산할 수 없습니다.");
+    WALKING_DISTANCE_CALCULATION_FAILED(HttpStatus.BAD_REQUEST, "MAP003", "도보 거리를 계산할 수 없습니다."),
+
+    // 유효성 검사 관련
+    INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "VALIDATION001", "입력값이 유효하지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
