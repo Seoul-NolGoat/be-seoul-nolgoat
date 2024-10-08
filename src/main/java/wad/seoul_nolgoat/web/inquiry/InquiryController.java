@@ -2,11 +2,9 @@ package wad.seoul_nolgoat.web.inquiry;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.inquiry.InquiryService;
-import wad.seoul_nolgoat.util.ValidationUtil;
 import wad.seoul_nolgoat.web.inquiry.dto.request.InquirySaveDto;
 import wad.seoul_nolgoat.web.inquiry.dto.request.InquiryUpdateDto;
 import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryDetailsDto;
@@ -53,14 +51,8 @@ public class InquiryController {
     @PutMapping("/{inquiryId}")
     public ResponseEntity<?> update(
             @PathVariable Long inquiryId,
-            @RequestBody InquiryUpdateDto inquiryUpdateDto,
-            BindingResult bindingResult
+            @RequestBody InquiryUpdateDto inquiryUpdateDto
     ) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(ValidationUtil.extractErrors(bindingResult));
-        }
         inquiryService.update(inquiryId, inquiryUpdateDto);
 
         return ResponseEntity
