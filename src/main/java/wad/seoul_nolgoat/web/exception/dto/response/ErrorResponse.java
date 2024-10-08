@@ -1,14 +1,16 @@
 package wad.seoul_nolgoat.web.exception.dto.response;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import wad.seoul_nolgoat.exception.ErrorCode;
 
 @Getter
-@RequiredArgsConstructor
 public class ErrorResponse {
 
-    private final HttpStatus status;
-    private final String code;
-    private final String message;
+    private String code;
+    private String message;
+
+    public ErrorResponse(ErrorCode errorCode) {
+        this.code = errorCode.getCode();
+        this.message = errorCode.getMessage();
+    }
 }
