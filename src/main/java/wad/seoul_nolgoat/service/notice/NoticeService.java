@@ -7,8 +7,7 @@ import wad.seoul_nolgoat.domain.notice.Notice;
 import wad.seoul_nolgoat.domain.notice.NoticeRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
-import wad.seoul_nolgoat.exception.notfound.NoticeNotFoundException;
-import wad.seoul_nolgoat.exception.notfound.UserNotFoundException;
+import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.util.mapper.NoticeMapper;
 import wad.seoul_nolgoat.web.notice.dto.request.NoticeSaveDto;
 import wad.seoul_nolgoat.web.notice.dto.request.NoticeUpdateDto;
@@ -17,6 +16,9 @@ import wad.seoul_nolgoat.web.notice.dto.response.NoticeListDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static wad.seoul_nolgoat.exception.ErrorCode.NOTICE_NOT_FOUND;
+import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -27,14 +29,14 @@ public class NoticeService {
 
     public Long save(Long userId, NoticeSaveDto noticeSaveDto) {
         User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
         return noticeRepository.save(NoticeMapper.toEntity(user, noticeSaveDto)).getId();
     }
 
     public NoticeDetailsDto findByNoticeId(Long noticeId) {
         Notice notice = noticeRepository.findById(noticeId)
-                .orElseThrow(NoticeNotFoundException::new);
+                .orElseThrow(() -> new ApiException(NOTICE_NOT_FOUND));
 
         return NoticeMapper.toNoticeDetailsDto(notice);
     }
@@ -50,7 +52,7 @@ public class NoticeService {
     @Transactional
     public void update(Long noticeId, NoticeUpdateDto noticeUpdateDto) {
         Notice notice = noticeRepository.findById(noticeId)
-                .orElseThrow(NoticeNotFoundException::new);
+                .orElseThrow(() -> new ApiException(NOTICE_NOT_FOUND));
 
         notice.update(
                 noticeUpdateDto.getTitle(),
@@ -60,7 +62,7 @@ public class NoticeService {
 
     public void deleteById(Long noticeId) {
         if (!noticeRepository.existsById(noticeId)) {
-            throw new NoticeNotFoundException();
+            throw new ApiException(NOTICE_NOT_FOUND);
         }
 
         noticeRepository.deleteById(noticeId);
@@ -69,7 +71,7 @@ public class NoticeService {
     @Transactional
     public void increaseViews(Long noticeId) {
         Notice notice = noticeRepository.findById(noticeId)
-                .orElseThrow(NoticeNotFoundException::new);
+                .orElseThrow(() -> new ApiException(NOTICE_NOT_FOUND));
         notice.increaseViews();
     }
 }

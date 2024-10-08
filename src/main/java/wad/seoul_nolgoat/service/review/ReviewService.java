@@ -10,10 +10,7 @@ import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.store.StoreRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
-import wad.seoul_nolgoat.exception.duplicate.ReviewDuplicateException;
-import wad.seoul_nolgoat.exception.notfound.ReviewNotFoundException;
-import wad.seoul_nolgoat.exception.notfound.StoreNotFoundException;
-import wad.seoul_nolgoat.exception.notfound.UserNotFoundException;
+import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.s3.S3Service;
 import wad.seoul_nolgoat.service.store.StoreService;
 import wad.seoul_nolgoat.util.mapper.ReviewMapper;
@@ -24,6 +21,8 @@ import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+
+import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -42,7 +41,7 @@ public class ReviewService {
             ReviewSaveDto reviewSaveDto
     ) {
         if (reviewRepository.existsByUserIdAndStoreId(userId, storeId)) {
-            throw new ReviewDuplicateException();
+            throw new ApiException(DUPLICATE_REVIEW);
         }
 
         Optional<String> optionalImageUrl = Optional.empty();
@@ -58,9 +57,9 @@ public class ReviewService {
         storeService.updateAverageGradeOnReviewAdd(storeId, reviewSaveDto.getGrade());
 
         User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(StoreNotFoundException::new);
+                .orElseThrow(() -> new ApiException(STORE_NOT_FOUND));
 
         return reviewRepository.save(
                 ReviewMapper.toEntity(
@@ -83,7 +82,7 @@ public class ReviewService {
     @Transactional
     public void update(Long reviewId, ReviewUpdateDto reviewUpdateDto) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(ReviewNotFoundException::new);
+                .orElseThrow(() -> new ApiException(REVIEW_NOT_FOUND));
         review.update(
                 reviewUpdateDto.getGrade(),
                 reviewUpdateDto.getContent()
@@ -92,7 +91,7 @@ public class ReviewService {
 
     public void deleteById(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(ReviewNotFoundException::new);
+                .orElseThrow(() -> new ApiException(REVIEW_NOT_FOUND));
 
         // accommodation averageGrade 업데이트
         storeService.updateAverageGradeOnReviewDelete(review.getStore().getId(), review.getGrade());

@@ -2,7 +2,7 @@ package wad.seoul_nolgoat.service.search.sort;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import wad.seoul_nolgoat.exception.search.InvalidRoundException;
+import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.search.SearchService;
 import wad.seoul_nolgoat.service.search.dto.*;
 import wad.seoul_nolgoat.service.tMap.TMapService;
@@ -10,6 +10,8 @@ import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_GATHERING_ROUND;
 
 @RequiredArgsConstructor
 @Service
@@ -76,7 +78,7 @@ public class SortService {
                     .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistance))
                     .toList();
         }
-        throw new InvalidRoundException();
+        throw new ApiException(INVALID_GATHERING_ROUND);
     }
 
     private List<GradeSortCombinationDto> generateGradeCombinations(
@@ -99,7 +101,7 @@ public class SortService {
         if (totalRounds == SearchService.ONE_ROUND) {
             return createGradeCombinationsForOneRound(sortConditionDto.getFirstFilteredStores());
         }
-        throw new InvalidRoundException();
+        throw new ApiException(INVALID_GATHERING_ROUND);
     }
 
     private List<GradeSortCombinationDto> createGradeCombinationsForThreeRounds(
@@ -322,7 +324,7 @@ public class SortService {
                                 tMapService.fetchFullPathWalkRouteInfo(startCoordinate, endCoordinate)
                         );
                     }
-                    throw new InvalidRoundException();
+                    throw new ApiException(INVALID_GATHERING_ROUND);
                 }).toList();
 
         return combinations.stream()

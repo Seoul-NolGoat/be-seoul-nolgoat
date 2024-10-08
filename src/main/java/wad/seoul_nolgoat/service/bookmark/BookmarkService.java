@@ -8,12 +8,14 @@ import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.store.StoreRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
-import wad.seoul_nolgoat.exception.notfound.StoreNotFoundException;
-import wad.seoul_nolgoat.exception.notfound.UserNotFoundException;
+import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.util.mapper.StoreMapper;
 import wad.seoul_nolgoat.web.store.dto.response.StoreForBookmarkDto;
 
 import java.util.List;
+
+import static wad.seoul_nolgoat.exception.ErrorCode.STORE_NOT_FOUND;
+import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -25,9 +27,9 @@ public class BookmarkService {
 
     public Long save(Long userId, Long storeId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(StoreNotFoundException::new);
+                .orElseThrow(() -> new ApiException(STORE_NOT_FOUND));
 
         return bookmarkRepository.save(
                 new Bookmark(

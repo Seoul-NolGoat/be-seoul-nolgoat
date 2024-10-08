@@ -1,10 +1,12 @@
 package wad.seoul_nolgoat.util.mapper;
 
-import wad.seoul_nolgoat.exception.search.InvalidRoundException;
+import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.search.SearchService;
 import wad.seoul_nolgoat.service.search.dto.DistanceSortCombinationDto;
 import wad.seoul_nolgoat.service.search.dto.GradeSortCombinationDto;
 import wad.seoul_nolgoat.web.search.dto.response.CombinationDto;
+
+import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_GATHERING_ROUND;
 
 public class CombinationMapper {
 
@@ -30,7 +32,7 @@ public class CombinationMapper {
                     distanceSortCombinationDto.getWalkRouteInfoDto()
             );
         }
-        throw new InvalidRoundException();
+        throw new ApiException(INVALID_GATHERING_ROUND);
     }
 
     public static CombinationDto toCombinationDto(GradeSortCombinationDto gradeSortCombinationDto) {
@@ -52,6 +54,6 @@ public class CombinationMapper {
                     StoreMapper.toStoreForCombinationDto(gradeSortCombinationDto.getFirstStore())
             );
         }
-        throw new InvalidRoundException();
+        throw new ApiException(INVALID_GATHERING_ROUND);
     }
 }

@@ -10,8 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import wad.seoul_nolgoat.exception.mapapi.TMapApiException;
-import wad.seoul_nolgoat.exception.mapapi.WalkingDistanceCalculationException;
+import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.tMap.dto.WalkRouteInfoDto;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
@@ -19,6 +18,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static wad.seoul_nolgoat.exception.ErrorCode.TMAP_API_CALL_FAILED;
+import static wad.seoul_nolgoat.exception.ErrorCode.WALKING_DISTANCE_CALCULATION_FAILED;
 
 @RequiredArgsConstructor
 @Service
@@ -128,9 +130,9 @@ public class TMapService {
                     return new WalkRouteInfoDto(properties.get(TOTAL_DISTANCE_PATH).asInt(), properties.get(TOTAL_TIME_PATH).asInt());
                 }
             }
-            throw new WalkingDistanceCalculationException();
+            throw new ApiException(WALKING_DISTANCE_CALCULATION_FAILED);
         } catch (Exception e) {
-            throw new TMapApiException();
+            throw new ApiException(TMAP_API_CALL_FAILED);
         }
     }
 
