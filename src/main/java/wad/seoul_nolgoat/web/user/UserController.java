@@ -3,11 +3,9 @@ package wad.seoul_nolgoat.web.user;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.user.UserService;
-import wad.seoul_nolgoat.util.ValidationUtil;
 import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
 import wad.seoul_nolgoat.web.user.dto.request.UserUpdateDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserDetailsDto;
@@ -24,14 +22,8 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> createUser(
             @Valid @RequestBody UserSaveDto userSaveDto,
-            BindingResult bindingResult,
             UriComponentsBuilder uriComponentsBuilder
     ) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(ValidationUtil.extractErrors(bindingResult));
-        }
         Long userId = userService.save(userSaveDto);
         URI location = uriComponentsBuilder.path("/api/users/{userId}")
                 .buildAndExpand(userId)
@@ -51,14 +43,8 @@ public class UserController {
     @PutMapping("/{userId}")
     public ResponseEntity<?> update(
             @PathVariable Long userId,
-            @Valid @RequestBody UserUpdateDto userUpdateDto,
-            BindingResult bindingResult
+            @Valid @RequestBody UserUpdateDto userUpdateDto
     ) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(ValidationUtil.extractErrors(bindingResult));
-        }
         userService.update(userId, userUpdateDto);
 
         return ResponseEntity

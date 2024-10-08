@@ -2,11 +2,9 @@ package wad.seoul_nolgoat.web.notice;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.notice.NoticeService;
-import wad.seoul_nolgoat.util.ValidationUtil;
 import wad.seoul_nolgoat.web.notice.dto.request.NoticeSaveDto;
 import wad.seoul_nolgoat.web.notice.dto.request.NoticeUpdateDto;
 import wad.seoul_nolgoat.web.notice.dto.response.NoticeDetailsDto;
@@ -53,14 +51,8 @@ public class NoticeController {
     @PutMapping("/{noticeId}")
     public ResponseEntity<?> update(
             @PathVariable Long noticeId,
-            @RequestBody NoticeUpdateDto noticeUpdateDto,
-            BindingResult bindingResult
+            @RequestBody NoticeUpdateDto noticeUpdateDto
     ) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(ValidationUtil.extractErrors(bindingResult));
-        }
         noticeService.update(noticeId, noticeUpdateDto);
 
         return ResponseEntity

@@ -3,12 +3,10 @@ package wad.seoul_nolgoat.web.review;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.review.ReviewService;
-import wad.seoul_nolgoat.util.ValidationUtil;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewUpdateDto;
 import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
@@ -30,14 +28,8 @@ public class ReviewController {
             @PathVariable Long storeId,
             @RequestPart(value = "file", required = false) MultipartFile file,
             @Valid @RequestPart("review") ReviewSaveDto reviewSaveDto,
-            BindingResult bindingResult,
             UriComponentsBuilder uriComponentsBuilder
     ) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(ValidationUtil.extractErrors(bindingResult));
-        }
         Long reviewId = reviewService.save(
                 userId,
                 storeId,
@@ -63,14 +55,8 @@ public class ReviewController {
     @PutMapping("/{reviewId}")
     public ResponseEntity<?> update(
             @PathVariable Long reviewId,
-            @Valid @RequestBody ReviewUpdateDto reviewUpdateDto,
-            BindingResult bindingResult
+            @Valid @RequestBody ReviewUpdateDto reviewUpdateDto
     ) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(ValidationUtil.extractErrors(bindingResult));
-        }
         reviewService.update(reviewId, reviewUpdateDto);
 
         return ResponseEntity
