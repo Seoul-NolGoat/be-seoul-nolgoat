@@ -11,6 +11,7 @@ public enum ErrorCode {
     // 인증 인가 관련
     UNSUPPORTED_PROVIDER(HttpStatus.UNAUTHORIZED, "AUTH001", "지원하지 않는 제공자입니다."),
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH002", "기한이 만료된 토큰입니다."),
+    INVALID_TOKEN_FORMAT(HttpStatus.UNAUTHORIZED, "AUTH003", "토큰 형식이 올바르지 않습니다."),
 
     // 유저 관련
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER001", "존재하지 않는 유저입니다."),
