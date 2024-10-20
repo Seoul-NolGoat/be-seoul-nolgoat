@@ -15,7 +15,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import wad.seoul_nolgoat.jwt.JwtFilter;
-import wad.seoul_nolgoat.service.auth.AuthService;
+import wad.seoul_nolgoat.jwt.JwtService;
 import wad.seoul_nolgoat.service.auth.CustomLogoutFilter;
 import wad.seoul_nolgoat.service.auth.CustomOAuth2UserService;
 import wad.seoul_nolgoat.service.auth.CustomSuccessHandler;
@@ -27,7 +27,7 @@ import java.util.List;
 public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
-    private final AuthService authService;
+    private final JwtService jwtService;
 
     @Value("${app.urls.frontend-base-url}")
     private String frontendBaseUrl;
@@ -53,8 +53,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/reviews/**", "/api/search/**").authenticated()
                         .anyRequest().permitAll()
                 )
-                .addFilterBefore(new JwtFilter(authService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new CustomLogoutFilter(authService), LogoutFilter.class)
+                .addFilterBefore(new JwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new CustomLogoutFilter(jwtService), LogoutFilter.class)
                 .sessionManagement(s -> s
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );

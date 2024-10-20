@@ -11,37 +11,31 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import wad.seoul_nolgoat.exception.ApiException;
-import wad.seoul_nolgoat.service.auth.AuthService;
 import wad.seoul_nolgoat.service.auth.dto.OAuth2UserDto;
 import wad.seoul_nolgoat.service.auth.dto.OAuth2UserImpl;
 
 import java.io.IOException;
 
-import static wad.seoul_nolgoat.exception.ErrorCode.TOKEN_EXPIRED;
-
 @Slf4j
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final AuthService authService;
+    private final JwtService jwtService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String authorization = request.getHeader(AuthService.AUTHORIZATION_HEADER_TYPE);
-            if (authService.isInvalidAuthorization(authorization)) {
+            String authorization = request.getHeader("Authorization");
+            if (jwtService.isValidAuthorization(authorization)) {
                 filterChain.doFilter(request, response); // 다음 필터로 전달
                 return;
             }
 
             String accessToken = authorization.split(" ")[1];
-            if (authService.isExpiredToken(accessToken)) {
-                throw new ApiException(TOKEN_EXPIRED);
-            }
+
 
             OAuth2UserImpl oAuth2User = new OAuth2UserImpl(
-                    new OAuth2UserDto(authService.getLoginIdFromToken(accessToken))
+                    new OAuth2UserDto(jwtService.getLoginId(accessToken))
             );
             SecurityContextHolder.getContext().setAuthentication(
                     new UsernamePasswordAuthenticationToken(
@@ -56,6 +50,11 @@ public class JwtFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             handleGenericException(response);
         }
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return super.shouldNotFilter(request);
     }
 
     private void handleTokenExpiredException(HttpServletResponse response) throws IOException {

@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.filter.GenericFilterBean;
+import wad.seoul_nolgoat.jwt.JwtService;
 
 import java.io.IOException;
 
@@ -17,7 +18,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
     private static final String LOGOUT_URI = "/api/logout";
     private static final String POST_METHOD = "POST";
 
-    private final AuthService authService;
+    private final JwtService jwtService;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -29,13 +30,11 @@ public class CustomLogoutFilter extends GenericFilterBean {
             filterChain.doFilter(request, response);
             return;
         }
-        String refreshToken = request.getHeader(AuthService.REFRESH_HEADER_TYPE);
-        if (authService.isInvalidRefreshToken(refreshToken)
-                || authService.isExpiredToken(refreshToken)
-                || !authService.isExistRefreshToken(refreshToken)) {
+        String refreshToken = request.getHeader("Refresh");
+        if (!jwtService.isValidRefreshToken(refreshToken) || !jwtService.isExistRefreshToken(refreshToken)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        authService.deleteRefreshToken(refreshToken);
+        jwtService.deleteRefreshToken(refreshToken);
     }
 }
