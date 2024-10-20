@@ -3,25 +3,24 @@ package wad.seoul_nolgoat.web.auth;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import wad.seoul_nolgoat.service.auth.AuthService;
+import wad.seoul_nolgoat.jwt.JwtService;
 import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auths/")
 public class AuthController {
 
-    private final AuthService authService;
+    private final JwtService jwtService;
 
-    @GetMapping("/user_profile")
+    @GetMapping("/me")
     public ResponseEntity<UserProfileDto> showUserProfile(HttpServletRequest request) {
-        String authorization = request.getHeader(AuthService.AUTHORIZATION_HEADER_TYPE);
+        String authorization = request.getHeader("Authorization");
         if (authorization == null || authorization.isBlank()) {
             return ResponseEntity
                     .noContent()
@@ -29,25 +28,21 @@ public class AuthController {
         }
 
         return ResponseEntity
-                .ok(authService.findLoginUserByAuthorization(authorization));
+                .ok(jwtService.findLoginUserByAuthorization(authorization));
     }
 
-    @PostMapping("/reissue")
-    public ResponseEntity reissueTokens(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = request.getHeader(AuthService.REFRESH_HEADER_TYPE);
-        if (authService.isInvalidRefreshToken(refreshToken)
-                || authService.isExpiredToken(refreshToken)
-                || !authService.isExistRefreshToken(refreshToken)) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .build();
-        }
-        authService.deleteRefreshToken(refreshToken);
-        String newRefreshToken = authService.getNewRefreshToken(refreshToken);
-        authService.saveRefreshToken(newRefreshToken);
+    @PostMapping("/token/reissue")
+    public ResponseEntity<Void> reissueTokens(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = request.getHeader("Refresh");
+        /*if (!jwtService.isValidRefreshToken(refreshToken) || !jwtService.isExistRefreshToken(refreshToken)) {
+            throw new ApiException(ErrorCode.)
+        }*/
+        jwtService.deleteRefreshToken(refreshToken);
+        String newRefreshToken = jwtService.reissueRefreshToken(refreshToken);
+        jwtService.saveRefreshToken(newRefreshToken);
 
-        response.setHeader(AuthService.AUTHORIZATION_HEADER_TYPE, authService.getNewAccessToken(refreshToken));
-        response.setHeader(AuthService.REFRESH_HEADER_TYPE, newRefreshToken);
+        response.setHeader("Authorization", jwtService.reissueAccessToken(refreshToken));
+        response.setHeader("Refresh", newRefreshToken);
 
         return ResponseEntity
                 .ok()
