@@ -1,5 +1,6 @@
 package wad.seoul_nolgoat.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import wad.seoul_nolgoat.auth.CustomLogoutFilter;
 import wad.seoul_nolgoat.auth.CustomOAuth2UserService;
 import wad.seoul_nolgoat.auth.CustomSuccessHandler;
+import wad.seoul_nolgoat.auth.JwtAuthenticationEntryPoint;
 import wad.seoul_nolgoat.auth.jwt.JwtFilter;
 import wad.seoul_nolgoat.auth.jwt.JwtService;
 
@@ -25,9 +27,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
+
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
     private final JwtService jwtService;
+    private final ObjectMapper objectMapper;
 
     @Value("${app.urls.frontend-base-url}")
     private String frontendBaseUrl;
@@ -48,6 +52,9 @@ public class SecurityConfig {
                                 .userService(customOAuth2UserService)
                         )
                         .successHandler(customSuccessHandler)
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint(objectMapper))
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/reviews/**", "/api/search/**").authenticated()
