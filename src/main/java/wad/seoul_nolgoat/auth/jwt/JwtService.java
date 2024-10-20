@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.jwt;
+package wad.seoul_nolgoat.auth.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

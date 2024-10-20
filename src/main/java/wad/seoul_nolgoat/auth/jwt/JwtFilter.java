@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.jwt;
+package wad.seoul_nolgoat.auth.jwt;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -11,8 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import wad.seoul_nolgoat.service.auth.dto.OAuth2UserDto;
-import wad.seoul_nolgoat.service.auth.dto.OAuth2UserImpl;
+import wad.seoul_nolgoat.auth.dto.OAuth2UserDto;
+import wad.seoul_nolgoat.auth.dto.OAuth2UserImpl;
 
 import java.io.IOException;
 

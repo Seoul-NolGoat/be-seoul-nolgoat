@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.service.auth;
+package wad.seoul_nolgoat.auth;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.filter.GenericFilterBean;
-import wad.seoul_nolgoat.jwt.JwtService;
+import wad.seoul_nolgoat.auth.jwt.JwtService;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.service.auth.dto;
+package wad.seoul_nolgoat.auth.dto;
 
 public interface OAuth2Response {
 
