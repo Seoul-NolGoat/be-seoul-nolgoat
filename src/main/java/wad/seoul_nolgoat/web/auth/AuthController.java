@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import wad.seoul_nolgoat.jwt.JwtService;
+import wad.seoul_nolgoat.auth.jwt.JwtService;
 import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;
 
 @RequiredArgsConstructor
