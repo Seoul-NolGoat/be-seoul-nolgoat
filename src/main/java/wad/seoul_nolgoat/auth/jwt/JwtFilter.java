@@ -1,13 +1,13 @@
 package wad.seoul_nolgoat.auth.jwt;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -15,6 +15,7 @@ import wad.seoul_nolgoat.auth.dto.OAuth2UserDto;
 import wad.seoul_nolgoat.auth.dto.OAuth2UserImpl;
 
 import java.io.IOException;
+import java.util.Collections;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,48 +25,44 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String authorization = request.getHeader("Authorization");
+        if (!jwtService.isValidAuthorization(authorization)) {
+            filterChain.doFilter(request, response); // 다음 필터로 전달
+            return;
+        }
+
+        // 토큰 검증
+        String accessToken = authorization.split(" ")[1];
         try {
-            String authorization = request.getHeader("Authorization");
-            if (jwtService.isValidAuthorization(authorization)) {
-                filterChain.doFilter(request, response); // 다음 필터로 전달
+            if (!jwtService.isValidAccessToken(accessToken)) {
+                filterChain.doFilter(request, response);
                 return;
             }
-
-            String accessToken = authorization.split(" ")[1];
-
-
-            OAuth2UserImpl oAuth2User = new OAuth2UserImpl(
-                    new OAuth2UserDto(jwtService.getLoginId(accessToken))
-            );
-            SecurityContextHolder.getContext().setAuthentication(
-                    new UsernamePasswordAuthenticationToken(
-                            oAuth2User,
-                            null,
-                            null
-                    )
-            );
-            filterChain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
-            handleTokenExpiredException(response);
-        } catch (Exception e) {
-            handleGenericException(response);
+            request.setAttribute("exception", e);
+            filterChain.doFilter(request, response);
+            return;
+        } catch (JwtException e) { // ExpiredJwtException을 제외한 나머지 JwtException 처리
+            request.setAttribute("exception", e);
+            filterChain.doFilter(request, response);
+            return;
         }
+
+        OAuth2UserImpl oAuth2User = new OAuth2UserImpl(
+                new OAuth2UserDto(jwtService.getLoginId(accessToken))
+        );
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        oAuth2User,
+                        null,
+                        Collections.emptyList()
+                )
+        );
+        filterChain.doFilter(request, response);
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         return super.shouldNotFilter(request);
-    }
-
-    private void handleTokenExpiredException(HttpServletResponse response) throws IOException {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getWriter().write("{\"error\": \"Token has expired\", \"status\": 401}");
-    }
-
-    private void handleGenericException(HttpServletResponse response) throws IOException {
-        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getWriter().write("{\"error\": \"An unexpected error occurred\", \"status\": 500}");
     }
 }
