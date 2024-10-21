@@ -20,13 +20,7 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<UserProfileDto> showUserProfile(HttpServletRequest request) {
-        String authorization = request.getHeader("Authorization");
-        if (authorization == null || authorization.isBlank()) {
-            return ResponseEntity
-                    .noContent()
-                    .build();
-        }
-
+        String authorization = request.getHeader(JwtService.AUTHORIZATION_HEADER);
         return ResponseEntity
                 .ok(jwtService.findLoginUserByAuthorization(authorization));
     }
