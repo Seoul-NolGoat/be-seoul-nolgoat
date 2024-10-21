@@ -25,8 +25,10 @@ import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
 @Service
 public class JwtService {
 
-    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 10 * 60 * 1000L; // 10 minutes
-    private static final Long REFRESH_TOKEN_EXPIRATION_TIME = 24 * 60 * 60 * 1000L; // 24 hours
+    public static final String AUTHORIZATION_HEADER = "Authorization";
+
+    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 30 * 60 * 1000L; // 30 minutes
+    private static final Long REFRESH_TOKEN_EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000L; // 7 days
     private static final String CLAIM_TYPE_ACCESS = "access";
     private static final String CLAIM_TYPE_REFRESH = "refresh";
     private static final String CLAIM_TYPE = "type";
@@ -57,6 +59,18 @@ public class JwtService {
         this.domain = domain;
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
+    }
+
+    // 테스트용 토큰 발급
+    public String createTestToken(String loginId, String type, Long expirationTime) {
+        return Jwts.builder()
+                .claim(CLAIM_TYPE, type)
+                .subject(loginId)
+                .issuer(domain)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(secretKey)
+                .compact();
     }
 
     // 토큰 생성 모음
@@ -119,7 +133,7 @@ public class JwtService {
         Claims payload = getPayload(accessToken);
         String issuer = payload.getIssuer();
         String type = payload.get(CLAIM_TYPE, String.class);
-        if (issuer.equals(domain)) {
+        if (!issuer.equals(domain)) {
             log.info(INVALID_ISSUER_ACCESS_TOKEN_MESSAGE, issuer);
 
             return false;
