@@ -11,10 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import wad.seoul_nolgoat.auth.AuthUrlManager;
 import wad.seoul_nolgoat.auth.dto.OAuth2UserDto;
 import wad.seoul_nolgoat.auth.dto.OAuth2UserImpl;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 
 @Slf4j
@@ -63,6 +65,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return super.shouldNotFilter(request);
+        return Arrays.stream(AuthUrlManager.getUserRequestMatchers())
+                .noneMatch(matcher -> matcher.matches(request));
     }
 }
