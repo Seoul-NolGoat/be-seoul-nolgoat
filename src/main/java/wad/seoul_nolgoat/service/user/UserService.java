@@ -7,6 +7,7 @@ import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.util.mapper.UserMapper;
+import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;
 import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
 import wad.seoul_nolgoat.web.user.dto.request.UserUpdateDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserDetailsDto;
@@ -28,6 +29,13 @@ public class UserService {
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
         return UserMapper.toUserDetailsDto(user);
+    }
+
+    public UserProfileDto getLoginUserDetails(String loginId) {
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+
+        return UserMapper.toUserProfileDto(user);
     }
 
     @Transactional

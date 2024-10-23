@@ -9,12 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import wad.seoul_nolgoat.domain.user.User;
-import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.refreshtoken.RefreshTokenService;
-import wad.seoul_nolgoat.util.mapper.UserMapper;
-import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -39,13 +35,11 @@ public class JwtService {
 
     private final SecretKey secretKey;
     private final String domain;
-    private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
 
     public JwtService(
             @Value("${spring.jwt.secret}") String secret,
             @Value("${spring.jwt.domain}") String domain,
-            UserRepository userRepository,
             RefreshTokenService refreshTokenService
     ) {
         this.secretKey = new SecretKeySpec(
@@ -53,7 +47,6 @@ public class JwtService {
                 Jwts.SIG.HS256.key().build().getAlgorithm()
         );
         this.domain = domain;
-        this.userRepository = userRepository;
         this.refreshTokenService = refreshTokenService;
     }
 
@@ -175,15 +168,6 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
-    }
-
-    // 토큰 정보를 이용해 유저 정보 조회
-    public UserProfileDto findLoginUserByAuthorization(String authorization) {
-        String token = authorization.split(" ")[1];
-        User user = userRepository.findByLoginId(getLoginId(token))
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-
-        return UserMapper.toUserProfileDto(user);
     }
 
     // Refresh 토큰 만료 시, 쿠키 삭제
