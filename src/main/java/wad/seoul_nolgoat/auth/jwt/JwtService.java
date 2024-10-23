@@ -133,7 +133,7 @@ public class JwtService {
         if (refreshToken == null) {
             throw new ApiException(NULL_REFRESH_TOKEN);
         }
-        //refreshTokenService.verifyRefreshTokenExistence(refreshToken);
+        refreshTokenService.verifyRefreshTokenExistence(refreshToken);
 
         try {
             Claims payload = getPayload(refreshToken);
