@@ -4,15 +4,15 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import wad.seoul_nolgoat.domain.refresh.RefreshToken;
-import wad.seoul_nolgoat.domain.refresh.RefreshTokenRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.service.refreshtoken.RefreshTokenService;
 import wad.seoul_nolgoat.util.mapper.UserMapper;
 import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;
 
@@ -28,9 +28,10 @@ import static wad.seoul_nolgoat.exception.ErrorCode.*;
 public class JwtService {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
+    public static final Long REFRESH_TOKEN_EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000L; // 7 days
 
     private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 30 * 60 * 1000L; // 30 minutes
-    private static final Long REFRESH_TOKEN_EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000L; // 7 days
     private static final String CLAIM_TYPE_ACCESS = "access";
     private static final String CLAIM_TYPE_REFRESH = "refresh";
     private static final String CLAIM_TYPE = "type";
@@ -39,13 +40,13 @@ public class JwtService {
     private final SecretKey secretKey;
     private final String domain;
     private final UserRepository userRepository;
-    private final RefreshTokenRepository tokenRepository;
+    private final RefreshTokenService refreshTokenService;
 
     public JwtService(
             @Value("${spring.jwt.secret}") String secret,
             @Value("${spring.jwt.domain}") String domain,
             UserRepository userRepository,
-            RefreshTokenRepository tokenRepository
+            RefreshTokenService refreshTokenService
     ) {
         this.secretKey = new SecretKeySpec(
                 secret.getBytes(StandardCharsets.UTF_8),
@@ -53,7 +54,7 @@ public class JwtService {
         );
         this.domain = domain;
         this.userRepository = userRepository;
-        this.tokenRepository = tokenRepository;
+        this.refreshTokenService = refreshTokenService;
     }
 
     // 테스트용 토큰 발급
@@ -128,22 +129,24 @@ public class JwtService {
         }
     }
 
-    public void verifyRefreshToken(String refreshToken) {
+    public void verifyRefreshToken(String refreshToken, HttpServletResponse response) {
         if (refreshToken == null) {
             throw new ApiException(NULL_REFRESH_TOKEN);
         }
+        //refreshTokenService.verifyRefreshTokenExistence(refreshToken);
 
-        Claims payload;
         try {
-            payload = getPayload(refreshToken);
+            Claims payload = getPayload(refreshToken);
+            String type = payload.get(CLAIM_TYPE, String.class);
+            if (!type.equals(CLAIM_TYPE_REFRESH)) {
+                throw new ApiException(INVALID_TOKEN_TYPE);
+            }
         } catch (ExpiredJwtException e) {
+            refreshTokenService.deleteRefreshToken(refreshToken);
+            deleteRefreshTokenCookie(response);
             throw new ApiException(TOKEN_EXPIRED);
         } catch (JwtException e) { // ExpiredJwtException을 제외한 나머지 JwtException 처리
             throw new ApiException(INVALID_TOKEN_FORMAT);
-        }
-        String type = payload.get(CLAIM_TYPE, String.class);
-        if (!type.equals(CLAIM_TYPE_REFRESH)) {
-            throw new ApiException(INVALID_TOKEN_TYPE);
         }
     }
 
@@ -174,30 +177,6 @@ public class JwtService {
                 .getSubject();
     }
 
-    // 토큰 저장소 관련 로직
-    public void saveRefreshToken(String refreshToken) {
-        Date date = new Date(System.currentTimeMillis() + JwtService.REFRESH_TOKEN_EXPIRATION_TIME);
-        tokenRepository.save(
-                new RefreshToken(
-                        refreshToken,
-                        getLoginId(refreshToken),
-                        date.toString()
-                )
-        );
-    }
-
-    public void verifyRefreshTokenExistence(String refreshToken) {
-        boolean isExistRefresh = tokenRepository.existsByRefreshToken(refreshToken);
-        if (!isExistRefresh) {
-            throw new ApiException(REFRESH_TOKEN_NOT_FOUND);
-        }
-    }
-
-    @Transactional
-    public void deleteRefreshToken(String refreshToken) {
-        tokenRepository.deleteByRefreshToken(refreshToken);
-    }
-
     // 토큰 정보를 이용해 유저 정보 조회
     public UserProfileDto findLoginUserByAuthorization(String authorization) {
         String token = authorization.split(" ")[1];
@@ -205,5 +184,13 @@ public class JwtService {
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
         return UserMapper.toUserProfileDto(user);
+    }
+
+    // Refresh 토큰 만료 시, 쿠키 삭제
+    public void deleteRefreshTokenCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie(REFRESH_TOKEN_COOKIE_NAME, null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
     }
 }
