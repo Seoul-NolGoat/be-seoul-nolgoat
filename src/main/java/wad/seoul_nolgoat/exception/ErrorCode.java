@@ -11,7 +11,12 @@ public enum ErrorCode {
     // 인증 인가 관련
     UNSUPPORTED_PROVIDER(HttpStatus.UNAUTHORIZED, "AUTH001", "지원하지 않는 제공자입니다."),
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH002", "기한이 만료된 토큰입니다."),
-    INVALID_TOKEN_FORMAT(HttpStatus.UNAUTHORIZED, "AUTH003", "토큰 형식이 올바르지 않습니다."),
+    INVALID_AUTHORIZATION_HEADER(HttpStatus.UNAUTHORIZED, "AUTH003", "유효하지 않은 Authorization 헤더입니다."),
+    INVALID_TOKEN_FORMAT(HttpStatus.UNAUTHORIZED, "AUTH004", "토큰 형식이 올바르지 않습니다."),
+    INVALID_TOKEN_TYPE(HttpStatus.UNAUTHORIZED, "AUTH005", "토큰 타입이 일치하지 않습니다."),
+    INVALID_ISSUER(HttpStatus.UNAUTHORIZED, "AUTH006", "유효하지 않은 발행자입니다."),
+    NULL_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH007", "Refresh 토큰이 null입니다."),
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "AUTH008", "저장소에 존재하지 않는 Refresh 토큰입니다."),
 
     // 유저 관련
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER001", "존재하지 않는 유저입니다."),
