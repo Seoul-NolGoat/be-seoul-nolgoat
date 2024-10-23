@@ -96,18 +96,7 @@ public class JwtService {
                 .compact();
     }
 
-    public String reissueRefreshToken(String refreshToken) {
-        return Jwts.builder()
-                .claim(CLAIM_TYPE, CLAIM_TYPE_REFRESH)
-                .subject(getLoginId(refreshToken))
-                .issuer(domain)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_TIME))
-                .signWith(secretKey)
-                .compact();
-    }
-
-    // 토큰 검증 모음
+    // 헤더 및 토큰 검증 모음
     public void verifyAuthorization(String authorization) {
         if (authorization == null || !authorization.startsWith(BEARER_PREFIX)) {
             throw new ApiException(INVALID_AUTHORIZATION_HEADER);
@@ -143,31 +132,10 @@ public class JwtService {
         }
     }
 
-    private Claims getPayload(String token) {
-        return Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-    }
-
-    // 클레임 조회 모음
-    public String getType(String token) {
-        return Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .get(CLAIM_TYPE, String.class);
-    }
-
+    // ex) kakao_12345678
     public String getLoginId(String token) {
-        return Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .getSubject();
+        Claims payload = getPayload(token);
+        return payload.getSubject();
     }
 
     // Refresh 토큰 만료 시, 쿠키 삭제
@@ -176,5 +144,13 @@ public class JwtService {
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
+    }
+
+    private Claims getPayload(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }
