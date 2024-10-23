@@ -1,6 +1,5 @@
 package wad.seoul_nolgoat.auth.jwt;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,6 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import wad.seoul_nolgoat.auth.AuthUrlManager;
 import wad.seoul_nolgoat.auth.dto.OAuth2UserDto;
 import wad.seoul_nolgoat.auth.dto.OAuth2UserImpl;
+import wad.seoul_nolgoat.exception.ApiException;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -27,24 +27,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorization = request.getHeader(JwtService.AUTHORIZATION_HEADER);
-        if (!jwtService.isValidAuthorization(authorization)) {
-            filterChain.doFilter(request, response); // 다음 필터로 전달
-            return;
-        }
-
-        // 토큰 검증
-        String accessToken = authorization.split(" ")[1];
+        // 헤더, 토큰 검증
+        String accessToken;
         try {
-            if (!jwtService.isValidAccessToken(accessToken)) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-        } catch (ExpiredJwtException e) {
-            request.setAttribute("exception", e);
-            filterChain.doFilter(request, response);
-            return;
-        } catch (JwtException e) { // ExpiredJwtException을 제외한 나머지 JwtException 처리
+            String authorization = request.getHeader(JwtService.AUTHORIZATION_HEADER);
+            jwtService.verifyAuthorization(authorization);
+            accessToken = authorization.split(" ")[1];
+            jwtService.verifyAccessToken(accessToken);
+        } catch (JwtException | ApiException e) {
             request.setAttribute("exception", e);
             filterChain.doFilter(request, response);
             return;
