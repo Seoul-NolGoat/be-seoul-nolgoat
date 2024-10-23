@@ -122,7 +122,10 @@ public class JwtService {
 
     public void verifyAccessToken(String accessToken) {
         Claims payload = getPayload(accessToken);
-        verifyPayload(payload);
+        String type = payload.get(CLAIM_TYPE, String.class);
+        if (!type.equals(CLAIM_TYPE_ACCESS)) {
+            throw new ApiException(INVALID_TOKEN_TYPE);
+        }
     }
 
     public void verifyRefreshToken(String refreshToken) {
@@ -138,7 +141,10 @@ public class JwtService {
         } catch (JwtException e) { // ExpiredJwtException을 제외한 나머지 JwtException 처리
             throw new ApiException(INVALID_TOKEN_FORMAT);
         }
-        verifyPayload(payload);
+        String type = payload.get(CLAIM_TYPE, String.class);
+        if (!type.equals(CLAIM_TYPE_REFRESH)) {
+            throw new ApiException(INVALID_TOKEN_TYPE);
+        }
     }
 
     private Claims getPayload(String token) {
@@ -147,18 +153,6 @@ public class JwtService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-    }
-
-    private void verifyPayload(Claims payload) {
-        String issuer = payload.getIssuer();
-        String type = payload.get(CLAIM_TYPE, String.class);
-        if (!issuer.equals(domain)) {
-            log.info("{}는 {}", issuer, INVALID_ISSUER.getMessage());
-            throw new ApiException(INVALID_ISSUER);
-        }
-        if (!type.equals(CLAIM_TYPE_REFRESH)) {
-            throw new ApiException(INVALID_TOKEN_TYPE);
-        }
     }
 
     // 클레임 조회 모음
