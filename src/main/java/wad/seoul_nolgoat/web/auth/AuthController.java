@@ -1,5 +1,6 @@
 package wad.seoul_nolgoat.web.auth;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +13,8 @@ import wad.seoul_nolgoat.auth.jwt.JwtService;
 import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;
 
 @RequiredArgsConstructor
-@RestController
 @RequestMapping("/api/auths/")
+@RestController
 public class AuthController {
 
     private final JwtService jwtService;
@@ -27,19 +28,24 @@ public class AuthController {
 
     @PostMapping("/token/reissue")
     public ResponseEntity<Void> reissueTokens(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = request.getHeader("Refresh");
-        /*if (!jwtService.isValidRefreshToken(refreshToken) || !jwtService.isExistRefreshToken(refreshToken)) {
-            throw new ApiException(ErrorCode.)
-        }*/
-        jwtService.deleteRefreshToken(refreshToken);
-        String newRefreshToken = jwtService.reissueRefreshToken(refreshToken);
-        jwtService.saveRefreshToken(newRefreshToken);
+        String refreshToken = getRefreshToken(request);
+        jwtService.verifyRefreshToken(refreshToken, response);
 
-        response.setHeader("Authorization", jwtService.reissueAccessToken(refreshToken));
-        response.setHeader("Refresh", newRefreshToken);
+        // Refresh 토큰 검증에 성공하면 Access 토큰을 재발급
+        response.setHeader(JwtService.AUTHORIZATION_HEADER, jwtService.reissueAccessToken(refreshToken));
 
         return ResponseEntity
                 .ok()
                 .build();
+    }
+
+    private String getRefreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(JwtService.REFRESH_TOKEN_COOKIE_NAME)) {
+                return cookie.getValue();
+            }
+        }
+        return null;
     }
 }
