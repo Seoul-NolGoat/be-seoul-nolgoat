@@ -2,6 +2,7 @@ package wad.seoul_nolgoat.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
+import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.web.exception.dto.response.ErrorResponse;
 
 import java.io.IOException;
@@ -32,8 +34,17 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             response.getWriter().write(objectMapper.writeValueAsString(new ErrorResponse(TOKEN_EXPIRED)));
             return;
         }
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(objectMapper.writeValueAsString(new ErrorResponse(INVALID_TOKEN_FORMAT)));
+        // ExpiredJwtException을 제외한 나머지 JwtException 처리
+        if (exception instanceof JwtException) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write(objectMapper.writeValueAsString(new ErrorResponse(INVALID_TOKEN_FORMAT)));
+            return;
+        }
+        if (exception instanceof ApiException) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write(objectMapper.writeValueAsString(new ErrorResponse(((ApiException) exception).getErrorCode())));
+        }
     }
 }
