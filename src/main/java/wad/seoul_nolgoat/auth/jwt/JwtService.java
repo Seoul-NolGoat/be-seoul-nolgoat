@@ -1,6 +1,8 @@
 package wad.seoul_nolgoat.auth.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +21,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
-import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
+import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -33,13 +35,6 @@ public class JwtService {
     private static final String CLAIM_TYPE_REFRESH = "refresh";
     private static final String CLAIM_TYPE = "type";
     private static final String BEARER_PREFIX = "Bearer ";
-
-    // 로그 메시지
-    private static final String INVALID_AUTHORIZATION_HEADER_MESSAGE = "유효하지 않은 Authorization 헤더입니다.";
-    private static final String INVALID_ISSUER_ACCESS_TOKEN_MESSAGE = "{}는 유효하지 않은 발행자입니다.";
-    private static final String INVALID_ACCESS_TOKEN_TYPE_MESSAGE = "토큰 타입이 일치하지 않습니다.";
-    private static final String REFRESH_TOKEN_NULL_MESSAGE = "Refresh 토큰이 null입니다.";
-    private static final String NON_EXISTENT_REFRESH_TOKEN_MESSAGE = "저장소에 존재하지 않는 Refresh 토큰입니다.";
 
     private final SecretKey secretKey;
     private final String domain;
@@ -119,55 +114,31 @@ public class JwtService {
     }
 
     // 토큰 검증 모음
-    public boolean isValidAuthorization(String authorization) {
+    public void verifyAuthorization(String authorization) {
         if (authorization == null || !authorization.startsWith(BEARER_PREFIX)) {
-            log.info(INVALID_AUTHORIZATION_HEADER_MESSAGE);
-
-            return false;
+            throw new ApiException(INVALID_AUTHORIZATION_HEADER);
         }
-
-        return true;
     }
 
-    public boolean isValidAccessToken(String accessToken) {
+    public void verifyAccessToken(String accessToken) {
         Claims payload = getPayload(accessToken);
-        String issuer = payload.getIssuer();
-        String type = payload.get(CLAIM_TYPE, String.class);
-        if (!issuer.equals(domain)) {
-            log.info(INVALID_ISSUER_ACCESS_TOKEN_MESSAGE, issuer);
-
-            return false;
-        }
-        if (!type.equals(CLAIM_TYPE_ACCESS)) {
-            log.info(INVALID_ACCESS_TOKEN_TYPE_MESSAGE);
-
-            return false;
-        }
-
-        return true;
+        verifyPayload(payload);
     }
 
-    public boolean isValidRefreshToken(String refreshToken) {
+    public void verifyRefreshToken(String refreshToken) {
         if (refreshToken == null) {
-            log.info(REFRESH_TOKEN_NULL_MESSAGE);
-
-            return false;
+            throw new ApiException(NULL_REFRESH_TOKEN);
         }
 
-        Claims payload = getPayload(refreshToken);
-        String issuer = payload.getIssuer();
-        if (!issuer.equals(domain)) {
-            log.info(INVALID_ISSUER_ACCESS_TOKEN_MESSAGE, issuer);
-
-            return false;
+        Claims payload;
+        try {
+            payload = getPayload(refreshToken);
+        } catch (ExpiredJwtException e) {
+            throw new ApiException(TOKEN_EXPIRED);
+        } catch (JwtException e) { // ExpiredJwtException을 제외한 나머지 JwtException 처리
+            throw new ApiException(INVALID_TOKEN_FORMAT);
         }
-        if (!payload.get(CLAIM_TYPE, String.class).equals(CLAIM_TYPE_REFRESH)) {
-            log.info(INVALID_ACCESS_TOKEN_TYPE_MESSAGE);
-
-            return false;
-        }
-
-        return true;
+        verifyPayload(payload);
     }
 
     private Claims getPayload(String token) {
@@ -176,6 +147,18 @@ public class JwtService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    private void verifyPayload(Claims payload) {
+        String issuer = payload.getIssuer();
+        String type = payload.get(CLAIM_TYPE, String.class);
+        if (!issuer.equals(domain)) {
+            log.info("{}는 {}", issuer, INVALID_ISSUER.getMessage());
+            throw new ApiException(INVALID_ISSUER);
+        }
+        if (!type.equals(CLAIM_TYPE_REFRESH)) {
+            throw new ApiException(INVALID_TOKEN_TYPE);
+        }
     }
 
     // 클레임 조회 모음
@@ -209,14 +192,11 @@ public class JwtService {
         );
     }
 
-    public boolean isExistRefreshToken(String refreshToken) {
+    public void verifyRefreshTokenExistence(String refreshToken) {
         boolean isExistRefresh = tokenRepository.existsByRefreshToken(refreshToken);
         if (!isExistRefresh) {
-            log.info(NON_EXISTENT_REFRESH_TOKEN_MESSAGE);
-            return false;
+            throw new ApiException(REFRESH_TOKEN_NOT_FOUND);
         }
-
-        return true;
     }
 
     @Transactional
