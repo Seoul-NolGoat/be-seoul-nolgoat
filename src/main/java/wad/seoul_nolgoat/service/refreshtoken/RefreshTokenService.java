@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.auth.jwt.JwtService;
-import wad.seoul_nolgoat.domain.refresh.RefreshToken;
-import wad.seoul_nolgoat.domain.refresh.RefreshTokenRepository;
+import wad.seoul_nolgoat.domain.refreshtoken.RefreshToken;
+import wad.seoul_nolgoat.domain.refreshtoken.RefreshTokenRepository;
 import wad.seoul_nolgoat.exception.ApiException;
 
 import java.util.Date;
