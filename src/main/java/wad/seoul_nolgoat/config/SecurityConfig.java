@@ -11,11 +11,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import wad.seoul_nolgoat.auth.*;
+import wad.seoul_nolgoat.auth.AuthUrlManager;
+import wad.seoul_nolgoat.auth.CustomOAuth2UserService;
+import wad.seoul_nolgoat.auth.CustomSuccessHandler;
+import wad.seoul_nolgoat.auth.JwtAuthenticationEntryPoint;
 import wad.seoul_nolgoat.auth.jwt.JwtFilter;
 import wad.seoul_nolgoat.auth.jwt.JwtService;
 
@@ -58,7 +60,6 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(new JwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new CustomLogoutFilter(jwtService), LogoutFilter.class)
                 .sessionManagement(s -> s
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
