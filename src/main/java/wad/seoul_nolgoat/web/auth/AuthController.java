@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wad.seoul_nolgoat.auth.jwt.JwtService;
+import wad.seoul_nolgoat.service.refreshtoken.RefreshTokenService;
 import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;
 
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;
 public class AuthController {
 
     private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
     @GetMapping("/me")
     public ResponseEntity<UserProfileDto> showUserProfile(HttpServletRequest request) {
@@ -33,6 +35,20 @@ public class AuthController {
 
         // Refresh 토큰 검증에 성공하면 Access 토큰을 재발급
         response.setHeader(JwtService.AUTHORIZATION_HEADER, jwtService.reissueAccessToken(refreshToken));
+
+        return ResponseEntity
+                .ok()
+                .build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> successLogout(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = getRefreshToken(request);
+        jwtService.verifyRefreshToken(refreshToken, response);
+
+        // DB 및 쿠키에서 Refresh 토큰 삭제
+        refreshTokenService.deleteRefreshToken(refreshToken);
+        jwtService.deleteRefreshTokenCookie(response);
 
         return ResponseEntity
                 .ok()
