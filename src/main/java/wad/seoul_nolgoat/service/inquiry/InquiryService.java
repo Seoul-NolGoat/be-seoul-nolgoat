@@ -27,8 +27,8 @@ public class InquiryService {
     private final InquiryRepository inquiryRepository;
     private final UserRepository userRepository;
 
-    public Long save(Long userId, InquirySaveDto inquirySaveDto) {
-        User user = userRepository.findById(userId)
+    public Long save(String loginId, InquirySaveDto inquirySaveDto) {
+        User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
         return inquiryRepository.save(InquiryMapper.toEntity(user, inquirySaveDto)).getId();

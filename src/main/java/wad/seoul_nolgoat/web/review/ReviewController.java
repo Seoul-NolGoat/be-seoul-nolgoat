@@ -3,6 +3,8 @@ package wad.seoul_nolgoat.web.review;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -22,16 +24,16 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("/{userId}/{storeId}")
+    @PostMapping("/{storeId}")
     public ResponseEntity<?> createReview(
-            @PathVariable Long userId,
+            @AuthenticationPrincipal OAuth2User loginUser,
             @PathVariable Long storeId,
             @RequestPart(value = "file", required = false) MultipartFile file,
             @Valid @RequestPart("review") ReviewSaveDto reviewSaveDto,
             UriComponentsBuilder uriComponentsBuilder
     ) {
         Long reviewId = reviewService.save(
-                userId,
+                loginUser.getName(),
                 storeId,
                 Optional.ofNullable(file),
                 reviewSaveDto

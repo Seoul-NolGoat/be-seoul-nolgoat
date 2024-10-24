@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.domain.refresh;
+package wad.seoul_nolgoat.domain.refreshtoken;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

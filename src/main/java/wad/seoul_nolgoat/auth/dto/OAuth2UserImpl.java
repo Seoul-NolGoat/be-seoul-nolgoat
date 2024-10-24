@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.service.auth.dto;
+package wad.seoul_nolgoat.auth.dto;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

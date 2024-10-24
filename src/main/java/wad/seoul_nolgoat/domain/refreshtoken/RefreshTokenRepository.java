@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.domain.refresh;
+package wad.seoul_nolgoat.domain.refreshtoken;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

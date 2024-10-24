@@ -27,8 +27,8 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final UserRepository userRepository;
 
-    public Long save(Long userId, NoticeSaveDto noticeSaveDto) {
-        User user = userRepository.findById(userId)
+    public Long save(String loginId, NoticeSaveDto noticeSaveDto) {
+        User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
         return noticeRepository.save(NoticeMapper.toEntity(user, noticeSaveDto)).getId();

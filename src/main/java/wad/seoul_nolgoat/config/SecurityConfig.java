@@ -1,5 +1,6 @@
 package wad.seoul_nolgoat.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,24 +11,26 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import wad.seoul_nolgoat.jwt.JwtFilter;
-import wad.seoul_nolgoat.service.auth.AuthService;
-import wad.seoul_nolgoat.service.auth.CustomLogoutFilter;
-import wad.seoul_nolgoat.service.auth.CustomOAuth2UserService;
-import wad.seoul_nolgoat.service.auth.CustomSuccessHandler;
+import wad.seoul_nolgoat.auth.AuthUrlManager;
+import wad.seoul_nolgoat.auth.CustomOAuth2UserService;
+import wad.seoul_nolgoat.auth.CustomSuccessHandler;
+import wad.seoul_nolgoat.auth.JwtAuthenticationEntryPoint;
+import wad.seoul_nolgoat.auth.jwt.JwtFilter;
+import wad.seoul_nolgoat.auth.jwt.JwtService;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
+
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
-    private final AuthService authService;
+    private final JwtService jwtService;
+    private final ObjectMapper objectMapper;
 
     @Value("${app.urls.frontend-base-url}")
     private String frontendBaseUrl;
@@ -49,12 +52,14 @@ public class SecurityConfig {
                         )
                         .successHandler(customSuccessHandler)
                 )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint(objectMapper))
+                )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/reviews/**", "/api/search/**").authenticated()
+                        .requestMatchers(AuthUrlManager.getUserRequestMatchers()).authenticated()
                         .anyRequest().permitAll()
                 )
-                .addFilterBefore(new JwtFilter(authService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new CustomLogoutFilter(authService), LogoutFilter.class)
+                .addFilterBefore(new JwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(s -> s
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );

@@ -2,6 +2,8 @@ package wad.seoul_nolgoat.web.notice;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.notice.NoticeService;
@@ -20,13 +22,13 @@ public class NoticeController {
 
     private final NoticeService noticeService;
 
-    @PostMapping("/{userId}")
+    @PostMapping
     public ResponseEntity<Void> createNotice(
-            @PathVariable Long userId,
+            @AuthenticationPrincipal OAuth2User loginUser,
             @RequestBody NoticeSaveDto noticeSaveDto,
             UriComponentsBuilder uriComponentsBuilder
     ) {
-        Long noticeId = noticeService.save(userId, noticeSaveDto);
+        Long noticeId = noticeService.save(loginUser.getName(), noticeSaveDto);
         URI location = uriComponentsBuilder.path("/api/notices/{noticeId}")
                 .buildAndExpand(noticeId)
                 .toUri();

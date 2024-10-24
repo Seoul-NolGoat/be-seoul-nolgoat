@@ -2,6 +2,8 @@ package wad.seoul_nolgoat.web.inquiry;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.inquiry.InquiryService;
@@ -20,13 +22,13 @@ public class InquiryController {
 
     private final InquiryService inquiryService;
 
-    @PostMapping("/{userId}")
+    @PostMapping
     public ResponseEntity<Void> createInquiry(
-            @PathVariable Long userId,
+            @AuthenticationPrincipal OAuth2User loginUser,
             @RequestBody InquirySaveDto inquirySaveDto,
             UriComponentsBuilder uriComponentsBuilder
     ) {
-        Long inquiryId = inquiryService.save(userId, inquirySaveDto);
+        Long inquiryId = inquiryService.save(loginUser.getName(), inquirySaveDto);
         URI location = uriComponentsBuilder.path("/api/inquiries/{inquiryId}")
                 .buildAndExpand(inquiryId)
                 .toUri();
