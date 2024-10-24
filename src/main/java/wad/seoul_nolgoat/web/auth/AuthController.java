@@ -5,12 +5,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wad.seoul_nolgoat.auth.jwt.JwtService;
 import wad.seoul_nolgoat.service.refreshtoken.RefreshTokenService;
+import wad.seoul_nolgoat.service.user.UserService;
 import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;
 
 @RequiredArgsConstructor
@@ -18,14 +21,15 @@ import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;
 @RestController
 public class AuthController {
 
+    private final UserService userService;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
 
     @GetMapping("/me")
-    public ResponseEntity<UserProfileDto> showUserProfile(HttpServletRequest request) {
-        String authorization = request.getHeader(JwtService.AUTHORIZATION_HEADER);
+    public ResponseEntity<UserProfileDto> showUserProfile(@AuthenticationPrincipal OAuth2User loginUser) {
+        String loginId = loginUser.getName();
         return ResponseEntity
-                .ok(jwtService.findLoginUserByAuthorization(authorization));
+                .ok(userService.getLoginUserDetails(loginId));
     }
 
     @PostMapping("/token/reissue")

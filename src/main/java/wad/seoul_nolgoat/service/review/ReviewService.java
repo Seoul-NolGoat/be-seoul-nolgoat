@@ -35,12 +35,15 @@ public class ReviewService {
     private final S3Service s3Service;
 
     public Long save(
-            Long userId,
+            String loginId,
             Long storeId,
             Optional<MultipartFile> optionalMultipartFile,
             ReviewSaveDto reviewSaveDto
     ) {
-        if (reviewRepository.existsByUserIdAndStoreId(userId, storeId)) {
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+
+        if (reviewRepository.existsByUserIdAndStoreId(user.getId(), storeId)) {
             throw new ApiException(DUPLICATE_REVIEW);
         }
 
@@ -56,8 +59,6 @@ public class ReviewService {
         // accommodation averageGrade 업데이트
         storeService.updateAverageGradeOnReviewAdd(storeId, reviewSaveDto.getGrade());
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new ApiException(STORE_NOT_FOUND));
 

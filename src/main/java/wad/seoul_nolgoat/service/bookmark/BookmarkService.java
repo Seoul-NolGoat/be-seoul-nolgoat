@@ -25,8 +25,8 @@ public class BookmarkService {
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
 
-    public Long save(Long userId, Long storeId) {
-        User user = userRepository.findById(userId)
+    public Long save(String loginId, Long storeId) {
+        User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new ApiException(STORE_NOT_FOUND));
