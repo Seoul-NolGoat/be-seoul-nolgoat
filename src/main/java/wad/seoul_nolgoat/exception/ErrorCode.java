@@ -27,6 +27,9 @@ public enum ErrorCode {
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW001", "존재하지 않는 리뷰입니다."),
     DUPLICATE_REVIEW(HttpStatus.CONFLICT, "REVIEW002", "가게에는 한 명당 리뷰를 한 개만 작성할 수 있습니다."),
 
+    // 파티 관련
+    PARTY_NOT_FOUND(HttpStatus.NOT_FOUND, "PARTY001", "존재하지 않는 파티입니다."),
+
     // 문의 사항 관련
     INQUIRY_NOT_FOUND(HttpStatus.NOT_FOUND, "INQUIRY001", "존재하지 않는 문의 사항입니다."),
 
@@ -43,7 +46,10 @@ public enum ErrorCode {
     WALKING_DISTANCE_CALCULATION_FAILED(HttpStatus.BAD_REQUEST, "MAP003", "도보 거리를 계산할 수 없습니다."),
 
     // 유효성 검사 관련
-    INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "VALIDATION001", "입력값이 유효하지 않습니다.");
+    INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "VALIDATION001", "입력값이 유효하지 않습니다."),
+
+    // 파일 업로드 관련
+    FILE_READ_FAILED(HttpStatus.BAD_REQUEST, "FILE003", "파일을 읽는 데 실패했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
