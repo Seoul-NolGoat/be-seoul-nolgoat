@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import wad.seoul_nolgoat.exception.ApiException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -13,6 +14,8 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.UUID;
+
+import static wad.seoul_nolgoat.exception.ErrorCode.FILE_READ_FAILED;
 
 @Service
 @RequiredArgsConstructor
@@ -23,14 +26,19 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String saveFile(MultipartFile multipartFile) throws IOException {
+    public String saveFile(MultipartFile multipartFile) {
         String filename = generateFileName(Objects.requireNonNull(multipartFile.getOriginalFilename()));
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(multipartFile.getSize());
         metadata.setContentType(multipartFile.getContentType());
 
-        amazonS3.putObject(bucket, filename, multipartFile.getInputStream(), metadata);
+        try {
+            amazonS3.putObject(bucket, filename, multipartFile.getInputStream(), metadata);
+        } catch (IOException e) {
+            throw new ApiException(FILE_READ_FAILED);
+        }
+
         return amazonS3.getUrl(bucket, filename).toString();
     }
 
