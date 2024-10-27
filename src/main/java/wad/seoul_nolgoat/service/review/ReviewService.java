@@ -18,7 +18,6 @@ import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewUpdateDto;
 import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,14 +46,7 @@ public class ReviewService {
             throw new ApiException(DUPLICATE_REVIEW);
         }
 
-        Optional<String> optionalImageUrl = Optional.empty();
-        if (optionalMultipartFile.isPresent()) {
-            try {
-                optionalImageUrl = Optional.of(s3Service.saveFile(optionalMultipartFile.get()));
-            } catch (IOException e) {
-                throw new RuntimeException();
-            }
-        }
+        Optional<String> optionalImageUrl = Optional.of(s3Service.saveFile(optionalMultipartFile.get()));
 
         // accommodation averageGrade 업데이트
         storeService.updateAverageGradeOnReviewAdd(storeId, reviewSaveDto.getGrade());
