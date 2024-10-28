@@ -2,6 +2,7 @@ package wad.seoul_nolgoat.service.party;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import wad.seoul_nolgoat.domain.party.PartyRepository;
 import wad.seoul_nolgoat.domain.party.PartyUserRepository;
@@ -17,6 +18,7 @@ import java.util.Optional;
 import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class PartyService {
 
@@ -26,6 +28,7 @@ public class PartyService {
     private final PartyUserRepository partyUserRepository;
 
     // 파티 생성
+    @Transactional
     public Long createParty(
             String loginId,
             PartySaveDto partySaveDto,
