@@ -17,7 +17,7 @@ import java.net.URI;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/parties/")
+@RequestMapping("/api/parties")
 @RestController
 public class PartyController {
 
