@@ -14,7 +14,6 @@ import wad.seoul_nolgoat.service.party.PartyService;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
 
 import java.net.URI;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/parties")
@@ -27,13 +26,13 @@ public class PartyController {
     public ResponseEntity<Void> createParty(
             @AuthenticationPrincipal OAuth2User loginUser,
             @RequestPart("party") PartySaveDto partySaveDto,
-            @RequestPart(value = "file", required = false) MultipartFile file,
+            @RequestPart(value = "file", required = false) MultipartFile image,
             UriComponentsBuilder uriComponentsBuilder
     ) {
         Long partyId = partyService.createParty(
                 loginUser.getName(),
                 partySaveDto,
-                Optional.ofNullable(file)
+                image
         );
 
         URI location = uriComponentsBuilder.path("/api/parties/{partyId}")
