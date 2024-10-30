@@ -32,18 +32,20 @@ public class PartyService {
     public Long createParty(
             String loginId,
             PartySaveDto partySaveDto,
-            Optional<MultipartFile> optionalMultipartFile
+            MultipartFile image
     ) {
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
-        Optional<String> optionalImageUrl = Optional.of(s3Service.saveFile(optionalMultipartFile.get()));
+        Optional<String> imageUrl = Optional.ofNullable(image)
+                .filter(file -> !file.isEmpty())
+                .map(s3Service::saveFile);
 
         return partyRepository.save(
                 PartyMapper.toEntity(
                         partySaveDto,
                         user,
-                        optionalImageUrl
+                        imageUrl.orElse(null)
                 )
         ).getId();
     }
