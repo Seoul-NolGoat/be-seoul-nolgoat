@@ -26,6 +26,8 @@ public class Party {
     // 지역 추가 예정
     // private Enum? location;
 
+    // 상점을 연관관계 대신 문자(상점 링크)로 추가
+
     @ManyToOne(fetch = FetchType.LAZY)
     private User host;
 
@@ -38,19 +40,6 @@ public class Party {
     ) {
         this.title = title;
         this.imageUrl = imageUrl;
-        this.maxCapacity = maxCapacity;
-        this.deadline = deadline;
-        this.isClosed = false;
-        this.host = host;
-    }
-
-    public Party(
-            String title,
-            int maxCapacity,
-            LocalDateTime deadline,
-            User host
-    ) {
-        this.title = title;
         this.maxCapacity = maxCapacity;
         this.deadline = deadline;
         this.isClosed = false;
