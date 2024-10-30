@@ -36,7 +36,7 @@ public class ReviewService {
     public Long save(
             String loginId,
             Long storeId,
-            Optional<MultipartFile> optionalMultipartFile,
+            MultipartFile image,
             ReviewSaveDto reviewSaveDto
     ) {
         User user = userRepository.findByLoginId(loginId)
@@ -46,7 +46,9 @@ public class ReviewService {
             throw new ApiException(DUPLICATE_REVIEW);
         }
 
-        Optional<String> optionalImageUrl = Optional.of(s3Service.saveFile(optionalMultipartFile.get()));
+        Optional<String> imageUrl = Optional.ofNullable(image)
+                .filter(file -> !file.isEmpty())
+                .map(s3Service::saveFile);
 
         // accommodation averageGrade 업데이트
         storeService.updateAverageGradeOnReviewAdd(storeId, reviewSaveDto.getGrade());
@@ -58,7 +60,7 @@ public class ReviewService {
                 ReviewMapper.toEntity(
                         user,
                         store,
-                        optionalImageUrl,
+                        imageUrl.orElse(null),
                         reviewSaveDto
                 )
         ).getId();

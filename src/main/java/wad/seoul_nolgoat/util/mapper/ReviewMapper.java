@@ -7,8 +7,6 @@ import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
 import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForStoreDto;
 import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
 
-import java.util.Optional;
-
 import static wad.seoul_nolgoat.util.DateTimeUtil.formatDate;
 
 public class ReviewMapper {
@@ -16,22 +14,13 @@ public class ReviewMapper {
     public static Review toEntity(
             User user,
             Store store,
-            Optional<String> optionalImageUrl,
+            String imageUrl,
             ReviewSaveDto reviewSaveDto
     ) {
-        if (optionalImageUrl.isPresent()) {
-            return new Review(
-                    reviewSaveDto.getGrade(),
-                    reviewSaveDto.getContent(),
-                    optionalImageUrl.get(),
-                    user,
-                    store
-            );
-        }
-
         return new Review(
                 reviewSaveDto.getGrade(),
                 reviewSaveDto.getContent(),
+                imageUrl,
                 user,
                 store
         );

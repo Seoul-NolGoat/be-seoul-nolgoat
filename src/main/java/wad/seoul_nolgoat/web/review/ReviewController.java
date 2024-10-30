@@ -15,7 +15,6 @@ import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/reviews")
@@ -28,14 +27,14 @@ public class ReviewController {
     public ResponseEntity<?> createReview(
             @AuthenticationPrincipal OAuth2User loginUser,
             @PathVariable Long storeId,
-            @RequestPart(value = "file", required = false) MultipartFile file,
+            @RequestPart(value = "file", required = false) MultipartFile image,
             @Valid @RequestPart("review") ReviewSaveDto reviewSaveDto,
             UriComponentsBuilder uriComponentsBuilder
     ) {
         Long reviewId = reviewService.save(
                 loginUser.getName(),
                 storeId,
-                Optional.ofNullable(file),
+                image,
                 reviewSaveDto
         );
         URI location = uriComponentsBuilder.path("/api/reviews/{reviewId}")
