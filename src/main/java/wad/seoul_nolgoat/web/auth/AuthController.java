@@ -17,7 +17,7 @@ import wad.seoul_nolgoat.service.user.UserService;
 import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/auths/")
+@RequestMapping("/api/auths")
 @RestController
 public class AuthController {
 
