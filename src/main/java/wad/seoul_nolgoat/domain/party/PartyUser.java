@@ -3,11 +3,12 @@ package wad.seoul_nolgoat.domain.party;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import wad.seoul_nolgoat.domain.BaseTimeEntity;
 import wad.seoul_nolgoat.domain.user.User;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class PartyUser {
+public class PartyUser extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
