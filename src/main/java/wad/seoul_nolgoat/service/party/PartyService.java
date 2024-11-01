@@ -61,7 +61,8 @@ public class PartyService {
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
-        if (party.getHost().getId() != user.getId()) {
+        // 파티 생성자는 본인의 파티에 참여 신청 불가능
+        if (party.getHost().getId() == user.getId()) {
             throw new ApiException(PARTY_CREATOR_CANNOT_JOIN);
         }
 
