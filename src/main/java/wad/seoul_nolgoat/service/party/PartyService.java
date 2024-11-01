@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import wad.seoul_nolgoat.domain.party.Party;
 import wad.seoul_nolgoat.domain.party.PartyRepository;
+import wad.seoul_nolgoat.domain.party.PartyUser;
 import wad.seoul_nolgoat.domain.party.PartyUserRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
@@ -15,7 +17,7 @@ import wad.seoul_nolgoat.web.party.request.PartySaveDto;
 
 import java.util.Optional;
 
-import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
+import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -50,6 +52,29 @@ public class PartyService {
         ).getId();
     }
 
+    // 파티 참여
+    @Transactional
+    public void joinParty(String loginId, Long partyId) {
+        Party party = partyRepository.findByIdWithLock(partyId)
+                .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+
+        if (party.getHost().getId() != user.getId()) {
+            throw new ApiException(PARTY_CREATOR_CANNOT_JOIN);
+        }
+
+        int maxCapacity = party.getMaxCapacity();
+        int currentCount = partyUserRepository.countByPartyId(partyId);
+        if (currentCount >= maxCapacity - 1) { // 전체 인원수에서 파티 생성자는 제외
+            throw new ApiException(PARTY_CAPACITY_EXCEEDED);
+        }
+
+        PartyUser partyUser = new PartyUser(party, user);
+        partyUserRepository.save(partyUser);
+    }
+
     // 파티 삭제
     public void deleteParty() {
 
@@ -60,7 +85,7 @@ public class PartyService {
 
     }
 
-    // 파티 참여
+
     // 파티 마감
     // 참가자 밴
 }
