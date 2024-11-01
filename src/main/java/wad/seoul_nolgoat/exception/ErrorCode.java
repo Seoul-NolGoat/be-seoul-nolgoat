@@ -30,6 +30,7 @@ public enum ErrorCode {
     // 파티 관련
     PARTY_NOT_FOUND(HttpStatus.NOT_FOUND, "PARTY001", "존재하지 않는 파티입니다."),
     PARTY_CAPACITY_EXCEEDED(HttpStatus.BAD_REQUEST, "PARTY002", "참여 가능 인원수를 초과했습니다."),
+    PARTY_CREATOR_CANNOT_JOIN(HttpStatus.BAD_REQUEST, "PARTY003", "본인이 생성한 파티에는 참여 신청을 할 수 없습니다."),
 
     // 문의 사항 관련
     INQUIRY_NOT_FOUND(HttpStatus.NOT_FOUND, "INQUIRY001", "존재하지 않는 문의 사항입니다."),
