@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.party.PartyUserRepository;
 import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.party.PartyService;
@@ -15,8 +16,10 @@ import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static wad.seoul_nolgoat.exception.ErrorCode.PARTY_CAPACITY_EXCEEDED;
 import static wad.seoul_nolgoat.exception.ErrorCode.PARTY_CREATOR_CANNOT_JOIN;
 
+@Transactional
 @ActiveProfiles("test")
 @SpringBootTest
 public class PartyServiceTest {
@@ -66,5 +69,25 @@ public class PartyServiceTest {
         assertThatThrownBy(() -> partyService.joinParty(loginId, partyId))
                 .isInstanceOf(ApiException.class)
                 .hasMessage(PARTY_CREATOR_CANNOT_JOIN.getMessage());
+    }
+
+    @DisplayName("참여 가능 인원이 모두 채워진 파티에 참여 신청을 하면 예외가 발생합니다.")
+    @Test
+    void apply_join_request_when_party_is_full_then_throw_exception() {
+        // given
+        String loginIdA = "user1";
+        String loginIdB = "user2";
+        String loginIdD = "user4";
+        String loginIdE = "user5";
+        Long partyId = 3L;
+
+        partyService.joinParty(loginIdA, partyId);
+        partyService.joinParty(loginIdB, partyId);
+        partyService.joinParty(loginIdD, partyId);
+
+        // when // then
+        assertThatThrownBy(() -> partyService.joinParty(loginIdE, partyId))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(PARTY_CAPACITY_EXCEEDED.getMessage());
     }
 }
