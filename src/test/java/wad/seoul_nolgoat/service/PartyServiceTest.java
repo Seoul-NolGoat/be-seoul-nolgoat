@@ -14,6 +14,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static wad.seoul_nolgoat.exception.ErrorCode.PARTY_CREATOR_CANNOT_JOIN;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -51,5 +53,18 @@ public class PartyServiceTest {
 
         // then
         assertThat(partyUserRepository.countByPartyId(1L)).isEqualTo(5);
+    }
+
+    @DisplayName("본인이 생성한 파티에 참여 신청을 하면 예외가 발생합니다.")
+    @Test
+    void apply_join_request_when_creator_of_party_then_throw_exception() {
+        // given
+        String loginId = "user1";
+        Long partyId = 1L;
+
+        // when // then
+        assertThatThrownBy(() -> partyService.joinParty(loginId, partyId))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(PARTY_CREATOR_CANNOT_JOIN.getMessage());
     }
 }
