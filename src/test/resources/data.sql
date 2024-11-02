@@ -35,4 +35,5 @@ INSERT INTO party (title, image_url, max_capacity, deadline, is_closed, is_delet
 VALUES ('PartyA', null, 6, '2024-12-31T23:59:59', false, false, 1),
        ('PartyB', null, 5, '2024-11-15T18:00:00', false, false, 2),
        ('PartyC', null, 4, '2024-11-30T12:00:00', false, false, 3),
-       ('PartyD', null, 4, '2024-11-11T11:11:11', true, false, 1);
+       ('PartyD', null, 4, '2024-11-11T11:11:11', true, false, 1),
+       ('PartyE', null, 4, '2024-12-12T12:12:12', true, true, 4);
