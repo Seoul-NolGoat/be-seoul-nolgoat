@@ -83,17 +83,32 @@ public class PartyService {
         partyUserRepository.save(partyUser);
     }
 
-    // 파티 삭제
-    public void deleteById(Long partyId) {
-        partyRepository.deleteById(partyId);
-    }
-
     // 파티 수정
+    @Transactional
     public void updateParty() {
 
     }
 
-
     // 파티 마감
+    @Transactional
+    public void closeById(Long partyId) {
+        Party party = partyRepository.findById(partyId)
+                .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+        if (party.isClosed()) {
+            throw new ApiException(PARTY_ALREADY_CLOSED);
+        }
+        party.close();
+    }
+
+    // 파티 삭제
+    @Transactional
+    public void deleteById(Long partyId) {
+        partyRepository.deleteById(partyId);
+    }
+
     // 참가자 밴
+
+    // 파티 단건 조회
+
+    // 파티 리스트 조회
 }
