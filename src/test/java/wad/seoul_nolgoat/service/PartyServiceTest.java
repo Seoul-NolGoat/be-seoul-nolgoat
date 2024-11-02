@@ -165,6 +165,18 @@ public class PartyServiceTest {
         assertThat(partyRepository.findById(partyId).get().isClosed()).isTrue();
     }
 
+    @DisplayName("이미 마감된 파티를 마감하려 하면, 예외가 발생합니다.")
+    @Test
+    void throw_exception_when_trying_to_close_already_closed_party() {
+        // given
+        Long partyId = 4L;
+
+        // when // then
+        assertThatThrownBy(() -> partyService.closeById(partyId))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(PARTY_ALREADY_CLOSED.getMessage());
+    }
+
     // 삭제 테스트
 
     // 참여자 밴 테스트
