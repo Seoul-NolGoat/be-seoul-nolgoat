@@ -248,4 +248,17 @@ public class PartyServiceTest {
                 .isInstanceOf(ApiException.class)
                 .hasMessage(PARTY_NOT_HOST.getMessage());
     }
+
+    @DisplayName("추방 대상인 유저가 파티의 참여자가 아니라면, 예외가 발생합니다.")
+    @Test
+    void throw_exception_when_target_user_is_not_a_party_participant() {
+        // given
+        String hostLoginId = "user1";
+        Long partyId = 1L;
+
+        // when // then
+        assertThatThrownBy(() -> partyService.banParticipantFromParty(hostLoginId, partyId, 2L))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(PARTY_USER_NOT_FOUND.getMessage());
+    }
 }
