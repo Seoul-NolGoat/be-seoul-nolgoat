@@ -67,4 +67,17 @@ public class PartyController {
                 .noContent()
                 .build();
     }
+
+    @DeleteMapping("/{partyId}/participants/{userId}")
+    public ResponseEntity<Void> banParticipantFromParty(
+            @AuthenticationPrincipal OAuth2User loginUser,
+            @PathVariable Long partyId,
+            @PathVariable Long userId
+    ) {
+        partyService.banParticipantFromParty(loginUser.getName(), partyId, userId);
+
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
 }
