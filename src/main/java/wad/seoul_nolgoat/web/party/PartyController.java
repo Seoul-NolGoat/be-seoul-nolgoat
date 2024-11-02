@@ -50,6 +50,15 @@ public class PartyController {
                 .build();
     }
 
+    @PostMapping("/{partyId}")
+    public ResponseEntity<Void> closeById(@PathVariable Long partyId) {
+        partyService.closeById(partyId);
+
+        return ResponseEntity
+                .ok()
+                .build();
+    }
+
     @DeleteMapping("/{partyId}")
     public ResponseEntity<Void> deleteById(@PathVariable Long partyId) {
         partyService.deleteById(partyId);
