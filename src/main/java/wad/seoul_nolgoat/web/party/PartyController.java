@@ -44,8 +44,18 @@ public class PartyController {
     @PostMapping("/{partyId}/join")
     public ResponseEntity<Void> joinParty(@AuthenticationPrincipal OAuth2User loginUser, @PathVariable Long partyId) {
         partyService.joinParty(loginUser.getName(), partyId);
+
         return ResponseEntity
                 .ok()
+                .build();
+    }
+
+    @DeleteMapping("/{partyId}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long partyId) {
+        partyService.deleteById(partyId);
+
+        return ResponseEntity
+                .noContent()
                 .build();
     }
 }
