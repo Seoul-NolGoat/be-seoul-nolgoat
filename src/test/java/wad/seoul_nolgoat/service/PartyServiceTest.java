@@ -88,6 +88,19 @@ public class PartyServiceTest {
         assertThat(partyUserRepository.countByPartyId(1L)).isEqualTo(5);
     }
 
+    @DisplayName("이미 삭제된 파티에 참여 신청을 하면, 예외가 발생합니다.")
+    @Test
+    void apply_join_request_when_party_is_already_deleted_then_throw_exception() {
+        // given
+        String loginId = "user2";
+        Long partyId = 5L;
+
+        // when // then
+        assertThatThrownBy(() -> partyService.joinParty(loginId, partyId))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(PARTY_ALREADY_DELETED.getMessage());
+    }
+
     @DisplayName("이미 마감된 파티에 참여 신청을 하면, 예외가 발생합니다.")
     @Test
     void apply_join_request_when_party_is_already_closed_then_throw_exception() {
@@ -114,6 +127,21 @@ public class PartyServiceTest {
                 .hasMessage(PARTY_CREATOR_CANNOT_JOIN.getMessage());
     }
 
+    @DisplayName("이미 참여한 파티에 참여 신청을 하면, 예외가 발생합니다.")
+    @Test
+    void apply_join_request_when_already_joined_party_then_throw_exception() {
+        // given
+        String loginIdB = "user2";
+        Long partyId = 1L;
+
+        partyService.joinParty(loginIdB, partyId);
+
+        // when // then
+        assertThatThrownBy(() -> partyService.joinParty(loginIdB, partyId))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(PARTY_ALREADY_JOINED.getMessage());
+    }
+
     @DisplayName("참여 가능 인원이 모두 채워진 파티에 참여 신청을 하면, 예외가 발생합니다.")
     @Test
     void apply_join_request_when_party_is_full_then_throw_exception() {
@@ -132,21 +160,6 @@ public class PartyServiceTest {
         assertThatThrownBy(() -> partyService.joinParty(loginIdE, partyId))
                 .isInstanceOf(ApiException.class)
                 .hasMessage(PARTY_CAPACITY_EXCEEDED.getMessage());
-    }
-
-    @DisplayName("이미 참여한 파티에 참여 신청을 하면, 예외가 발생합니다.")
-    @Test
-    void apply_join_request_when_already_joined_party_then_throw_exception() {
-        // given
-        String loginIdB = "user2";
-        Long partyId = 1L;
-
-        partyService.joinParty(loginIdB, partyId);
-
-        // when // then
-        assertThatThrownBy(() -> partyService.joinParty(loginIdB, partyId))
-                .isInstanceOf(ApiException.class)
-                .hasMessage(PARTY_ALREADY_JOINED.getMessage());
     }
 
     // 수정 테스트
