@@ -122,6 +122,26 @@ public class PartyService {
     }
 
     // 참여자 밴
+    @Transactional
+    public void banParticipantFromParty(
+            String loginId,
+            Long partyId,
+            Long userId
+    ) {
+        Party party = partyRepository.findByIdWithLock(partyId)
+                .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+
+        // 파티 생성자인지 검증
+        if (!party.getHost().getLoginId().equals(loginId)) {
+            throw new ApiException(PARTY_NOT_HOST);
+        }
+
+        // 밴 대상이 참여자가 맞는지 검증
+        PartyUser partyUser = partyUserRepository.findByPartyIdAndParticipantId(partyId, userId)
+                .orElseThrow(() -> new ApiException(PARTY_USER_NOT_FOUND));
+
+        partyUserRepository.delete(partyUser);
+    }
 
     // 파티 단건 조회
 
