@@ -191,5 +191,17 @@ public class PartyServiceTest {
         assertThat(partyRepository.findById(partyId).get().isDeleted()).isTrue();
     }
 
+    @DisplayName("이미 삭제된 파티를 삭제하려 하면, 예외가 발생합니다.")
+    @Test
+    void throw_exception_when_trying_to_delete_already_deleted_party() {
+        // given
+        Long partyId = 5L;
+
+        // when // then
+        assertThatThrownBy(() -> partyService.deleteById(partyId))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(PARTY_ALREADY_DELETED.getMessage());
+    }
+
     // 참여자 밴 테스트
 }
