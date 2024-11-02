@@ -41,7 +41,7 @@ public class PartyServiceTest {
     }
 
     @Transactional
-    @DisplayName("파티를 생성하면 생성된 파티의 정보가 DB에 올바르게 저장됩니다.")
+    @DisplayName("파티를 생성하면, 생성된 파티의 정보가 DB에 올바르게 저장됩니다.")
     @Test
     void save_party() {
         // given
@@ -60,7 +60,7 @@ public class PartyServiceTest {
                 .containsExactly(title, maxCapacity, deadline);
     }
 
-    @DisplayName("동시에 여러 유저가 파티에 가입 신청을 해도 최대 인원을 초과하지 않습니다.")
+    @DisplayName("동시에 여러 유저가 파티에 가입 신청을 해도, 최대 인원을 초과하지 않습니다.")
     @Test
     void prevent_exceeding_max_capacity_with_concurrent_requests() throws InterruptedException {
         //given // when
@@ -88,7 +88,7 @@ public class PartyServiceTest {
         assertThat(partyUserRepository.countByPartyId(1L)).isEqualTo(5);
     }
 
-    @DisplayName("이미 마감된 파티에 참여 신청을 하면 예외가 발생합니다.")
+    @DisplayName("이미 마감된 파티에 참여 신청을 하면, 예외가 발생합니다.")
     @Test
     void apply_join_request_when_party_is_already_closed_then_throw_exception() {
         // given
@@ -101,7 +101,7 @@ public class PartyServiceTest {
                 .hasMessage(PARTY_ALREADY_CLOSED.getMessage());
     }
 
-    @DisplayName("본인이 생성한 파티에 참여 신청을 하면 예외가 발생합니다.")
+    @DisplayName("본인이 생성한 파티에 참여 신청을 하면, 예외가 발생합니다.")
     @Test
     void apply_join_request_when_creator_of_party_then_throw_exception() {
         // given
@@ -114,7 +114,7 @@ public class PartyServiceTest {
                 .hasMessage(PARTY_CREATOR_CANNOT_JOIN.getMessage());
     }
 
-    @DisplayName("참여 가능 인원이 모두 채워진 파티에 참여 신청을 하면 예외가 발생합니다.")
+    @DisplayName("참여 가능 인원이 모두 채워진 파티에 참여 신청을 하면, 예외가 발생합니다.")
     @Test
     void apply_join_request_when_party_is_full_then_throw_exception() {
         // given
@@ -134,7 +134,7 @@ public class PartyServiceTest {
                 .hasMessage(PARTY_CAPACITY_EXCEEDED.getMessage());
     }
 
-    @DisplayName("이미 참여한 파티에 참여 신청을 하면 예외가 발생합니다.")
+    @DisplayName("이미 참여한 파티에 참여 신청을 하면, 예외가 발생합니다.")
     @Test
     void apply_join_request_when_already_joined_party_then_throw_exception() {
         // given
