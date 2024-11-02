@@ -58,6 +58,10 @@ public class PartyService {
         Party party = partyRepository.findByIdWithLock(partyId)
                 .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
 
+        if (party.isClosed()) {
+            throw new ApiException(PARTY_ALREADY_CLOSED);
+        }
+
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
