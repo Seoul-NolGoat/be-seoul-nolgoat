@@ -47,4 +47,8 @@ public class Party extends BaseTimeEntity {
         this.isClosed = false;
         this.host = host;
     }
+
+    public void close() {
+        isClosed = true;
+    }
 }
