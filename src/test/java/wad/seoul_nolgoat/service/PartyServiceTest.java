@@ -88,6 +88,19 @@ public class PartyServiceTest {
         assertThat(partyUserRepository.countByPartyId(1L)).isEqualTo(5);
     }
 
+    @DisplayName("이미 마감된 파티에 참여 신청을 하면 예외가 발생합니다.")
+    @Test
+    void apply_join_request_when_party_is_already_closed_then_throw_exception() {
+        // given
+        String loginId = "user2";
+        Long partyId = 4L;
+
+        // when // then
+        assertThatThrownBy(() -> partyService.joinParty(loginId, partyId))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(PARTY_ALREADY_CLOSED.getMessage());
+    }
+
     @DisplayName("본인이 생성한 파티에 참여 신청을 하면 예외가 발생합니다.")
     @Test
     void apply_join_request_when_creator_of_party_then_throw_exception() {
@@ -135,4 +148,8 @@ public class PartyServiceTest {
                 .isInstanceOf(ApiException.class)
                 .hasMessage(PARTY_ALREADY_JOINED.getMessage());
     }
+
+    // 마감 테스트
+
+    // 삭제 테스트
 }
