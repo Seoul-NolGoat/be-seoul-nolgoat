@@ -1,11 +1,11 @@
 package wad.seoul_nolgoat.service;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.party.PartyUserRepository;
 import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.party.PartyService;
@@ -16,10 +16,8 @@ import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static wad.seoul_nolgoat.exception.ErrorCode.PARTY_CAPACITY_EXCEEDED;
-import static wad.seoul_nolgoat.exception.ErrorCode.PARTY_CREATOR_CANNOT_JOIN;
+import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
-@Transactional
 @ActiveProfiles("test")
 @SpringBootTest
 public class PartyServiceTest {
@@ -29,6 +27,11 @@ public class PartyServiceTest {
 
     @Autowired
     private PartyService partyService;
+
+    @AfterEach
+    void tearDown() {
+        partyUserRepository.deleteAllInBatch();
+    }
 
     @DisplayName("동시에 여러 파티 가입 요청이 와도 파티의 최대 인원을 초과하지 않습니다.")
     @Test
@@ -89,5 +92,20 @@ public class PartyServiceTest {
         assertThatThrownBy(() -> partyService.joinParty(loginIdE, partyId))
                 .isInstanceOf(ApiException.class)
                 .hasMessage(PARTY_CAPACITY_EXCEEDED.getMessage());
+    }
+
+    @DisplayName("이미 참여한 파티에 참여 신청을 하면 예외가 발생합니다.")
+    @Test
+    void apply_join_request_when_already_joined_party_then_throw_exception() {
+        // given
+        String loginIdB = "user2";
+        Long partyId = 1L;
+
+        partyService.joinParty(loginIdB, partyId);
+
+        // when // then
+        assertThatThrownBy(() -> partyService.joinParty(loginIdB, partyId))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(PARTY_ALREADY_JOINED.getMessage());
     }
 }
