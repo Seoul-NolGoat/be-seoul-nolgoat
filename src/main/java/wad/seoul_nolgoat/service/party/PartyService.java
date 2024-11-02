@@ -84,8 +84,8 @@ public class PartyService {
     }
 
     // 파티 삭제
-    public void deleteParty() {
-
+    public void deleteById(Long partyId) {
+        partyRepository.deleteById(partyId);
     }
 
     // 파티 수정
