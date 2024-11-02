@@ -151,7 +151,19 @@ public class PartyServiceTest {
 
     // 수정 테스트
 
-    // 마감 테스트
+    @Transactional
+    @DisplayName("파티를 마감하면, isClosed가 True로 변경됩니다.")
+    @Test
+    void close_party() {
+        // given
+        Long partyId = 1L;
+
+        // when
+        partyService.closeById(partyId);
+
+        // then
+        assertThat(partyRepository.findById(partyId).get().isClosed()).isTrue();
+    }
 
     // 삭제 테스트
 
