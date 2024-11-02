@@ -107,13 +107,15 @@ public class PartyService {
     // 파티 삭제
     @Transactional
     public void deleteById(Long partyId) {
-        if (!partyRepository.existsById(partyId)) {
-            throw new ApiException(PARTY_NOT_FOUND);
+        Party party = partyRepository.findById(partyId)
+                .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+        if (party.isDeleted()) {
+            throw new ApiException(PARTY_ALREADY_DELETED);
         }
-        partyRepository.deleteById(partyId);
+        party.delete();
     }
 
-    // 참가자 밴
+    // 참여자 밴
 
     // 파티 단건 조회
 
