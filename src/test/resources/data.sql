@@ -34,4 +34,5 @@ VALUES ('NORMAL', 'user1', 'password1', 'UserA', null, 'MALE', '1990-01-01', fal
 INSERT INTO party (title, image_url, max_capacity, deadline, is_closed, host_id)
 VALUES ('PartyA', null, 6, '2024-12-31T23:59:59', false, 1),
        ('PartyB', null, 5, '2024-11-15T18:00:00', false, 2),
-       ('PartyC', null, 4, '2024-11-30T12:00:00', false, 3);
+       ('PartyC', null, 4, '2024-11-30T12:00:00', false, 3),
+       ('PartyD', null, 4, '2024-11-11T11:11:11', true, 1);
