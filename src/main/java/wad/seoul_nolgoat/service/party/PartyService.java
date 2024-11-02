@@ -103,6 +103,9 @@ public class PartyService {
     // 파티 삭제
     @Transactional
     public void deleteById(Long partyId) {
+        if (!partyRepository.existsById(partyId)) {
+            throw new ApiException(PARTY_NOT_FOUND);
+        }
         partyRepository.deleteById(partyId);
     }
 
