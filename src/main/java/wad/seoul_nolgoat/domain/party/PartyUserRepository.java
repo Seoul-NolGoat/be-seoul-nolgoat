@@ -7,4 +7,6 @@ public interface PartyUserRepository extends JpaRepository<PartyUser, Long> {
 
     @Query("SELECT COUNT(pu) FROM PartyUser pu WHERE pu.party.id = :partyId")
     int countByPartyId(Long partyId);
+
+    boolean existsByPartyIdAndParticipantId(Long partyId, Long participantId);
 }
