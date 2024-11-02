@@ -34,6 +34,8 @@ public enum ErrorCode {
     PARTY_ALREADY_JOINED(HttpStatus.BAD_REQUEST, "PARTY004", "이미 참여 중인 파티입니다."),
     PARTY_ALREADY_CLOSED(HttpStatus.BAD_REQUEST, "PARTY005", "이미 마감된 파티입니다."),
     PARTY_ALREADY_DELETED(HttpStatus.BAD_REQUEST, "PARTY006", "이미 삭제된 파티입니다."),
+    PARTY_NOT_HOST(HttpStatus.FORBIDDEN, "PARTY007", "파티 생성자만 참여자를 추방할 수 있습니다."),
+    PARTY_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "PARTY008", "해당 파티에 참여하지 않은 유저입니다."),
 
     // 문의 사항 관련
     INQUIRY_NOT_FOUND(HttpStatus.NOT_FOUND, "INQUIRY001", "존재하지 않는 문의 사항입니다."),
