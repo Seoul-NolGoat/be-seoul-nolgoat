@@ -60,7 +60,7 @@ public class PartyServiceTest {
                 .containsExactly(title, maxCapacity, deadline);
     }
 
-    @DisplayName("동시에 여러 파티 가입 요청이 와도 파티의 최대 인원을 초과하지 않습니다.")
+    @DisplayName("동시에 여러 유저가 파티에 가입 신청을 해도 최대 인원을 초과하지 않습니다.")
     @Test
     void prevent_exceeding_max_capacity_with_concurrent_requests() throws InterruptedException {
         //given // when
@@ -149,7 +149,11 @@ public class PartyServiceTest {
                 .hasMessage(PARTY_ALREADY_JOINED.getMessage());
     }
 
+    // 수정 테스트
+
     // 마감 테스트
 
     // 삭제 테스트
+
+    // 참여자 밴 테스트
 }
