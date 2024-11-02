@@ -6,10 +6,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
+import wad.seoul_nolgoat.domain.party.PartyRepository;
 import wad.seoul_nolgoat.domain.party.PartyUserRepository;
 import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.party.PartyService;
+import wad.seoul_nolgoat.web.party.request.PartySaveDto;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,14 +27,37 @@ import static wad.seoul_nolgoat.exception.ErrorCode.*;
 public class PartyServiceTest {
 
     @Autowired
-    private PartyUserRepository partyUserRepository;
+    private PartyService partyService;
 
     @Autowired
-    private PartyService partyService;
+    private PartyRepository partyRepository;
+
+    @Autowired
+    private PartyUserRepository partyUserRepository;
 
     @AfterEach
     void tearDown() {
         partyUserRepository.deleteAllInBatch();
+    }
+
+    @Transactional
+    @DisplayName("파티를 생성하면 생성된 파티의 정보가 DB에 올바르게 저장됩니다.")
+    @Test
+    void save_party() {
+        // given
+        String loginId = "user1";
+        String title = "돈까스 드실 분~";
+        int maxCapacity = 4;
+        LocalDateTime deadline = LocalDateTime.of(2024, 11, 11, 12, 0);
+        PartySaveDto partySaveDto = new PartySaveDto(title, maxCapacity, deadline);
+
+        // when
+        Long partyId = partyService.createParty(loginId, partySaveDto, null);
+
+        // then
+        assertThat(partyRepository.findById(partyId).get())
+                .extracting("title", "maxCapacity", "deadline")
+                .containsExactly(title, maxCapacity, deadline);
     }
 
     @DisplayName("동시에 여러 파티 가입 요청이 와도 파티의 최대 인원을 초과하지 않습니다.")
