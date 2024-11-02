@@ -177,7 +177,19 @@ public class PartyServiceTest {
                 .hasMessage(PARTY_ALREADY_CLOSED.getMessage());
     }
 
-    // 삭제 테스트
+    @Transactional
+    @DisplayName("파티를 삭제하면, isDeleted가 True로 변경됩니다.")
+    @Test
+    void delete_party() {
+        // given
+        Long partyId = 1L;
+
+        // when
+        partyService.deleteById(partyId);
+
+        // then
+        assertThat(partyRepository.findById(partyId).get().isDeleted()).isTrue();
+    }
 
     // 참여자 밴 테스트
 }
