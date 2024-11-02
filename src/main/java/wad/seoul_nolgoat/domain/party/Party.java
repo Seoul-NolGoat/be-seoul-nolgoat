@@ -23,6 +23,7 @@ public class Party extends BaseTimeEntity {
     private int maxCapacity;
     private LocalDateTime deadline;
     private boolean isClosed;
+    private boolean isDeleted;
 
     // 지역 추가 예정
     // private Enum? location;
@@ -45,10 +46,15 @@ public class Party extends BaseTimeEntity {
         this.maxCapacity = maxCapacity;
         this.deadline = deadline;
         this.isClosed = false;
+        this.isDeleted = false;
         this.host = host;
     }
 
     public void close() {
         isClosed = true;
+    }
+
+    public void delete() {
+        isDeleted = true;
     }
 }
