@@ -232,4 +232,20 @@ public class PartyServiceTest {
         // then
         assertThat(partyUserRepository.findAll()).hasSize(0);
     }
+
+    @DisplayName("참여자 추방 시, 파티 생성자가 아니라면, 예외가 발생합니다.")
+    @Test
+    void throw_exception_when_non_host_attempts_to_ban_participant() {
+        // given
+        String loginId = "user3";
+        String participantLoginId = "user2";
+        Long partyId = 1L;
+
+        partyService.joinParty(participantLoginId, partyId);
+
+        // when // then
+        assertThatThrownBy(() -> partyService.banParticipantFromParty(loginId, partyId, 2L))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(PARTY_NOT_HOST.getMessage());
+    }
 }
