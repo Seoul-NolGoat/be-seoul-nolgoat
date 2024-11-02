@@ -216,5 +216,20 @@ public class PartyServiceTest {
                 .hasMessage(PARTY_ALREADY_DELETED.getMessage());
     }
 
-    // 참여자 밴 테스트
+    @DisplayName("파티 생성자가 특정 참여자를 추방하면, 해당하는 PartyUser 데이터가 삭제됩니다.")
+    @Test
+    void remove_participant_when_host_bans_from_party() {
+        // given
+        String hostLoginId = "user1";
+        String participantLoginId = "user2";
+        Long partyId = 1L;
+
+        partyService.joinParty(participantLoginId, partyId);
+
+        // when
+        partyService.banParticipantFromParty(hostLoginId, partyId, 2L);
+
+        // then
+        assertThat(partyUserRepository.findAll()).hasSize(0);
+    }
 }
