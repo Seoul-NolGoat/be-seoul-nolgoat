@@ -261,4 +261,24 @@ public class PartyServiceTest {
                 .isInstanceOf(ApiException.class)
                 .hasMessage(PARTY_USER_NOT_FOUND.getMessage());
     }
+
+    @DisplayName("파티 단건 조회")
+    @Test
+    void find_party_details() {
+        // given
+        Long partyId = 1L;
+
+        // when // then
+        assertThat(partyService.findByPartyId(partyId))
+                .extracting("id", "title", "imageUrl", "maxCapacity", "deadline", "isClosed", "currentCount")
+                .containsExactly(
+                        1L,
+                        "PartyA",
+                        null,
+                        6,
+                        LocalDateTime.of(2024, 12, 31, 23, 59, 59),
+                        false,
+                        0
+                );
+    }
 }
