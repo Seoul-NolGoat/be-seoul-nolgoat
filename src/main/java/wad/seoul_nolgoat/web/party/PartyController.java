@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.party.PartyService;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
+import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
 
 import java.net.URI;
 
@@ -79,5 +80,11 @@ public class PartyController {
         return ResponseEntity
                 .noContent()
                 .build();
+    }
+
+    @GetMapping("/{partyId}")
+    public ResponseEntity<PartyDetailsDto> showPartyByPartyId(@PathVariable Long partyId) {
+        return ResponseEntity
+                .ok(partyService.findByPartyId(partyId));
     }
 }
