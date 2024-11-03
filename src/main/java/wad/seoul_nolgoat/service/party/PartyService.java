@@ -14,6 +14,7 @@ import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.s3.S3Service;
 import wad.seoul_nolgoat.util.mapper.PartyMapper;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
+import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
 
 import java.util.Optional;
 
@@ -144,6 +145,18 @@ public class PartyService {
     }
 
     // 파티 단건 조회
+    public PartyDetailsDto findByPartyId(Long partyId) {
+        Party party = partyRepository.findById(partyId)
+                .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+
+        if (party.isDeleted()) {
+            throw new ApiException(PARTY_ALREADY_DELETED);
+        }
+
+        int currentCount = partyUserRepository.countByPartyId(partyId);
+
+        return PartyMapper.toPartyDetailsDto(party, currentCount);
+    }
 
     // 파티 리스트 조회
 }
