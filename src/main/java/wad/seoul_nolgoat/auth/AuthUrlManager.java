@@ -18,6 +18,8 @@ public class AuthUrlManager {
 
                 new AntPathRequestMatcher("/api/search/**"),
 
+                new AntPathRequestMatcher("/api/parties/**"),
+
                 new AntPathRequestMatcher("/api/inquiries/{userId}", "POST"),
                 new AntPathRequestMatcher("/api/inquiries/{inquiryId}", "PUT"),
                 new AntPathRequestMatcher("/api/inquiries/{inquiryId}", "DELETE"),
