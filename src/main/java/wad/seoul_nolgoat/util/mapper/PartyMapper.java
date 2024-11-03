@@ -14,6 +14,7 @@ public class PartyMapper {
     ) {
         return new Party(
                 partySaveDto.getTitle(),
+                partySaveDto.getContent(),
                 imageUrl,
                 partySaveDto.getMaxCapacity(),
                 partySaveDto.getDeadline(),
@@ -25,6 +26,7 @@ public class PartyMapper {
         return new PartyDetailsDto(
                 party.getId(),
                 party.getTitle(),
+                party.getContent(),
                 party.getImageUrl(),
                 party.getMaxCapacity(),
                 party.getDeadline(),

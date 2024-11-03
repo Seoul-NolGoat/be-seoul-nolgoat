@@ -31,9 +31,9 @@ VALUES ('NORMAL', 'user1', 'password1', 'UserA', null, 'MALE', '1990-01-01', fal
        ('NORMAL', 'user30', 'password30', 'UserDD', null, 'FEMALE', '2011-06-30', false),
        ('NORMAL', 'user31', 'password31', 'UserEE', null, 'MALE', '2005-02-24', false);
 
-INSERT INTO party (title, image_url, max_capacity, deadline, is_closed, is_deleted, host_id)
-VALUES ('PartyA', null, 6, '2024-12-31T23:59:59', false, false, 1),
-       ('PartyB', null, 5, '2024-11-15T18:00:00', false, false, 2),
-       ('PartyC', null, 4, '2024-11-30T12:00:00', false, false, 3),
-       ('PartyD', null, 4, '2024-11-11T11:11:11', true, false, 1),
-       ('PartyE', null, 4, '2024-12-12T12:12:12', true, true, 4);
+INSERT INTO party (title, content, image_url, max_capacity, deadline, is_closed, is_deleted, host_id)
+VALUES ('PartyA', 'Party Content A', null, 6, '2024-12-31T23:59:59', false, false, 1),
+       ('PartyB', 'Party Content B', null, 5, '2024-11-15T18:00:00', false, false, 2),
+       ('PartyC', 'Party Content C', null, 4, '2024-11-30T12:00:00', false, false, 3),
+       ('PartyD', 'Party Content D', null, 4, '2024-11-11T11:11:11', true, false, 1),
+       ('PartyE', 'Party Content E', null, 4, '2024-12-12T12:12:12', true, true, 4);

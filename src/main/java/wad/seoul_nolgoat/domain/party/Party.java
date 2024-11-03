@@ -19,6 +19,7 @@ public class Party extends BaseTimeEntity {
     private Long id;
 
     private String title;
+    private String content;
     private String imageUrl;
     private int maxCapacity;
     private LocalDateTime deadline;
@@ -36,12 +37,14 @@ public class Party extends BaseTimeEntity {
 
     public Party(
             String title,
+            String content,
             String imageUrl,
             int maxCapacity,
             LocalDateTime deadline,
             User host
     ) {
         this.title = title;
+        this.content = content;
         this.imageUrl = imageUrl;
         this.maxCapacity = maxCapacity;
         this.deadline = deadline;

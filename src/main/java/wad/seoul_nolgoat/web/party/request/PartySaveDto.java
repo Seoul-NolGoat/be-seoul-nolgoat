@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class PartySaveDto {
 
     private final String title;
+    private final String content;
     private final int maxCapacity;
     private final LocalDateTime deadline;
 

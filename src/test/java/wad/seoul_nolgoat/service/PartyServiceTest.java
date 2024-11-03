@@ -47,17 +47,18 @@ public class PartyServiceTest {
         // given
         String loginId = "user1";
         String title = "돈까스 드실 분~";
+        String content = "맛있는 돈까스";
         int maxCapacity = 4;
         LocalDateTime deadline = LocalDateTime.of(2024, 11, 11, 12, 0);
-        PartySaveDto partySaveDto = new PartySaveDto(title, maxCapacity, deadline);
+        PartySaveDto partySaveDto = new PartySaveDto(title, content, maxCapacity, deadline);
 
         // when
         Long partyId = partyService.createParty(loginId, partySaveDto, null);
 
         // then
         assertThat(partyRepository.findById(partyId).get())
-                .extracting("title", "maxCapacity", "deadline")
-                .containsExactly(title, maxCapacity, deadline);
+                .extracting("title", "content", "maxCapacity", "deadline")
+                .containsExactly(title, content, maxCapacity, deadline);
     }
 
     @DisplayName("동시에 여러 유저가 파티에 가입 신청을 해도, 최대 인원을 초과하지 않습니다.")
@@ -270,10 +271,20 @@ public class PartyServiceTest {
 
         // when // then
         assertThat(partyService.findByPartyId(partyId))
-                .extracting("id", "title", "imageUrl", "maxCapacity", "deadline", "isClosed", "currentCount")
+                .extracting(
+                        "id",
+                        "title",
+                        "content",
+                        "imageUrl",
+                        "maxCapacity",
+                        "deadline",
+                        "isClosed",
+                        "currentCount"
+                )
                 .containsExactly(
                         1L,
                         "PartyA",
+                        "Party Content A",
                         null,
                         6,
                         LocalDateTime.of(2024, 12, 31, 23, 59, 59),
