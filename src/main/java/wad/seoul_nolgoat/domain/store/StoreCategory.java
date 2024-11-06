@@ -91,7 +91,7 @@ public enum StoreCategory {
     CAFE("카페"),
     KARAOKE("노래방"),
     PC_ROOM("PC방"),
-    BILLIARDS("당구장");
+    BILLIARDS("당구");
 
     private final List<String> categories;
 
