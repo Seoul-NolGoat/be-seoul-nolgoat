@@ -9,6 +9,6 @@ public enum StoreType {
     BILLIARD;
 
     public static StoreType getStoreTypeByName(String storeTypeName) {
-        return StoreType.valueOf(storeTypeName.toUpperCase());
+        return StoreType.valueOf(storeTypeName);
     }
 }
