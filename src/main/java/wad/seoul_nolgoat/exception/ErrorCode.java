@@ -22,6 +22,7 @@ public enum ErrorCode {
 
     // 가게 관련
     STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE001", "존재하지 않는 가게입니다."),
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE002", "존재하지 않는 카테고리입니다."),
 
     // 리뷰 관련
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW001", "존재하지 않는 리뷰입니다."),
