@@ -15,10 +15,10 @@ public interface StoreRepositoryCustom {
             String category
     );
 
-    List<StoreForDistanceSortDto> findByRadiusRangeAndStoreTypeForDistanceSort(
+    List<StoreForDistanceSortDto> findByRadiusRangeAndCategoryAndStoreTypeForDistanceSort(
             CoordinateDto startCoordinate,
             double radiusRange,
-            StoreType storeType
+            String category
     );
 
     List<StoreForGradeSortDto> findByRadiusRangeAndCategoryForKakaoGradeSort(
@@ -27,10 +27,10 @@ public interface StoreRepositoryCustom {
             String category
     );
 
-    List<StoreForGradeSortDto> findByRadiusRangeAndStoreTypeForKakaoGradeSort(
+    List<StoreForGradeSortDto> findByRadiusRangeAndCategoryAndStoreTypeForKakaoGradeSort(
             CoordinateDto startCoordinate,
             double radiusRange,
-            StoreType storeType
+            String category
     );
 
     List<StoreForGradeSortDto> findByRadiusRangeAndCategoryForNolgoatGradeSort(
@@ -39,10 +39,10 @@ public interface StoreRepositoryCustom {
             String category
     );
 
-    List<StoreForGradeSortDto> findByRadiusRangeAndStoreTypeForNolgoatGradeSort(
+    List<StoreForGradeSortDto> findByRadiusRangeAndCategoryAndStoreTypeForNolgoatGradeSort(
             CoordinateDto startCoordinate,
             double radiusRange,
-            StoreType storeType
+            String category
     );
 
     List<StoreForPossibleCategoriesDto> findCategoriesByRadiusRange(CoordinateDto startCoordinate, double radiusRange);
