@@ -1,6 +1,8 @@
 package wad.seoul_nolgoat.domain.store;
 
-import java.util.Optional;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public enum StoreCategory {
 
@@ -91,29 +93,21 @@ public enum StoreCategory {
     PC_ROOM("PC방"),
     BILLIARDS("당구장");
 
-    private final String[] categories;
+    private final List<String> categories;
 
     StoreCategory(String... categories) {
-        this.categories = categories;
+        this.categories = Arrays.asList(categories);
     }
 
-    public String[] getCategoryNames() {
-        return categories;
-    }
-
-    public String getPrimaryCategoryName() {
-        return categories[0];
-    }
-
-    public static Optional<String[]> findRelatedCategoryNames(String name) {
-        for (StoreCategory category : StoreCategory.values()) {
-            for (String categoryName : category.getCategoryNames()) {
-                if (categoryName.equalsIgnoreCase(name)) {
-                    return Optional.of(category.getCategoryNames());
-                }
-            }
+    public static List<String> findRelatedCategoryNames(String category) {
+        try {
+            return StoreCategory.valueOf(category.toUpperCase()).getCategoryNames();
+        } catch (IllegalArgumentException e) {
+            return Collections.emptyList();
         }
+    }
 
-        return Optional.empty();
+    private List<String> getCategoryNames() {
+        return categories;
     }
 }
