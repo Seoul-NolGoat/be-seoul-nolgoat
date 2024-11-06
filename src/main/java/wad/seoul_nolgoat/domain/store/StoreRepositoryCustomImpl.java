@@ -44,7 +44,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         )
                         .from(store)
                         .where(
-                                buildCategoryDistanceCondition(
+                                buildDistanceCategoryCondition(
                                         startCoordinate,
                                         radiusRange,
                                         category
@@ -77,7 +77,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         )
                         .from(store)
                         .where(
-                                buildCategoryDistanceStoreTypeCondition(
+                                buildDistanceCategoryStoreTypeCondition(
                                         startCoordinate,
                                         radiusRange,
                                         category
@@ -96,7 +96,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
         Double baseKakaoAverageGrade = jpaQueryFactory.select(store.kakaoAverageGrade)
                 .from(store)
                 .where(
-                        buildCategoryDistanceCondition(
+                        buildDistanceCategoryCondition(
                                 startCoordinate,
                                 radiusRange,
                                 category
@@ -125,7 +125,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         )
                         .from(store)
                         .where(
-                                buildCategoryDistanceCondition(
+                                buildDistanceCategoryCondition(
                                         startCoordinate,
                                         radiusRange,
                                         category
@@ -145,7 +145,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
         Double baseKakaoAverageGrade = jpaQueryFactory.select(store.kakaoAverageGrade)
                 .from(store)
                 .where(
-                        buildCategoryDistanceStoreTypeCondition(
+                        buildDistanceCategoryStoreTypeCondition(
                                 startCoordinate,
                                 radiusRange,
                                 category
@@ -174,7 +174,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         )
                         .from(store)
                         .where(
-                                buildCategoryDistanceStoreTypeCondition(
+                                buildDistanceCategoryStoreTypeCondition(
                                         startCoordinate,
                                         radiusRange,
                                         category
@@ -194,7 +194,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
         Double baseNolgoatAverageGrade = jpaQueryFactory.select(store.nolgoatAverageGrade)
                 .from(store)
                 .where(
-                        buildCategoryDistanceCondition(
+                        buildDistanceCategoryCondition(
                                 startCoordinate,
                                 radiusRange,
                                 category
@@ -223,7 +223,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         )
                         .from(store)
                         .where(
-                                buildCategoryDistanceCondition(
+                                buildDistanceCategoryCondition(
                                         startCoordinate,
                                         radiusRange,
                                         category
@@ -243,7 +243,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
         Double baseNolgoatAverageGrade = jpaQueryFactory.select(store.nolgoatAverageGrade)
                 .from(store)
                 .where(
-                        buildCategoryDistanceStoreTypeCondition(
+                        buildDistanceCategoryStoreTypeCondition(
                                 startCoordinate,
                                 radiusRange,
                                 category
@@ -272,7 +272,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         )
                         .from(store)
                         .where(
-                                buildCategoryDistanceStoreTypeCondition(
+                                buildDistanceCategoryStoreTypeCondition(
                                         startCoordinate,
                                         radiusRange,
                                         category
@@ -303,7 +303,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     }
 
     // 거리, 카테고리 조건 설정
-    private BooleanExpression buildCategoryDistanceCondition(
+    private BooleanExpression buildDistanceCategoryCondition(
             CoordinateDto startCoordinate,
             double radiusRange,
             String category
@@ -313,7 +313,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     }
 
     // 거리, 카테고리, 가게 타입 조건 설정
-    private BooleanExpression buildCategoryDistanceStoreTypeCondition(
+    private BooleanExpression buildDistanceCategoryStoreTypeCondition(
             CoordinateDto startCoordinate,
             double radiusRange,
             String category
