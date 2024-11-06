@@ -90,8 +90,8 @@ public enum StoreCategory {
     FAMILY_RESTAURANT("패밀리레스토랑"),
     CAFE("카페"),
     KARAOKE("노래방"),
-    PC_ROOM("PC방"),
-    BILLIARDS("당구");
+    PCROOM("PC방"),
+    BILLIARD("당구");
 
     private final List<String> categories;
 
