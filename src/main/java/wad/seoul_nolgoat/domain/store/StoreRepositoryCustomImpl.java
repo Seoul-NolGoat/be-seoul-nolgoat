@@ -1,6 +1,7 @@
 package wad.seoul_nolgoat.domain.store;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -51,10 +52,10 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     }
 
     @Override
-    public List<StoreForDistanceSortDto> findByRadiusRangeAndStoreTypeForDistanceSort(
+    public List<StoreForDistanceSortDto> findByRadiusRangeAndCategoryAndStoreTypeForDistanceSort(
             CoordinateDto startCoordinate,
             double radiusRange,
-            StoreType storeType
+            String category
     ) {
         return Collections.unmodifiableList(
                 jpaQueryFactory.select(
@@ -73,8 +74,11 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         )
                         .from(store)
                         .where(
-                                calculateHaversineDistance(startCoordinate).loe(radiusRange),
-                                store.storeType.eq(storeType)
+                                buildCategoryDistanceStoreTypeCondition(
+                                        startCoordinate,
+                                        radiusRange,
+                                        category
+                                )
                         )
                         .fetch()
         );
@@ -124,16 +128,19 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     }
 
     @Override
-    public List<StoreForGradeSortDto> findByRadiusRangeAndStoreTypeForKakaoGradeSort(
+    public List<StoreForGradeSortDto> findByRadiusRangeAndCategoryAndStoreTypeForKakaoGradeSort(
             CoordinateDto startCoordinate,
             double radiusRange,
-            StoreType storeType
+            String category
     ) {
         Double baseKakaoAverageGrade = jpaQueryFactory.select(store.kakaoAverageGrade)
                 .from(store)
                 .where(
-                        calculateHaversineDistance(startCoordinate).loe(radiusRange),
-                        store.storeType.eq(storeType)
+                        buildCategoryDistanceStoreTypeCondition(
+                                startCoordinate,
+                                radiusRange,
+                                category
+                        )
                 )
                 .orderBy(store.kakaoAverageGrade.desc())
                 .limit(1)
@@ -158,8 +165,11 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         )
                         .from(store)
                         .where(
-                                calculateHaversineDistance(startCoordinate).loe(radiusRange),
-                                store.storeType.eq(storeType),
+                                buildCategoryDistanceStoreTypeCondition(
+                                        startCoordinate,
+                                        radiusRange,
+                                        category
+                                ),
                                 store.kakaoAverageGrade.goe(baseKakaoAverageGrade)
                         )
                         .fetch()
@@ -210,16 +220,19 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     }
 
     @Override
-    public List<StoreForGradeSortDto> findByRadiusRangeAndStoreTypeForNolgoatGradeSort(
+    public List<StoreForGradeSortDto> findByRadiusRangeAndCategoryAndStoreTypeForNolgoatGradeSort(
             CoordinateDto startCoordinate,
             double radiusRange,
-            StoreType storeType
+            String category
     ) {
         Double baseNolgoatAverageGrade = jpaQueryFactory.select(store.nolgoatAverageGrade)
                 .from(store)
                 .where(
-                        calculateHaversineDistance(startCoordinate).loe(radiusRange),
-                        store.storeType.eq(storeType)
+                        buildCategoryDistanceStoreTypeCondition(
+                                startCoordinate,
+                                radiusRange,
+                                category
+                        )
                 )
                 .orderBy(store.nolgoatAverageGrade.desc())
                 .limit(1)
@@ -244,8 +257,11 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         )
                         .from(store)
                         .where(
-                                calculateHaversineDistance(startCoordinate).loe(radiusRange),
-                                store.storeType.eq(storeType),
+                                buildCategoryDistanceStoreTypeCondition(
+                                        startCoordinate,
+                                        radiusRange,
+                                        category
+                                ),
                                 store.nolgoatAverageGrade.goe(baseNolgoatAverageGrade)
                         )
                         .fetch()
@@ -269,6 +285,16 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 )
                 .distinct()
                 .fetch();
+    }
+
+    private BooleanExpression buildCategoryDistanceStoreTypeCondition(
+            CoordinateDto startCoordinate,
+            double radiusRange,
+            String category
+    ) {
+        return calculateHaversineDistance(startCoordinate).loe(radiusRange)
+                .and(store.category.contains(category)
+                        .or(store.storeType.eq(StoreType.getStoreTypeByName(category))));
     }
 
     private NumberExpression<Double> calculateHaversineDistance(CoordinateDto startCoordinate) {
