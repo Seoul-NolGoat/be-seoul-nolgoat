@@ -3,7 +3,6 @@ package wad.seoul_nolgoat.service.search;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.domain.store.StoreCategory;
-import wad.seoul_nolgoat.domain.store.StoreType;
 import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.search.dto.SortConditionDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForPossibleCategoriesDto;
@@ -16,11 +15,13 @@ import wad.seoul_nolgoat.web.search.dto.request.PossibleCategoriesConditionDto;
 import wad.seoul_nolgoat.web.search.dto.request.SearchConditionDto;
 import wad.seoul_nolgoat.web.search.dto.response.CombinationDto;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_GATHERING_ROUND;
-import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_SEARCH_CRITERIA;
+import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -68,20 +69,16 @@ public class SearchService {
                 possibleCategoriesConditionDto.getStartCoordinate(),
                 possibleCategoriesConditionDto.getRadiusRange()
         );
+
         Set<String> possibleCategories = new HashSet<>();
-
         for (StoreForPossibleCategoriesDto untokenizedCategory : untokenizedCategories) {
-            if (!untokenizedCategory.getStoreType().equals(StoreType.RESTAURANT)) {
-                possibleCategories.add(untokenizedCategory.getStoreType().name());
-                continue;
-            }
-
             String[] tokens = untokenizedCategory.getCategory().replace(SPACE, EMPTY).split(DELIMITER);
             for (String token : tokens) {
-                Optional<String[]> optionalRelatedCategories = StoreCategory.findRelatedCategoryNames(token);
-                optionalRelatedCategories.ifPresent(
-                        relatedCategories -> possibleCategories.addAll(Arrays.asList(relatedCategories))
-                );
+                List<String> relatedCategories = StoreCategory.findRelatedCategoryNames(token);
+                if (relatedCategories.isEmpty()) {
+                    throw new ApiException(CATEGORY_NOT_FOUND);
+                }
+                possibleCategories.addAll(relatedCategories);
             }
         }
 
