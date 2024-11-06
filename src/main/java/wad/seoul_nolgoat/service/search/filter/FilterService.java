@@ -31,10 +31,10 @@ public class FilterService {
             String category
     ) {
         if (NON_RESTAURANT_CATEGORIES.contains(category)) {
-            return storeRepository.findByRadiusRangeAndStoreTypeForDistanceSort(
+            return storeRepository.findByRadiusRangeAndCategoryAndStoreTypeForDistanceSort(
                     startCoordinate,
                     radiusRange,
-                    StoreType.getStoreTypeByName(category)
+                    category
             );
         }
         return storeRepository.findByRadiusRangeAndCategoryForDistanceSort(
@@ -50,10 +50,10 @@ public class FilterService {
             String category
     ) {
         if (NON_RESTAURANT_CATEGORIES.contains(category)) {
-            return storeRepository.findByRadiusRangeAndStoreTypeForKakaoGradeSort(
+            return storeRepository.findByRadiusRangeAndCategoryAndStoreTypeForKakaoGradeSort(
                     startCoordinate,
                     radiusRange,
-                    StoreType.getStoreTypeByName(category)
+                    category
             );
         }
         return storeRepository.findByRadiusRangeAndCategoryForKakaoGradeSort(
@@ -69,10 +69,10 @@ public class FilterService {
             String category
     ) {
         if (NON_RESTAURANT_CATEGORIES.contains(category)) {
-            return storeRepository.findByRadiusRangeAndStoreTypeForNolgoatGradeSort(
+            return storeRepository.findByRadiusRangeAndCategoryAndStoreTypeForNolgoatGradeSort(
                     startCoordinate,
                     radiusRange,
-                    StoreType.getStoreTypeByName(category)
+                    category
             );
         }
         return storeRepository.findByRadiusRangeAndCategoryForNolgoatGradeSort(
