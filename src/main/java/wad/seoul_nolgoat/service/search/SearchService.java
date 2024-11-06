@@ -21,7 +21,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static wad.seoul_nolgoat.exception.ErrorCode.*;
+import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_GATHERING_ROUND;
+import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_SEARCH_CRITERIA;
 
 @RequiredArgsConstructor
 @Service
@@ -74,11 +75,7 @@ public class SearchService {
         for (StoreForPossibleCategoriesDto untokenizedCategory : untokenizedCategories) {
             String[] tokens = untokenizedCategory.getCategory().replace(SPACE, EMPTY).split(DELIMITER);
             for (String token : tokens) {
-                List<String> relatedCategories = StoreCategory.findRelatedCategoryNames(token);
-                if (relatedCategories.isEmpty()) {
-                    throw new ApiException(CATEGORY_NOT_FOUND);
-                }
-                possibleCategories.addAll(relatedCategories);
+                possibleCategories.addAll(StoreCategory.findRelatedCategoryNames(token));
             }
         }
 
