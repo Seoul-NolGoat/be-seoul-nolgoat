@@ -44,8 +44,11 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         )
                         .from(store)
                         .where(
-                                calculateHaversineDistance(startCoordinate).loe(radiusRange),
-                                store.category.contains(category)
+                                buildCategoryDistanceCondition(
+                                        startCoordinate,
+                                        radiusRange,
+                                        category
+                                )
                         )
                         .fetch()
         );
@@ -93,8 +96,11 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
         Double baseKakaoAverageGrade = jpaQueryFactory.select(store.kakaoAverageGrade)
                 .from(store)
                 .where(
-                        calculateHaversineDistance(startCoordinate).loe(radiusRange),
-                        store.category.contains(category)
+                        buildCategoryDistanceCondition(
+                                startCoordinate,
+                                radiusRange,
+                                category
+                        )
                 )
                 .orderBy(store.kakaoAverageGrade.desc())
                 .limit(1)
@@ -119,8 +125,11 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         )
                         .from(store)
                         .where(
-                                calculateHaversineDistance(startCoordinate).loe(radiusRange),
-                                store.category.contains(category),
+                                buildCategoryDistanceCondition(
+                                        startCoordinate,
+                                        radiusRange,
+                                        category
+                                ),
                                 store.kakaoAverageGrade.goe(baseKakaoAverageGrade)
                         )
                         .fetch()
@@ -185,8 +194,11 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
         Double baseNolgoatAverageGrade = jpaQueryFactory.select(store.nolgoatAverageGrade)
                 .from(store)
                 .where(
-                        calculateHaversineDistance(startCoordinate).loe(radiusRange),
-                        store.category.contains(category)
+                        buildCategoryDistanceCondition(
+                                startCoordinate,
+                                radiusRange,
+                                category
+                        )
                 )
                 .orderBy(store.nolgoatAverageGrade.desc())
                 .limit(1)
@@ -211,8 +223,11 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                         )
                         .from(store)
                         .where(
-                                calculateHaversineDistance(startCoordinate).loe(radiusRange),
-                                store.category.contains(category),
+                                buildCategoryDistanceCondition(
+                                        startCoordinate,
+                                        radiusRange,
+                                        category
+                                ),
                                 store.nolgoatAverageGrade.goe(baseNolgoatAverageGrade)
                         )
                         .fetch()
@@ -287,14 +302,33 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .fetch();
     }
 
+    // 거리, 카테고리 조건 설정
+    private BooleanExpression buildCategoryDistanceCondition(
+            CoordinateDto startCoordinate,
+            double radiusRange,
+            String category
+    ) {
+        return calculateHaversineDistance(startCoordinate).loe(radiusRange)
+                .and(buildCategoryCondition(category));
+    }
+
+    // 거리, 카테고리, 가게 타입 조건 설정
     private BooleanExpression buildCategoryDistanceStoreTypeCondition(
             CoordinateDto startCoordinate,
             double radiusRange,
             String category
     ) {
         return calculateHaversineDistance(startCoordinate).loe(radiusRange)
-                .and(store.category.contains(category)
+                .and(buildCategoryCondition(category)
                         .or(store.storeType.eq(StoreType.getStoreTypeByName(category))));
+    }
+
+    // 해당 Enum(category)에 속한 모든 카테고리들을 조건에 추가
+    private BooleanExpression buildCategoryCondition(String category) {
+        return StoreCategory.findRelatedCategoryNames(category).stream()
+                .map(store.category::contains)
+                .reduce(BooleanExpression::or)
+                .get(); // 비어있는 경우는 없음
     }
 
     private NumberExpression<Double> calculateHaversineDistance(CoordinateDto startCoordinate) {
