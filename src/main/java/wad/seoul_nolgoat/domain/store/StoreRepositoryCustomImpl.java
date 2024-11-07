@@ -48,13 +48,16 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             String category
     ) {
         return Collections.unmodifiableList(
-                createBaseQueryForDistanceSorted().where(
-                        buildRangeAndCategoryAndTypeCondition(
-                                startCoordinate,
-                                radiusRange,
-                                category
+                createBaseQueryForDistanceSorted()
+                        .distinct()
+                        .where(
+                                buildRangeAndCategoryAndTypeCondition(
+                                        startCoordinate,
+                                        radiusRange,
+                                        category
+                                )
                         )
-                ).fetch()
+                        .fetch()
         );
     }
 
@@ -110,6 +113,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
         );
 
         Double baseKakaoAverageGrade = jpaQueryFactory.select(store.kakaoAverageGrade)
+                .distinct()
                 .from(store)
                 .where(
                         buildRangeAndCategoryAndTypeCondition(
@@ -124,14 +128,17 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .fetchOne();
 
         return Collections.unmodifiableList(
-                createBaseQueryForKakaoGradeSorted().where(
-                        buildRangeAndCategoryAndTypeCondition(
-                                startCoordinate,
-                                radiusRange,
-                                category
-                        ),
-                        store.kakaoAverageGrade.goe(baseKakaoAverageGrade)
-                ).fetch()
+                createBaseQueryForKakaoGradeSorted()
+                        .distinct()
+                        .where(
+                                buildRangeAndCategoryAndTypeCondition(
+                                        startCoordinate,
+                                        radiusRange,
+                                        category
+                                ),
+                                store.kakaoAverageGrade.goe(baseKakaoAverageGrade)
+                        )
+                        .fetch()
         );
     }
 
@@ -186,6 +193,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
         );
 
         Double baseNolgoatAverageGrade = jpaQueryFactory.select(store.nolgoatAverageGrade)
+                .distinct()
                 .from(store)
                 .where(
                         buildRangeAndCategoryAndTypeCondition(
@@ -200,14 +208,17 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .fetchOne();
 
         return Collections.unmodifiableList(
-                createBaseQueryForNolgoatGradeSorted().where(
-                        buildRangeAndCategoryAndTypeCondition(
-                                startCoordinate,
-                                radiusRange,
-                                category
-                        ),
-                        store.nolgoatAverageGrade.goe(baseNolgoatAverageGrade)
-                ).fetch()
+                createBaseQueryForNolgoatGradeSorted()
+                        .distinct()
+                        .where(
+                                buildRangeAndCategoryAndTypeCondition(
+                                        startCoordinate,
+                                        radiusRange,
+                                        category
+                                ),
+                                store.nolgoatAverageGrade.goe(baseNolgoatAverageGrade)
+                        )
+                        .fetch()
         );
     }
 
@@ -220,13 +231,13 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                                 store.category
                         )
                 )
+                .distinct()
                 .from(store)
                 .where(
                         calculateHaversineDistance(startCoordinate).loe(radiusRange),
                         store.category.isNotNull(),
                         store.storeType.isNotNull()
                 )
-                .distinct()
                 .fetch();
     }
 
@@ -313,7 +324,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
-        Long resultCount = jpaQueryFactory.select(store.count())
+        Long resultCount = jpaQueryFactory.select(store.countDistinct())
                 .from(store)
                 .where(
                         buildRangeAndCategoryAndTypeCondition(
