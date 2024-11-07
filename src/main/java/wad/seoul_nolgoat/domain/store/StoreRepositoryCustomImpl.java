@@ -3,6 +3,7 @@ package wad.seoul_nolgoat.domain.store;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import wad.seoul_nolgoat.service.search.dto.StoreForDistanceSortDto;
@@ -19,6 +20,8 @@ import static wad.seoul_nolgoat.domain.store.QStore.store;
 @RequiredArgsConstructor
 public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
+    private static final int MAX_RESULT_INDEX = 9;
+
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
@@ -28,29 +31,13 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             String category
     ) {
         return Collections.unmodifiableList(
-                jpaQueryFactory.select(
-                                Projections.constructor(
-                                        StoreForDistanceSortDto.class,
-                                        store.id,
-                                        store.name,
-                                        Projections.constructor(
-                                                CoordinateDto.class,
-                                                numberTemplate(Double.class, "ST_Y({0})", store.location),
-                                                numberTemplate(Double.class, "ST_X({0})", store.location)
-                                        ),
-                                        store.kakaoAverageGrade,
-                                        store.nolgoatAverageGrade
-                                )
+                createBaseQueryForDistanceSorted().where(
+                        buildRangeAndCategoryCondition(
+                                startCoordinate,
+                                radiusRange,
+                                category
                         )
-                        .from(store)
-                        .where(
-                                buildDistanceCategoryCondition(
-                                        startCoordinate,
-                                        radiusRange,
-                                        category
-                                )
-                        )
-                        .fetch()
+                ).fetch()
         );
     }
 
@@ -61,29 +48,13 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             String category
     ) {
         return Collections.unmodifiableList(
-                jpaQueryFactory.select(
-                                Projections.constructor(
-                                        StoreForDistanceSortDto.class,
-                                        store.id,
-                                        store.name,
-                                        Projections.constructor(
-                                                CoordinateDto.class,
-                                                numberTemplate(Double.class, "ST_Y({0})", store.location),
-                                                numberTemplate(Double.class, "ST_X({0})", store.location)
-                                        ),
-                                        store.kakaoAverageGrade,
-                                        store.nolgoatAverageGrade
-                                )
+                createBaseQueryForDistanceSorted().where(
+                        buildRangeAndCategoryAndTypeCondition(
+                                startCoordinate,
+                                radiusRange,
+                                category
                         )
-                        .from(store)
-                        .where(
-                                buildDistanceCategoryStoreTypeCondition(
-                                        startCoordinate,
-                                        radiusRange,
-                                        category
-                                )
-                        )
-                        .fetch()
+                ).fetch()
         );
     }
 
@@ -93,10 +64,16 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
+        Long offsetValue = getOffsetForRangeAndCategory(
+                startCoordinate,
+                radiusRange,
+                category
+        );
+
         Double baseKakaoAverageGrade = jpaQueryFactory.select(store.kakaoAverageGrade)
                 .from(store)
                 .where(
-                        buildDistanceCategoryCondition(
+                        buildRangeAndCategoryCondition(
                                 startCoordinate,
                                 radiusRange,
                                 category
@@ -104,37 +81,21 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 )
                 .orderBy(store.kakaoAverageGrade.desc())
                 .limit(1)
-                .offset(9)
+                .offset(offsetValue)
                 .fetchOne();
 
         return Collections.unmodifiableList(
-                jpaQueryFactory.select(
-                                Projections.constructor(
-                                        StoreForGradeSortDto.class,
-                                        store.id,
-                                        store.name,
-                                        Projections.constructor(
-                                                CoordinateDto.class,
-                                                numberTemplate(Double.class, "ST_Y({0})", store.location),
-                                                numberTemplate(Double.class, "ST_X({0})", store.location)
-                                        ),
-                                        store.kakaoAverageGrade,
-                                        store.kakaoAverageGrade,
-                                        store.nolgoatAverageGrade
-                                )
-                        )
-                        .from(store)
-                        .where(
-                                buildDistanceCategoryCondition(
-                                        startCoordinate,
-                                        radiusRange,
-                                        category
-                                ),
-                                store.kakaoAverageGrade.goe(baseKakaoAverageGrade)
-                        )
-                        .fetch()
+                createBaseQueryForKakaoGradeSorted().where(
+                        buildRangeAndCategoryCondition(
+                                startCoordinate,
+                                radiusRange,
+                                category
+                        ),
+                        store.kakaoAverageGrade.goe(baseKakaoAverageGrade)
+                ).fetch()
         );
     }
+
 
     @Override
     public List<StoreForGradeSortDto> findByRadiusRangeAndCategoryAndStoreTypeForKakaoGradeSort(
@@ -142,10 +103,16 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
+        Long offsetValue = getOffsetForRangeAndCategoryAndType(
+                startCoordinate,
+                radiusRange,
+                category
+        );
+
         Double baseKakaoAverageGrade = jpaQueryFactory.select(store.kakaoAverageGrade)
                 .from(store)
                 .where(
-                        buildDistanceCategoryStoreTypeCondition(
+                        buildRangeAndCategoryAndTypeCondition(
                                 startCoordinate,
                                 radiusRange,
                                 category
@@ -153,35 +120,18 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 )
                 .orderBy(store.kakaoAverageGrade.desc())
                 .limit(1)
-                .offset(9)
+                .offset(offsetValue)
                 .fetchOne();
 
         return Collections.unmodifiableList(
-                jpaQueryFactory.select(
-                                Projections.constructor(
-                                        StoreForGradeSortDto.class,
-                                        store.id,
-                                        store.name,
-                                        Projections.constructor(
-                                                CoordinateDto.class,
-                                                numberTemplate(Double.class, "ST_Y({0})", store.location),
-                                                numberTemplate(Double.class, "ST_X({0})", store.location)
-                                        ),
-                                        store.kakaoAverageGrade,
-                                        store.kakaoAverageGrade,
-                                        store.nolgoatAverageGrade
-                                )
-                        )
-                        .from(store)
-                        .where(
-                                buildDistanceCategoryStoreTypeCondition(
-                                        startCoordinate,
-                                        radiusRange,
-                                        category
-                                ),
-                                store.kakaoAverageGrade.goe(baseKakaoAverageGrade)
-                        )
-                        .fetch()
+                createBaseQueryForKakaoGradeSorted().where(
+                        buildRangeAndCategoryAndTypeCondition(
+                                startCoordinate,
+                                radiusRange,
+                                category
+                        ),
+                        store.kakaoAverageGrade.goe(baseKakaoAverageGrade)
+                ).fetch()
         );
     }
 
@@ -191,10 +141,16 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
+        Long offsetValue = getOffsetForRangeAndCategory(
+                startCoordinate,
+                radiusRange,
+                category
+        );
+
         Double baseNolgoatAverageGrade = jpaQueryFactory.select(store.nolgoatAverageGrade)
                 .from(store)
                 .where(
-                        buildDistanceCategoryCondition(
+                        buildRangeAndCategoryCondition(
                                 startCoordinate,
                                 radiusRange,
                                 category
@@ -202,35 +158,18 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 )
                 .orderBy(store.nolgoatAverageGrade.desc())
                 .limit(1)
-                .offset(9)
+                .offset(offsetValue)
                 .fetchOne();
 
         return Collections.unmodifiableList(
-                jpaQueryFactory.select(
-                                Projections.constructor(
-                                        StoreForGradeSortDto.class,
-                                        store.id,
-                                        store.name,
-                                        Projections.constructor(
-                                                CoordinateDto.class,
-                                                numberTemplate(Double.class, "ST_Y({0})", store.location),
-                                                numberTemplate(Double.class, "ST_X({0})", store.location)
-                                        ),
-                                        store.nolgoatAverageGrade,
-                                        store.kakaoAverageGrade,
-                                        store.nolgoatAverageGrade
-                                )
-                        )
-                        .from(store)
-                        .where(
-                                buildDistanceCategoryCondition(
-                                        startCoordinate,
-                                        radiusRange,
-                                        category
-                                ),
-                                store.nolgoatAverageGrade.goe(baseNolgoatAverageGrade)
-                        )
-                        .fetch()
+                createBaseQueryForNolgoatGradeSorted().where(
+                        buildRangeAndCategoryCondition(
+                                startCoordinate,
+                                radiusRange,
+                                category
+                        ),
+                        store.nolgoatAverageGrade.goe(baseNolgoatAverageGrade)
+                ).fetch()
         );
     }
 
@@ -240,10 +179,16 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
+        Long offsetValue = getOffsetForRangeAndCategoryAndType(
+                startCoordinate,
+                radiusRange,
+                category
+        );
+
         Double baseNolgoatAverageGrade = jpaQueryFactory.select(store.nolgoatAverageGrade)
                 .from(store)
                 .where(
-                        buildDistanceCategoryStoreTypeCondition(
+                        buildRangeAndCategoryAndTypeCondition(
                                 startCoordinate,
                                 radiusRange,
                                 category
@@ -251,35 +196,18 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 )
                 .orderBy(store.nolgoatAverageGrade.desc())
                 .limit(1)
-                .offset(9)
+                .offset(offsetValue)
                 .fetchOne();
 
         return Collections.unmodifiableList(
-                jpaQueryFactory.select(
-                                Projections.constructor(
-                                        StoreForGradeSortDto.class,
-                                        store.id,
-                                        store.name,
-                                        Projections.constructor(
-                                                CoordinateDto.class,
-                                                numberTemplate(Double.class, "ST_Y({0})", store.location),
-                                                numberTemplate(Double.class, "ST_X({0})", store.location)
-                                        ),
-                                        store.nolgoatAverageGrade,
-                                        store.kakaoAverageGrade,
-                                        store.nolgoatAverageGrade
-                                )
-                        )
-                        .from(store)
-                        .where(
-                                buildDistanceCategoryStoreTypeCondition(
-                                        startCoordinate,
-                                        radiusRange,
-                                        category
-                                ),
-                                store.nolgoatAverageGrade.goe(baseNolgoatAverageGrade)
-                        )
-                        .fetch()
+                createBaseQueryForNolgoatGradeSorted().where(
+                        buildRangeAndCategoryAndTypeCondition(
+                                startCoordinate,
+                                radiusRange,
+                                category
+                        ),
+                        store.nolgoatAverageGrade.goe(baseNolgoatAverageGrade)
+                ).fetch()
         );
     }
 
@@ -302,8 +230,104 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .fetch();
     }
 
+    // 거리 기준 정렬을 위한 기본 쿼리
+    private JPAQuery<StoreForDistanceSortDto> createBaseQueryForDistanceSorted() {
+        return jpaQueryFactory.select(
+                Projections.constructor(
+                        StoreForDistanceSortDto.class,
+                        store.id,
+                        store.name,
+                        Projections.constructor(
+                                CoordinateDto.class,
+                                numberTemplate(Double.class, "ST_Y({0})", store.location),
+                                numberTemplate(Double.class, "ST_X({0})", store.location)
+                        ),
+                        store.kakaoAverageGrade,
+                        store.nolgoatAverageGrade
+                )
+        ).from(store);
+    }
+
+    // 카카오 평점 기준 정렬을 위한 기본 쿼리
+    private JPAQuery<StoreForGradeSortDto> createBaseQueryForKakaoGradeSorted() {
+        return jpaQueryFactory.select(
+                Projections.constructor(
+                        StoreForGradeSortDto.class,
+                        store.id,
+                        store.name,
+                        Projections.constructor(
+                                CoordinateDto.class,
+                                numberTemplate(Double.class, "ST_Y({0})", store.location),
+                                numberTemplate(Double.class, "ST_X({0})", store.location)
+                        ),
+                        store.kakaoAverageGrade,
+                        store.kakaoAverageGrade,
+                        store.nolgoatAverageGrade
+                )
+        ).from(store);
+    }
+
+    // 놀곳 평점 기준 정렬을 위한 기본 쿼리
+    private JPAQuery<StoreForGradeSortDto> createBaseQueryForNolgoatGradeSorted() {
+        return jpaQueryFactory.select(
+                Projections.constructor(
+                        StoreForGradeSortDto.class,
+                        store.id,
+                        store.name,
+                        Projections.constructor(
+                                CoordinateDto.class,
+                                numberTemplate(Double.class, "ST_Y({0})", store.location),
+                                numberTemplate(Double.class, "ST_X({0})", store.location)
+                        ),
+                        store.nolgoatAverageGrade,
+                        store.kakaoAverageGrade,
+                        store.nolgoatAverageGrade
+                )
+        ).from(store);
+    }
+
+    // 평점 기준으로 내림차순 정렬한 뒤, 지정된 개수(10)만큼 데이터를 가져오려고 할 때, 실제 조회된 결과 개수가 기준 개수보다 적은 경우를 처리하는 로직
+    // buildDistanceCategoryCondition 사용
+    private Long getOffsetForRangeAndCategory(
+            CoordinateDto startCoordinate,
+            double radiusRange,
+            String category
+    ) {
+        Long resultCount = jpaQueryFactory.select(store.count())
+                .from(store)
+                .where(
+                        buildRangeAndCategoryCondition(
+                                startCoordinate,
+                                radiusRange,
+                                category
+                        )
+                ).fetchOne();
+
+        return Math.min(MAX_RESULT_INDEX, resultCount - 1);
+    }
+
+    // 평점 기준으로 내림차순 정렬한 뒤, 지정된 개수(10)만큼 데이터를 가져오려고 할 때, 실제 조회된 결과 개수가 기준 개수보다 적은 경우를 처리하는 로직
+    // buildDistanceCategoryStoreTypeCondition 사용
+    private Long getOffsetForRangeAndCategoryAndType(
+            CoordinateDto startCoordinate,
+            double radiusRange,
+            String category
+    ) {
+        Long resultCount = jpaQueryFactory.select(store.count())
+                .from(store)
+                .where(
+                        buildRangeAndCategoryAndTypeCondition(
+                                startCoordinate,
+                                radiusRange,
+                                category
+                        )
+                ).fetchOne();
+
+        return Math.min(MAX_RESULT_INDEX, resultCount - 1);
+    }
+
     // 거리, 카테고리 조건 설정
-    private BooleanExpression buildDistanceCategoryCondition(
+    private BooleanExpression buildRangeAndCategoryCondition(
             CoordinateDto startCoordinate,
             double radiusRange,
             String category
@@ -313,7 +337,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     }
 
     // 거리, 카테고리, 가게 타입 조건 설정
-    private BooleanExpression buildDistanceCategoryStoreTypeCondition(
+    private BooleanExpression buildRangeAndCategoryAndTypeCondition(
             CoordinateDto startCoordinate,
             double radiusRange,
             String category
