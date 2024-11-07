@@ -31,13 +31,15 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             String category
     ) {
         return Collections.unmodifiableList(
-                createBaseQueryForDistanceSorted().where(
-                        buildRangeAndCategoryCondition(
-                                startCoordinate,
-                                radiusRange,
-                                category
+                createBaseQueryForDistanceSorted()
+                        .where(
+                                buildRangeAndCategoryCondition(
+                                        startCoordinate,
+                                        radiusRange,
+                                        category
+                                )
                         )
-                ).fetch()
+                        .fetch()
         );
     }
 
@@ -73,7 +75,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 category
         );
 
-        Double baseKakaoAverageGrade = jpaQueryFactory.select(store.kakaoAverageGrade)
+        Double baseKakaoAverageGrade = jpaQueryFactory
+                .select(store.kakaoAverageGrade)
                 .from(store)
                 .where(
                         buildRangeAndCategoryCondition(
@@ -88,14 +91,16 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .fetchOne();
 
         return Collections.unmodifiableList(
-                createBaseQueryForKakaoGradeSorted().where(
-                        buildRangeAndCategoryCondition(
-                                startCoordinate,
-                                radiusRange,
-                                category
-                        ),
-                        store.kakaoAverageGrade.goe(baseKakaoAverageGrade)
-                ).fetch()
+                createBaseQueryForKakaoGradeSorted()
+                        .where(
+                                buildRangeAndCategoryCondition(
+                                        startCoordinate,
+                                        radiusRange,
+                                        category
+                                ),
+                                store.kakaoAverageGrade.goe(baseKakaoAverageGrade)
+                        )
+                        .fetch()
         );
     }
 
@@ -112,7 +117,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 category
         );
 
-        Double baseKakaoAverageGrade = jpaQueryFactory.select(store.kakaoAverageGrade)
+        Double baseKakaoAverageGrade = jpaQueryFactory
+                .select(store.kakaoAverageGrade)
                 .distinct()
                 .from(store)
                 .where(
@@ -154,7 +160,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 category
         );
 
-        Double baseNolgoatAverageGrade = jpaQueryFactory.select(store.nolgoatAverageGrade)
+        Double baseNolgoatAverageGrade = jpaQueryFactory
+                .select(store.nolgoatAverageGrade)
                 .from(store)
                 .where(
                         buildRangeAndCategoryCondition(
@@ -169,14 +176,16 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .fetchOne();
 
         return Collections.unmodifiableList(
-                createBaseQueryForNolgoatGradeSorted().where(
-                        buildRangeAndCategoryCondition(
-                                startCoordinate,
-                                radiusRange,
-                                category
-                        ),
-                        store.nolgoatAverageGrade.goe(baseNolgoatAverageGrade)
-                ).fetch()
+                createBaseQueryForNolgoatGradeSorted()
+                        .where(
+                                buildRangeAndCategoryCondition(
+                                        startCoordinate,
+                                        radiusRange,
+                                        category
+                                ),
+                                store.nolgoatAverageGrade.goe(baseNolgoatAverageGrade)
+                        )
+                        .fetch()
         );
     }
 
@@ -192,7 +201,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 category
         );
 
-        Double baseNolgoatAverageGrade = jpaQueryFactory.select(store.nolgoatAverageGrade)
+        Double baseNolgoatAverageGrade = jpaQueryFactory
+                .select(store.nolgoatAverageGrade)
                 .distinct()
                 .from(store)
                 .where(
@@ -224,7 +234,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
     @Override
     public List<StoreForPossibleCategoriesDto> findCategoriesByRadiusRange(CoordinateDto startCoordinate, double radiusRange) {
-        return jpaQueryFactory.select(
+        return jpaQueryFactory
+                .select(
                         Projections.constructor(
                                 StoreForPossibleCategoriesDto.class,
                                 store.storeType,
@@ -243,58 +254,64 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
     // 거리 기준 정렬을 위한 기본 쿼리
     private JPAQuery<StoreForDistanceSortDto> createBaseQueryForDistanceSorted() {
-        return jpaQueryFactory.select(
-                Projections.constructor(
-                        StoreForDistanceSortDto.class,
-                        store.id,
-                        store.name,
+        return jpaQueryFactory
+                .select(
                         Projections.constructor(
-                                CoordinateDto.class,
-                                numberTemplate(Double.class, "ST_Y({0})", store.location),
-                                numberTemplate(Double.class, "ST_X({0})", store.location)
-                        ),
-                        store.kakaoAverageGrade,
-                        store.nolgoatAverageGrade
+                                StoreForDistanceSortDto.class,
+                                store.id,
+                                store.name,
+                                Projections.constructor(
+                                        CoordinateDto.class,
+                                        numberTemplate(Double.class, "ST_Y({0})", store.location),
+                                        numberTemplate(Double.class, "ST_X({0})", store.location)
+                                ),
+                                store.kakaoAverageGrade,
+                                store.nolgoatAverageGrade
+                        )
                 )
-        ).from(store);
+                .from(store);
     }
 
     // 카카오 평점 기준 정렬을 위한 기본 쿼리
     private JPAQuery<StoreForGradeSortDto> createBaseQueryForKakaoGradeSorted() {
-        return jpaQueryFactory.select(
-                Projections.constructor(
-                        StoreForGradeSortDto.class,
-                        store.id,
-                        store.name,
+        return jpaQueryFactory
+                .select(
                         Projections.constructor(
-                                CoordinateDto.class,
-                                numberTemplate(Double.class, "ST_Y({0})", store.location),
-                                numberTemplate(Double.class, "ST_X({0})", store.location)
-                        ),
-                        store.kakaoAverageGrade,
-                        store.kakaoAverageGrade,
-                        store.nolgoatAverageGrade
+                                StoreForGradeSortDto.class,
+                                store.id,
+                                store.name,
+                                Projections.constructor(
+                                        CoordinateDto.class,
+                                        numberTemplate(Double.class, "ST_Y({0})", store.location),
+                                        numberTemplate(Double.class, "ST_X({0})", store.location)
+                                ),
+                                store.kakaoAverageGrade,
+                                store.kakaoAverageGrade,
+                                store.nolgoatAverageGrade
+                        )
                 )
-        ).from(store);
+                .from(store);
     }
 
     // 놀곳 평점 기준 정렬을 위한 기본 쿼리
     private JPAQuery<StoreForGradeSortDto> createBaseQueryForNolgoatGradeSorted() {
-        return jpaQueryFactory.select(
-                Projections.constructor(
-                        StoreForGradeSortDto.class,
-                        store.id,
-                        store.name,
+        return jpaQueryFactory
+                .select(
                         Projections.constructor(
-                                CoordinateDto.class,
-                                numberTemplate(Double.class, "ST_Y({0})", store.location),
-                                numberTemplate(Double.class, "ST_X({0})", store.location)
-                        ),
-                        store.nolgoatAverageGrade,
-                        store.kakaoAverageGrade,
-                        store.nolgoatAverageGrade
+                                StoreForGradeSortDto.class,
+                                store.id,
+                                store.name,
+                                Projections.constructor(
+                                        CoordinateDto.class,
+                                        numberTemplate(Double.class, "ST_Y({0})", store.location),
+                                        numberTemplate(Double.class, "ST_X({0})", store.location)
+                                ),
+                                store.nolgoatAverageGrade,
+                                store.kakaoAverageGrade,
+                                store.nolgoatAverageGrade
+                        )
                 )
-        ).from(store);
+                .from(store);
     }
 
     // 평점 기준으로 내림차순 정렬한 뒤, 지정된 개수(10)만큼 데이터를 가져오려고 할 때, 실제 조회된 결과 개수가 기준 개수보다 적은 경우를 처리하는 로직
@@ -304,7 +321,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
-        Long resultCount = jpaQueryFactory.select(store.count())
+        Long resultCount = jpaQueryFactory
+                .select(store.count())
                 .from(store)
                 .where(
                         buildRangeAndCategoryCondition(
@@ -312,7 +330,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                                 radiusRange,
                                 category
                         )
-                ).fetchOne();
+                )
+                .fetchOne();
 
         return Math.min(MAX_RESULT_INDEX, resultCount - 1);
     }
@@ -324,7 +343,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
-        Long resultCount = jpaQueryFactory.select(store.countDistinct())
+        Long resultCount = jpaQueryFactory
+                .select(store.countDistinct())
                 .from(store)
                 .where(
                         buildRangeAndCategoryAndTypeCondition(
@@ -332,7 +352,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                                 radiusRange,
                                 category
                         )
-                ).fetchOne();
+                )
+                .fetchOne();
 
         return Math.min(MAX_RESULT_INDEX, resultCount - 1);
     }
