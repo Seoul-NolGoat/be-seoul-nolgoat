@@ -20,7 +20,9 @@ import static wad.seoul_nolgoat.domain.store.QStore.store;
 @RequiredArgsConstructor
 public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
-    private static final int MAX_RESULT_INDEX = 9;
+    private static final String ST_Y_TEMPLATE = "ST_Y({0})";  // Y 좌표용 템플릿
+    private static final String ST_X_TEMPLATE = "ST_X({0})";  // X 좌표용 템플릿
+    private static final int MAX_RESULT_INDEX = 9; // 평점 정렬 시, 최대 개수의 기준이 되는 인덱스
 
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -262,8 +264,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                                 store.name,
                                 Projections.constructor(
                                         CoordinateDto.class,
-                                        numberTemplate(Double.class, "ST_Y({0})", store.location),
-                                        numberTemplate(Double.class, "ST_X({0})", store.location)
+                                        numberTemplate(Double.class, ST_Y_TEMPLATE, store.location),
+                                        numberTemplate(Double.class, ST_X_TEMPLATE, store.location)
                                 ),
                                 store.kakaoAverageGrade,
                                 store.nolgoatAverageGrade
@@ -282,8 +284,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                                 store.name,
                                 Projections.constructor(
                                         CoordinateDto.class,
-                                        numberTemplate(Double.class, "ST_Y({0})", store.location),
-                                        numberTemplate(Double.class, "ST_X({0})", store.location)
+                                        numberTemplate(Double.class, ST_Y_TEMPLATE, store.location),
+                                        numberTemplate(Double.class, ST_X_TEMPLATE, store.location)
                                 ),
                                 store.kakaoAverageGrade,
                                 store.kakaoAverageGrade,
@@ -303,8 +305,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                                 store.name,
                                 Projections.constructor(
                                         CoordinateDto.class,
-                                        numberTemplate(Double.class, "ST_Y({0})", store.location),
-                                        numberTemplate(Double.class, "ST_X({0})", store.location)
+                                        numberTemplate(Double.class, ST_Y_TEMPLATE, store.location),
+                                        numberTemplate(Double.class, ST_X_TEMPLATE, store.location)
                                 ),
                                 store.nolgoatAverageGrade,
                                 store.kakaoAverageGrade,
