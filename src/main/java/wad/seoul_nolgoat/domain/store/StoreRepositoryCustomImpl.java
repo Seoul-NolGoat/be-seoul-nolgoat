@@ -1,5 +1,6 @@
 package wad.seoul_nolgoat.domain.store;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
@@ -71,9 +72,10 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
-        List<Store> result = jpaQueryFactory
-                .selectFrom(store)
+        List<Tuple> result = jpaQueryFactory
+                .select(store.id, store.kakaoAverageGrade)
                 .distinct()
+                .from(store)
                 .where(
                         buildRangeAndCategoryCondition(
                                 startCoordinate,
@@ -85,7 +87,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .fetch();
 
         int resultCount = Math.min(MAX_RESULT_COUNT, result.size());
-        Double baseKakaoAverageGrade = result.get(resultCount - 1).getKakaoAverageGrade();
+        Double baseKakaoAverageGrade = result.get(resultCount - 1).get(1, Double.class);
 
         return Collections.unmodifiableList(
                 createBaseQueryForKakaoGradeSorted()
@@ -108,9 +110,10 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
-        List<Store> result = jpaQueryFactory
-                .selectFrom(store)
+        List<Tuple> result = jpaQueryFactory
+                .select(store.id, store.kakaoAverageGrade)
                 .distinct()
+                .from(store)
                 .where(
                         buildRangeAndCategoryAndTypeCondition(
                                 startCoordinate,
@@ -122,7 +125,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .fetch();
 
         int resultCount = Math.min(MAX_RESULT_COUNT, result.size());
-        Double baseKakaoAverageGrade = result.get(resultCount - 1).getKakaoAverageGrade();
+        Double baseKakaoAverageGrade = result.get(resultCount - 1).get(1, Double.class);
 
         return Collections.unmodifiableList(
                 createBaseQueryForKakaoGradeSorted()
@@ -145,9 +148,10 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
-        List<Store> result = jpaQueryFactory
-                .selectFrom(store)
+        List<Tuple> result = jpaQueryFactory
+                .select(store.id, store.nolgoatAverageGrade)
                 .distinct()
+                .from(store)
                 .where(
                         buildRangeAndCategoryCondition(
                                 startCoordinate,
@@ -159,7 +163,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .fetch();
 
         int resultCount = Math.min(MAX_RESULT_COUNT, result.size());
-        Double baseNolgoatAverageGrade = result.get(resultCount - 1).getNolgoatAverageGrade();
+        Double baseNolgoatAverageGrade = result.get(resultCount - 1).get(1, Double.class);
 
         return Collections.unmodifiableList(
                 createBaseQueryForNolgoatGradeSorted()
@@ -181,9 +185,10 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
-        List<Store> result = jpaQueryFactory
-                .selectFrom(store)
+        List<Tuple> result = jpaQueryFactory
+                .select(store.id, store.nolgoatAverageGrade)
                 .distinct()
+                .from(store)
                 .where(
                         buildRangeAndCategoryAndTypeCondition(
                                 startCoordinate,
@@ -195,7 +200,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .fetch();
 
         int resultCount = Math.min(MAX_RESULT_COUNT, result.size());
-        Double baseNolgoatAverageGrade = result.get(resultCount - 1).getNolgoatAverageGrade();
+        Double baseNolgoatAverageGrade = result.get(resultCount - 1).get(1, Double.class);
 
         return Collections.unmodifiableList(
                 createBaseQueryForNolgoatGradeSorted()
