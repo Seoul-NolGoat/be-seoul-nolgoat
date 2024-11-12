@@ -1,7 +1,8 @@
 package wad.seoul_nolgoat.service.s3;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
+import io.awspring.cloud.s3.ObjectMetadata;
+import io.awspring.cloud.s3.S3Resource;
+import io.awspring.cloud.s3.S3Template;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import wad.seoul_nolgoat.exception.ApiException;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -16,30 +18,37 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.FILE_READ_FAILED;
+import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_FILE_URL_FORMAT;
 
 @Service
 @RequiredArgsConstructor
 public class S3Service {
 
-    private final AmazonS3 amazonS3;
+    private final S3Template s3Template;
 
-    @Value("${cloud.aws.s3.bucket}")
+    @Value("${spring.cloud.aws.s3.bucket}")
     private String bucket;
 
     public String saveFile(MultipartFile multipartFile) {
-        String filename = generateFileName(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+        String originalFilename = multipartFile.getOriginalFilename();
+        String fileName = generateFileName(Objects.requireNonNull(originalFilename));
 
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(multipartFile.getSize());
-        metadata.setContentType(multipartFile.getContentType());
-
+        String imageUrl;
         try {
-            amazonS3.putObject(bucket, filename, multipartFile.getInputStream(), metadata);
+            S3Resource s3Resource = s3Template.upload(
+                    bucket,
+                    fileName,
+                    multipartFile.getInputStream(),
+                    ObjectMetadata.builder()
+                            .contentType(multipartFile.getContentType())
+                            .build()
+            );
+            imageUrl = s3Resource.getURL().toString();
         } catch (IOException e) {
             throw new ApiException(FILE_READ_FAILED);
         }
 
-        return amazonS3.getUrl(bucket, filename).toString();
+        return imageUrl;
     }
 
     public void deleteFile(String fileUrl) {
@@ -49,9 +58,9 @@ public class S3Service {
             String key = path.substring(1);
             String decodedKey = URLDecoder.decode(key, StandardCharsets.UTF_8); // 한글 또는 특수문자가 있는 경우를 위해
 
-            amazonS3.deleteObject(bucket, decodedKey);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to delete file from S3: " + fileUrl, e);
+            s3Template.deleteObject(bucket, decodedKey);
+        } catch (MalformedURLException e) {
+            throw new ApiException(INVALID_FILE_URL_FORMAT);
         }
     }
 
