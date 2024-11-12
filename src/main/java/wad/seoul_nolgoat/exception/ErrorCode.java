@@ -56,8 +56,9 @@ public enum ErrorCode {
     // 유효성 검사 관련
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "VALIDATION001", "입력값이 유효하지 않습니다."),
 
-    // 파일 업로드 관련
-    FILE_READ_FAILED(HttpStatus.BAD_REQUEST, "FILE003", "파일을 읽는 데 실패했습니다.");
+    // 파일 관련
+    FILE_READ_FAILED(HttpStatus.BAD_REQUEST, "FILE001", "파일을 읽는 데 실패했습니다."),
+    INVALID_FILE_URL_FORMAT(HttpStatus.BAD_REQUEST, "FILE002", "잘못된 파일 URL 형식입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
