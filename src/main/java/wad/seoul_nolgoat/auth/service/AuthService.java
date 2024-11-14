@@ -30,7 +30,7 @@ public class AuthService {
                 REFRESH_TOKEN_EXPIRATION_TIME
         );
 
-        String key = REFRESH_TOKEN_PREFIX + getLoginId(refreshToken);
+        String key = REFRESH_TOKEN_PREFIX + loginId;
         tokenService.saveToken(
                 key,
                 refreshToken,
@@ -104,8 +104,8 @@ public class AuthService {
         }
     }
 
-    public void deleteRefreshToken(String refreshToken) {
-        tokenService.deleteToken(REFRESH_TOKEN_PREFIX + getLoginId(refreshToken));
+    public void deleteRefreshToken(String loginId) {
+        tokenService.deleteToken(REFRESH_TOKEN_PREFIX + loginId);
     }
 
     // Refresh 토큰 만료 시, 쿠키 삭제

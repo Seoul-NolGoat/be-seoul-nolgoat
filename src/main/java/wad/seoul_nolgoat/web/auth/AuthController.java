@@ -4,6 +4,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -21,6 +23,7 @@ import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;
 @RestController
 public class AuthController {
 
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
     private final UserService userService;
     private final AuthService authService;
 
@@ -45,12 +48,18 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> successLogout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> successLogout(
+            @AuthenticationPrincipal OAuth2User loginUser,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
         String refreshToken = getRefreshToken(request);
         authService.verifyRefreshToken(refreshToken, response);
 
+        String loginId = loginUser.getName();
+
         // 캐시 및 쿠키에서 Refresh 토큰 삭제
-        authService.deleteRefreshToken(refreshToken);
+        authService.deleteRefreshToken(loginId);
         authService.deleteRefreshTokenCookie(response);
 
         return ResponseEntity
