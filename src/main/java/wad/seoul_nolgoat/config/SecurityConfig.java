@@ -19,7 +19,7 @@ import wad.seoul_nolgoat.auth.CustomOAuth2UserService;
 import wad.seoul_nolgoat.auth.CustomSuccessHandler;
 import wad.seoul_nolgoat.auth.JwtAuthenticationEntryPoint;
 import wad.seoul_nolgoat.auth.jwt.JwtFilter;
-import wad.seoul_nolgoat.auth.jwt.JwtService;
+import wad.seoul_nolgoat.auth.service.AuthService;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
-    private final JwtService jwtService;
+    private final AuthService authService;
     private final ObjectMapper objectMapper;
 
     @Value("${app.urls.frontend-base-url}")
@@ -59,7 +59,7 @@ public class SecurityConfig {
                         .requestMatchers(AuthUrlManager.getUserRequestMatchers()).authenticated()
                         .anyRequest().permitAll()
                 )
-                .addFilterBefore(new JwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(authService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(s -> s
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );

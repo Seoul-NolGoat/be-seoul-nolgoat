@@ -6,34 +6,33 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import wad.seoul_nolgoat.auth.AuthUrlManager;
 import wad.seoul_nolgoat.auth.dto.OAuth2UserDto;
 import wad.seoul_nolgoat.auth.dto.OAuth2UserImpl;
+import wad.seoul_nolgoat.auth.service.AuthService;
 import wad.seoul_nolgoat.exception.ApiException;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
-@Slf4j
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
+    private final AuthService authService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 헤더, 토큰 검증
         String accessToken;
         try {
-            String authorization = request.getHeader(JwtService.AUTHORIZATION_HEADER);
-            jwtService.verifyAuthorization(authorization);
+            String authorization = request.getHeader(JwtProvider.AUTHORIZATION_HEADER);
+            authService.verifyAuthorization(authorization);
             accessToken = authorization.split(" ")[1];
-            jwtService.verifyAccessToken(accessToken);
+            authService.verifyAccessToken(accessToken);
         } catch (JwtException | ApiException e) {
             request.setAttribute("exception", e);
             filterChain.doFilter(request, response);
@@ -41,7 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         OAuth2UserImpl oAuth2User = new OAuth2UserImpl(
-                new OAuth2UserDto(jwtService.getLoginId(accessToken))
+                new OAuth2UserDto(authService.getLoginId(accessToken))
         );
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(
