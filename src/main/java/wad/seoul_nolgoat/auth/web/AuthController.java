@@ -36,7 +36,6 @@ public class AuthController {
             @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME) String refreshToken,
             HttpServletResponse response
     ) {
-        //String refreshToken = getRefreshToken(request);
         authService.verifyRefreshToken(refreshToken, response);
 
         // Refresh 토큰 검증에 성공하면 Access 토큰을 재발급

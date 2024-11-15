@@ -77,9 +77,13 @@ public class AuthService {
             if (tokenService.getToken(key) == null) {
                 throw new ApiException(REFRESH_TOKEN_NOT_FOUND);
             }
+
+            // 토큰 발급자가 올바른지 확인
             if (jwtProvider.isTokenNotIssuedByDomain(refreshToken)) {
                 throw new ApiException(INVALID_TOKEN_ISSUER);
             }
+
+            // 토큰 타입이 Refresh인지 확인
             if (!jwtProvider.getType(refreshToken).equals(CLAIM_TYPE_REFRESH)) {
                 throw new ApiException(INVALID_TOKEN_TYPE);
             }
@@ -107,9 +111,12 @@ public class AuthService {
             throw new ApiException(ACCESS_TOKEN_BLACKLISTED);
         }
 
+        // 토큰 발급자가 올바른지 확인
         if (jwtProvider.isTokenNotIssuedByDomain(accessToken)) {
             throw new ApiException(INVALID_TOKEN_ISSUER);
         }
+
+        // 토큰 타입이 Access인지 확인
         if (!jwtProvider.getType(accessToken).equals(CLAIM_TYPE_ACCESS)) {
             throw new ApiException(INVALID_TOKEN_TYPE);
         }
