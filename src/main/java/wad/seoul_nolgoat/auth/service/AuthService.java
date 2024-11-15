@@ -100,6 +100,13 @@ public class AuthService {
 
     // Access 토큰 검증
     public void verifyAccessToken(String accessToken) {
+        String key = ACCESS_TOKEN_PREFIX + getLoginId(accessToken);
+
+        // Access 토큰 블랙리스트 여부 확인
+        if (tokenService.getToken(key) != null) {
+            throw new ApiException(ACCESS_TOKEN_BLACKLISTED);
+        }
+
         if (jwtProvider.isTokenNotIssuedByDomain(accessToken)) {
             throw new ApiException(INVALID_TOKEN_ISSUER);
         }
