@@ -20,6 +20,7 @@ public class TokenService {
             String value,
             Date expirationDate
     ) {
+        // 설정한 유효 기간까지 시간이 얼마나 남았는지 계산
         long remainingTime = expirationDate.getTime() - System.currentTimeMillis();
         redisTemplate.opsForValue()
                 .set(key, value, remainingTime);
@@ -29,6 +30,7 @@ public class TokenService {
         redisTemplate.delete(key);
     }
 
+    // 존재하지 않으면 null을 반환
     public String getToken(String key) {
         return redisTemplate.opsForValue()
                 .get(key);
