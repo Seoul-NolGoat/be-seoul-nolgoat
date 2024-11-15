@@ -14,8 +14,8 @@ import java.util.Date;
 public class JwtProvider {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final Long REFRESH_TOKEN_EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000L; // 7 days
-    public static final Long ACCESS_TOKEN_EXPIRATION_TIME = 30 * 60 * 1000L; // 30 minutes
+    public static final Long REFRESH_TOKEN_EXPIRATION_TIME = 14 * 24 * 60 * 60 * 1000L; // 14 days
+    public static final Long ACCESS_TOKEN_EXPIRATION_TIME = 60 * 60 * 1000L; // 1 hour
     public static final String CLAIM_TYPE = "type";
     public static final String CLAIM_TYPE_REFRESH = "refresh";
     public static final String CLAIM_TYPE_ACCESS = "access";
