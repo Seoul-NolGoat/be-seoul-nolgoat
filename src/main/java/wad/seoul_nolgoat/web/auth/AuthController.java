@@ -8,10 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
-import wad.seoul_nolgoat.auth.jwt.JwtProvider;
 import wad.seoul_nolgoat.auth.service.AuthService;
 import wad.seoul_nolgoat.service.user.UserService;
 import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;
+
+import static wad.seoul_nolgoat.auth.jwt.JwtProvider.AUTHORIZATION_HEADER;
+import static wad.seoul_nolgoat.auth.jwt.JwtProvider.REFRESH_TOKEN_COOKIE_NAME;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/auths")
@@ -31,14 +33,14 @@ public class AuthController {
 
     @PostMapping("/token/reissue")
     public ResponseEntity<Void> reissueTokens(
-            @CookieValue(value = JwtProvider.REFRESH_TOKEN_COOKIE_NAME) String refreshToken,
+            @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME) String refreshToken,
             HttpServletResponse response
     ) {
         //String refreshToken = getRefreshToken(request);
         authService.verifyRefreshToken(refreshToken, response);
 
         // Refresh 토큰 검증에 성공하면 Access 토큰을 재발급
-        response.setHeader(JwtProvider.AUTHORIZATION_HEADER, authService.reissueAccessToken(refreshToken));
+        response.setHeader(AUTHORIZATION_HEADER, authService.reissueAccessToken(refreshToken));
 
         return ResponseEntity
                 .ok()
@@ -48,8 +50,8 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<String> logout(
             @AuthenticationPrincipal OAuth2User loginUser,
-            @RequestHeader("Authorization") String authorization,
-            @CookieValue(value = JwtProvider.REFRESH_TOKEN_COOKIE_NAME) String refreshToken,
+            @RequestHeader(AUTHORIZATION_HEADER) String authorizationHeader,
+            @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME) String refreshToken,
             HttpServletResponse response
     ) {
         authService.verifyRefreshToken(refreshToken, response);
@@ -61,7 +63,7 @@ public class AuthController {
         authService.deleteRefreshTokenCookie(response);
 
         // Access 토큰 블랙리스트 처리
-        authService.saveAccessTokenToBlacklist(authorization.split(" ")[1]);
+        authService.saveAccessTokenToBlacklist(authorizationHeader.split(" ")[1]);
 
         return ResponseEntity
                 .ok()
