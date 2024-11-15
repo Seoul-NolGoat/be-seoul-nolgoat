@@ -70,9 +70,6 @@ public class AuthService {
 
     // Refresh 토큰 검증
     public void verifyRefreshToken(String refreshToken, HttpServletResponse response) {
-        if (refreshToken == null) {
-            throw new ApiException(NULL_REFRESH_TOKEN);
-        }
         try {
             String key = REFRESH_TOKEN_PREFIX + getLoginId(refreshToken);
 
