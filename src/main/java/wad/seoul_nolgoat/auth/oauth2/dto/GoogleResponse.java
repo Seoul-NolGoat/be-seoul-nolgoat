@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.auth.dto;
+package wad.seoul_nolgoat.auth.oauth2.dto;
 
 import lombok.RequiredArgsConstructor;
 

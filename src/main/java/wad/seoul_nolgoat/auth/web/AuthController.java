@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.web.auth;
+package wad.seoul_nolgoat.auth.web;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +9,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import wad.seoul_nolgoat.auth.service.AuthService;
+import wad.seoul_nolgoat.auth.web.dto.response.UserProfileDto;
 import wad.seoul_nolgoat.service.user.UserService;
-import wad.seoul_nolgoat.web.auth.dto.response.UserProfileDto;
 
 import static wad.seoul_nolgoat.auth.jwt.JwtProvider.AUTHORIZATION_HEADER;
 import static wad.seoul_nolgoat.auth.jwt.JwtProvider.REFRESH_TOKEN_COOKIE_NAME;

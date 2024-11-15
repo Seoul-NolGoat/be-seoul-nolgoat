@@ -10,8 +10,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import wad.seoul_nolgoat.auth.AuthUrlManager;
-import wad.seoul_nolgoat.auth.dto.OAuth2UserDto;
-import wad.seoul_nolgoat.auth.dto.OAuth2UserImpl;
+import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2UserDto;
+import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2UserImpl;
 import wad.seoul_nolgoat.auth.service.AuthService;
 import wad.seoul_nolgoat.exception.ApiException;
 
