@@ -10,6 +10,7 @@ import wad.seoul_nolgoat.auth.jwt.JwtProvider;
 import wad.seoul_nolgoat.exception.ApiException;
 
 import static wad.seoul_nolgoat.auth.jwt.JwtProvider.*;
+import static wad.seoul_nolgoat.auth.service.TokenService.ACCESS_TOKEN_PREFIX;
 import static wad.seoul_nolgoat.auth.service.TokenService.REFRESH_TOKEN_PREFIX;
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
@@ -104,8 +105,19 @@ public class AuthService {
         }
     }
 
+    // 캐시에서 Refresh 토큰 삭제
     public void deleteRefreshToken(String loginId) {
         tokenService.deleteToken(REFRESH_TOKEN_PREFIX + loginId);
+    }
+
+    // 캐시에 Access 토큰 블랙리스트 처리
+    public void saveAccessTokenToBlacklist(String accessToken) {
+        String key = ACCESS_TOKEN_PREFIX + getLoginId(accessToken);
+        tokenService.saveToken(
+                key,
+                accessToken,
+                jwtProvider.getExpiration(accessToken)
+        );
     }
 
     // Refresh 토큰 만료 시, 쿠키 삭제
