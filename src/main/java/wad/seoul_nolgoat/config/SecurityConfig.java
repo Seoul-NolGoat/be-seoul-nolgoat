@@ -15,10 +15,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import wad.seoul_nolgoat.auth.AuthUrlManager;
-import wad.seoul_nolgoat.auth.CustomOAuth2UserService;
-import wad.seoul_nolgoat.auth.CustomSuccessHandler;
-import wad.seoul_nolgoat.auth.JwtAuthenticationEntryPoint;
+import wad.seoul_nolgoat.auth.jwt.JwtAuthenticationEntryPoint;
 import wad.seoul_nolgoat.auth.jwt.JwtFilter;
+import wad.seoul_nolgoat.auth.oauth2.CustomOAuth2UserService;
+import wad.seoul_nolgoat.auth.oauth2.CustomSuccessHandler;
 import wad.seoul_nolgoat.auth.service.AuthService;
 
 import java.util.List;
