@@ -3,12 +3,16 @@ package wad.seoul_nolgoat.exception;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wad.seoul_nolgoat.web.exception.dto.response.ErrorResponse;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_INPUT_VALUE;
+import static wad.seoul_nolgoat.exception.ErrorCode.MISSING_REFRESH_TOKEN;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -31,10 +35,19 @@ public class GlobalExceptionHandler {
         for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
             errors.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
-        ErrorCode errorCode = ErrorCode.INVALID_INPUT_VALUE;
+        ErrorCode errorCode = INVALID_INPUT_VALUE;
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
                 .body(new ErrorResponse(errorCode, errors));
+    }
+
+    @ExceptionHandler(MissingRequestCookieException.class)
+    public ResponseEntity<ErrorResponse> handleMissingRequestCookieException(MissingRequestCookieException e) {
+        ErrorCode errorCode = MISSING_REFRESH_TOKEN;
+
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(new ErrorResponse(errorCode));
     }
 }
