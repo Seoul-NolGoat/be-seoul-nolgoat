@@ -48,24 +48,21 @@ public class JwtProvider {
     }
 
     public String getType(String token) {
-        Claims payload = getPayload(token);
-        return payload.get(CLAIM_TYPE, String.class);
+        return getPayload(token).get(CLAIM_TYPE, String.class);
     }
 
     // ex) kakao_12345678
     public String getLoginId(String token) {
-        Claims payload = getPayload(token);
-        return payload.getSubject();
-    }
-
-    public String getIssuer(String token) {
-        Claims payload = getPayload(token);
-        return payload.getIssuer();
+        return getPayload(token).getSubject();
     }
 
     public Date getExpiration(String token) {
-        Claims payload = getPayload(token);
-        return payload.getExpiration();
+        return getPayload(token).getExpiration();
+    }
+
+    public boolean isTokenNotIssuedByDomain(String token) {
+        return !getPayload(token).getIssuer()
+                .equals(domain);
     }
 
     private Claims getPayload(String token) {
