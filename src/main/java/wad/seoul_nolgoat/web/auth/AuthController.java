@@ -1,7 +1,5 @@
 package wad.seoul_nolgoat.web.auth;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -9,10 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import wad.seoul_nolgoat.auth.jwt.JwtProvider;
 import wad.seoul_nolgoat.auth.service.AuthService;
 import wad.seoul_nolgoat.service.user.UserService;
@@ -35,8 +30,11 @@ public class AuthController {
     }
 
     @PostMapping("/token/reissue")
-    public ResponseEntity<Void> reissueTokens(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = getRefreshToken(request);
+    public ResponseEntity<Void> reissueTokens(
+            @CookieValue(value = JwtProvider.REFRESH_TOKEN_COOKIE_NAME) String refreshToken,
+            HttpServletResponse response
+    ) {
+        //String refreshToken = getRefreshToken(request);
         authService.verifyRefreshToken(refreshToken, response);
 
         // Refresh 토큰 검증에 성공하면 Access 토큰을 재발급
@@ -48,12 +46,12 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> successLogout(
+    public ResponseEntity<String> logout(
             @AuthenticationPrincipal OAuth2User loginUser,
-            HttpServletRequest request,
+            @RequestHeader("Authorization") String authorization,
+            @CookieValue(value = JwtProvider.REFRESH_TOKEN_COOKIE_NAME) String refreshToken,
             HttpServletResponse response
     ) {
-        String refreshToken = getRefreshToken(request);
         authService.verifyRefreshToken(refreshToken, response);
 
         String loginId = loginUser.getName();
@@ -62,18 +60,11 @@ public class AuthController {
         authService.deleteRefreshToken(loginId);
         authService.deleteRefreshTokenCookie(response);
 
+        // Access 토큰 블랙리스트 처리
+        authService.saveAccessTokenToBlacklist(authorization.split(" ")[1]);
+
         return ResponseEntity
                 .ok()
                 .build();
-    }
-
-    private String getRefreshToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(JwtProvider.REFRESH_TOKEN_COOKIE_NAME)) {
-                return cookie.getValue();
-            }
-        }
-        return null;
     }
 }
