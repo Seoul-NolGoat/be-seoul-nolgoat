@@ -14,7 +14,7 @@ public enum ErrorCode {
     INVALID_AUTHORIZATION_HEADER(HttpStatus.UNAUTHORIZED, "AUTH003", "유효하지 않은 Authorization 헤더입니다."),
     INVALID_TOKEN_FORMAT(HttpStatus.UNAUTHORIZED, "AUTH004", "토큰 형식이 올바르지 않습니다."),
     INVALID_TOKEN_TYPE(HttpStatus.UNAUTHORIZED, "AUTH005", "토큰 타입이 일치하지 않습니다."),
-    NULL_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH006", "Refresh 토큰이 null입니다."),
+    MISSING_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "AUTH006", "Refresh 토큰 쿠키가 누락되었습니다."),
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "AUTH007", "저장소에 존재하지 않는 Refresh 토큰입니다."),
 
     // 유저 관련
