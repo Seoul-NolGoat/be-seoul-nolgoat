@@ -77,6 +77,9 @@ public class AuthService {
             if (tokenService.getToken(key) == null) {
                 throw new ApiException(REFRESH_TOKEN_NOT_FOUND);
             }
+            if (jwtProvider.isTokenNotIssuedByDomain(refreshToken)) {
+                throw new ApiException(INVALID_TOKEN_ISSUER);
+            }
             if (!jwtProvider.getType(refreshToken).equals(CLAIM_TYPE_REFRESH)) {
                 throw new ApiException(INVALID_TOKEN_TYPE);
             }
@@ -97,6 +100,9 @@ public class AuthService {
 
     // Access 토큰 검증
     public void verifyAccessToken(String accessToken) {
+        if (jwtProvider.isTokenNotIssuedByDomain(accessToken)) {
+            throw new ApiException(INVALID_TOKEN_ISSUER);
+        }
         if (!jwtProvider.getType(accessToken).equals(CLAIM_TYPE_ACCESS)) {
             throw new ApiException(INVALID_TOKEN_TYPE);
         }
