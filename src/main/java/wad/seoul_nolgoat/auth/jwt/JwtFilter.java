@@ -29,9 +29,9 @@ public class JwtFilter extends OncePerRequestFilter {
         // 헤더, 토큰 검증
         String accessToken;
         try {
-            String authorization = request.getHeader(JwtProvider.AUTHORIZATION_HEADER);
-            authService.verifyAuthorization(authorization);
-            accessToken = authorization.split(" ")[1];
+            String authorizationHeader = request.getHeader(JwtProvider.AUTHORIZATION_HEADER);
+            authService.verifyAuthorizationHeader(authorizationHeader);
+            accessToken = authorizationHeader.split(" ")[1];
             authService.verifyAccessToken(accessToken);
         } catch (JwtException | ApiException e) {
             request.setAttribute("exception", e);

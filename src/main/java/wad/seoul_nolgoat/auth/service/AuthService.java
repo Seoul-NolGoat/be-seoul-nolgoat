@@ -89,8 +89,8 @@ public class AuthService {
     }
 
     // 인증 헤더 검증
-    public void verifyAuthorization(String authorization) {
-        if (authorization == null || !authorization.startsWith(BEARER_PREFIX)) {
+    public void verifyAuthorizationHeader(String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER_PREFIX)) {
             throw new ApiException(INVALID_AUTHORIZATION_HEADER);
         }
     }
