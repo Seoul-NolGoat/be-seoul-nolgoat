@@ -17,6 +17,7 @@ public enum ErrorCode {
     INVALID_TOKEN_ISSUER(HttpStatus.UNAUTHORIZED, "AUTH006", "토큰 발급자가 올바르지 않습니다."),
     MISSING_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "AUTH007", "Refresh 토큰 쿠키가 누락되었습니다."),
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "AUTH008", "저장소에 존재하지 않는 Refresh 토큰입니다."),
+    ACCESS_TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "AUTH009", "블랙리스트에 등록된 Access 토큰입니다."),
 
     // 유저 관련
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER001", "존재하지 않는 유저입니다."),
