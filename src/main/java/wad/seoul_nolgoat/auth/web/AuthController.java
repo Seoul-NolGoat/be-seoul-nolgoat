@@ -2,8 +2,6 @@ package wad.seoul_nolgoat.auth.web;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -20,7 +18,6 @@ import static wad.seoul_nolgoat.auth.jwt.JwtProvider.REFRESH_TOKEN_COOKIE_NAME;
 @RestController
 public class AuthController {
 
-    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
     private final UserService userService;
     private final AuthService authService;
 
