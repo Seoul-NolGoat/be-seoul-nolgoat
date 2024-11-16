@@ -10,8 +10,7 @@ import wad.seoul_nolgoat.auth.service.AuthService;
 import wad.seoul_nolgoat.auth.web.dto.response.UserProfileDto;
 import wad.seoul_nolgoat.service.user.UserService;
 
-import static wad.seoul_nolgoat.auth.service.AuthService.AUTHORIZATION_HEADER;
-import static wad.seoul_nolgoat.auth.service.AuthService.REFRESH_TOKEN_COOKIE_NAME;
+import static wad.seoul_nolgoat.auth.service.AuthService.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/auths")
@@ -30,12 +29,14 @@ public class AuthController {
 
     @PostMapping("/token/reissue")
     public ResponseEntity<Void> reissueTokens(
+            @RequestHeader(CSRF_PROTECTION_UUID_HEADER) String csrfProtectionUuid,
             @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME) String refreshToken,
             HttpServletResponse response
     ) {
         authService.verifyRefreshToken(refreshToken, response);
+        authService.verifyCsrfProtectionUuid(csrfProtectionUuid);
 
-        // Refresh 토큰 검증에 성공하면 Access 토큰을 재발급
+        // Refresh 토큰 및 CSRF Protection UUID 검증에 성공하면 Access 토큰을 재발급
         response.setHeader(AUTHORIZATION_HEADER, authService.reissueAccessToken(refreshToken));
 
         return ResponseEntity
@@ -47,10 +48,12 @@ public class AuthController {
     public ResponseEntity<String> logout(
             @AuthenticationPrincipal OAuth2User loginUser,
             @RequestHeader(AUTHORIZATION_HEADER) String authorizationHeader,
+            @RequestHeader(CSRF_PROTECTION_UUID_HEADER) String csrfProtectionUuid,
             @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME) String refreshToken,
             HttpServletResponse response
     ) {
         authService.verifyRefreshToken(refreshToken, response);
+        authService.verifyCsrfProtectionUuid(csrfProtectionUuid);
 
         String loginId = loginUser.getName();
 
