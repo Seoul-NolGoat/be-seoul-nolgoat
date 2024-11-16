@@ -18,6 +18,9 @@ import static wad.seoul_nolgoat.exception.ErrorCode.*;
 @Service
 public class AuthService {
 
+    public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
+
     private static final String BEARER_PREFIX = "Bearer ";
     private static final int REFRESH_TOKEN_COOKIE_EXPIRATION_TIME = 14 * 24 * 60 * 60; // 14 days
 
