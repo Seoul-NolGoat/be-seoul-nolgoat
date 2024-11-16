@@ -13,14 +13,12 @@ import java.util.Date;
 @Service
 public class JwtProvider {
 
-    public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final Long REFRESH_TOKEN_EXPIRATION_TIME = 14 * 24 * 60 * 60 * 1000L; // 14 days
     public static final Long ACCESS_TOKEN_EXPIRATION_TIME = 60 * 60 * 1000L; // 1 hour
     public static final String CLAIM_TYPE = "type";
     public static final String CLAIM_TYPE_REFRESH = "refresh";
     public static final String CLAIM_TYPE_ACCESS = "access";
-    public static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
-
+    
     private final SecretKey secretKey;
     private final String domain;
 

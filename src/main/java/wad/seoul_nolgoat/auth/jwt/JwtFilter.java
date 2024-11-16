@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static wad.seoul_nolgoat.auth.service.AuthService.AUTHORIZATION_HEADER;
+
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -29,7 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
         // 헤더, 토큰 검증
         String accessToken;
         try {
-            String authorizationHeader = request.getHeader(JwtProvider.AUTHORIZATION_HEADER);
+            String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
             authService.verifyAuthorizationHeader(authorizationHeader);
             accessToken = authorizationHeader.split(" ")[1];
             authService.verifyAccessToken(accessToken);

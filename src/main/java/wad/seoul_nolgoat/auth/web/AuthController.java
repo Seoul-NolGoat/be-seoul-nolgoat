@@ -10,8 +10,8 @@ import wad.seoul_nolgoat.auth.service.AuthService;
 import wad.seoul_nolgoat.auth.web.dto.response.UserProfileDto;
 import wad.seoul_nolgoat.service.user.UserService;
 
-import static wad.seoul_nolgoat.auth.jwt.JwtProvider.AUTHORIZATION_HEADER;
-import static wad.seoul_nolgoat.auth.jwt.JwtProvider.REFRESH_TOKEN_COOKIE_NAME;
+import static wad.seoul_nolgoat.auth.service.AuthService.AUTHORIZATION_HEADER;
+import static wad.seoul_nolgoat.auth.service.AuthService.REFRESH_TOKEN_COOKIE_NAME;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/auths")
