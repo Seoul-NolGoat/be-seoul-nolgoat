@@ -20,6 +20,7 @@ public class AuthService {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
+    public static final String CSRF_PROTECTION_UUID_HEADER = "Csrf-Protection-Uuid";
 
     private static final String BEARER_PREFIX = "Bearer ";
     private static final int REFRESH_TOKEN_COOKIE_EXPIRATION_TIME = 14 * 24 * 60 * 60; // 14 days
