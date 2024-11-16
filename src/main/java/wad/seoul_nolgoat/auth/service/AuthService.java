@@ -19,6 +19,7 @@ import static wad.seoul_nolgoat.exception.ErrorCode.*;
 public class AuthService {
 
     private static final String BEARER_PREFIX = "Bearer ";
+    private static final int REFRESH_TOKEN_COOKIE_EXPIRATION_TIME = 14 * 24 * 60 * 60; // 14 days
 
     private final JwtProvider jwtProvider;
     private final TokenService tokenService;
@@ -135,6 +136,16 @@ public class AuthService {
                 accessToken,
                 jwtProvider.getExpiration(accessToken)
         );
+    }
+
+    // Refresh 토큰을 쿠키에 저장
+    public Cookie createRefreshTokenCookie(String refreshToken) {
+        Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(REFRESH_TOKEN_COOKIE_EXPIRATION_TIME);
+        return refreshTokenCookie;
     }
 
     // Refresh 토큰 만료 시, 쿠키 삭제
