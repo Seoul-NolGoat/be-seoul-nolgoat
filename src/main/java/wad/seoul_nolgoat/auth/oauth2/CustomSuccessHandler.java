@@ -33,11 +33,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String successBaseUrl = frontendBaseUrl + SUCCESS_URL;
         String url = String.format(
-                "%s?access=%s&refresh=%s",
+                "%s?access=%s",
                 successBaseUrl,
-                URLEncoder.encode(accessToken, CHARSET),
-                URLEncoder.encode(refreshToken, CHARSET)
+                URLEncoder.encode(accessToken, CHARSET)
         );
+        response.addCookie(authService.createRefreshTokenCookie(refreshToken));
         response.sendRedirect(url);
     }
 }
