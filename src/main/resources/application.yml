@@ -8,7 +8,7 @@ spring:
       - seoul-config.yml
       - t-config.yml
       - oauth2-config.yml
-      - jwt-config.yml
+      - authorization-config.yml
       - s3-config.yml
       - multipart-config.yml
       - app-urls.yml
