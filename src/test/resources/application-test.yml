@@ -23,6 +23,6 @@ spring:
     init:
       mode: always
 
-  logging:
-    level:
-      org.hibernate.sql: debug
+logging:
+  level:
+    org.hibernate.sql: debug
