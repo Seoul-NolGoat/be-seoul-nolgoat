@@ -5,6 +5,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Service
@@ -23,7 +24,7 @@ public class TokenService {
         // 설정한 유효 기간까지 시간이 얼마나 남았는지 계산
         long remainingTime = expirationDate.getTime() - System.currentTimeMillis();
         redisTemplate.opsForValue()
-                .set(key, value, remainingTime);
+                .set(key, value, remainingTime, TimeUnit.MILLISECONDS);
     }
 
     public void deleteToken(String key) {
