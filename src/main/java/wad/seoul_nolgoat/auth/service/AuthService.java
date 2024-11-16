@@ -5,6 +5,7 @@ import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.auth.jwt.JwtProvider;
 import wad.seoul_nolgoat.exception.ApiException;
@@ -27,6 +28,9 @@ public class AuthService {
 
     private final JwtProvider jwtProvider;
     private final TokenService tokenService;
+
+    @Value("${spring.csrf.protection.uuid}")
+    private String csrfProtectionUuid;
 
     // Refresh 토큰 생성 및 저장
     public String createRefreshToken(String loginId) {
@@ -97,6 +101,12 @@ public class AuthService {
             throw new ApiException(TOKEN_EXPIRED);
         } catch (JwtException e) { // ExpiredJwtException을 제외한 나머지 JwtException 처리
             throw new ApiException(INVALID_TOKEN_FORMAT);
+        }
+    }
+
+    public void verifyCsrfProtectionUuid(String csrfProtectionUuid) {
+        if (!this.csrfProtectionUuid.equals(csrfProtectionUuid)) {
+            throw new ApiException(INVALID_CSRF_PROTECTION_UUID);
         }
     }
 
