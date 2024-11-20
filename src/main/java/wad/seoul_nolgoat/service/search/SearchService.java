@@ -15,10 +15,7 @@ import wad.seoul_nolgoat.web.search.dto.request.PossibleCategoriesConditionDto;
 import wad.seoul_nolgoat.web.search.dto.request.SearchConditionDto;
 import wad.seoul_nolgoat.web.search.dto.response.CombinationDto;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_GATHERING_ROUND;
@@ -75,7 +72,8 @@ public class SearchService {
         for (StoreForPossibleCategoriesDto untokenizedCategory : untokenizedCategories) {
             String[] tokens = untokenizedCategory.getCategory().replace(SPACE, EMPTY).split(DELIMITER);
             for (String token : tokens) {
-                possibleCategories.addAll(StoreCategory.findRelatedCategoryNames(token));
+                Optional<String> primaryCategory = StoreCategory.findPrimaryCategoryName(token);
+                primaryCategory.ifPresent(possibleCategories::add);
             }
         }
 
