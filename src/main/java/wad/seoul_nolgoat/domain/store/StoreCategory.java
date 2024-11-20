@@ -4,6 +4,7 @@ import wad.seoul_nolgoat.exception.ApiException;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.CATEGORY_NOT_FOUND;
 
@@ -108,6 +109,13 @@ public enum StoreCategory {
         } catch (IllegalArgumentException e) {
             throw new ApiException(CATEGORY_NOT_FOUND);
         }
+    }
+
+    public static Optional<String> findPrimaryCategoryName(String categoryName) {
+        return Arrays.stream(StoreCategory.values())
+                .filter(storeCategory -> storeCategory.categories.contains(categoryName))
+                .map(Enum::name)
+                .findFirst();
     }
 
     private List<String> getCategoryNames() {
