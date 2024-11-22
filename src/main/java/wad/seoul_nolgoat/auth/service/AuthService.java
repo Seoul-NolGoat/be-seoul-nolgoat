@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.auth.jwt.JwtProvider;
 import wad.seoul_nolgoat.exception.ApiException;
 
+import java.util.Objects;
+
 import static wad.seoul_nolgoat.auth.jwt.JwtProvider.*;
 import static wad.seoul_nolgoat.auth.service.TokenService.ACCESS_TOKEN_PREFIX;
 import static wad.seoul_nolgoat.auth.service.TokenService.REFRESH_TOKEN_PREFIX;
@@ -82,8 +84,8 @@ public class AuthService {
         try {
             String key = REFRESH_TOKEN_PREFIX + getLoginId(refreshToken);
 
-            // 캐시에 Refresh 토큰이 존재하는지 확인
-            if (tokenService.getToken(key) == null) {
+            // 캐시에 해당 Refresh 토큰이 존재하는지 확인
+            if (Objects.equals(tokenService.getToken(key), refreshToken)) {
                 throw new ApiException(REFRESH_TOKEN_NOT_FOUND);
             }
 
@@ -122,7 +124,7 @@ public class AuthService {
         String key = ACCESS_TOKEN_PREFIX + getLoginId(accessToken);
 
         // Access 토큰 블랙리스트 여부 확인
-        if (tokenService.getToken(key) != null) {
+        if (Objects.equals(tokenService.getToken(key), accessToken)) {
             throw new ApiException(ACCESS_TOKEN_BLACKLISTED);
         }
 
