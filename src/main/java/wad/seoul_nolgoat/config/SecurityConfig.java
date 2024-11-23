@@ -20,6 +20,7 @@ import wad.seoul_nolgoat.auth.jwt.JwtAuthenticationEntryPoint;
 import wad.seoul_nolgoat.auth.jwt.JwtFilter;
 import wad.seoul_nolgoat.auth.oauth2.CustomOAuth2UserService;
 import wad.seoul_nolgoat.auth.oauth2.CustomSuccessHandler;
+import wad.seoul_nolgoat.auth.oauth2.OAuth2AuthorizationRequestResolverImpl;
 import wad.seoul_nolgoat.auth.oauth2.RedisOAuth2AuthorizedClientService;
 import wad.seoul_nolgoat.auth.service.AuthService;
 
@@ -35,6 +36,7 @@ public class SecurityConfig {
     private final AuthService authService;
     private final ObjectMapper objectMapper;
     private final RedisOAuth2AuthorizedClientService oAuth2AuthorizedClientService;
+    private final OAuth2AuthorizationRequestResolverImpl oAuth2AuthorizationRequestResolver;
 
     @Value("${app.urls.frontend-base-url}")
     private String frontendBaseUrl;
@@ -51,6 +53,9 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(endpoint -> endpoint
+                                .authorizationRequestResolver(oAuth2AuthorizationRequestResolver)
+                        )
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
