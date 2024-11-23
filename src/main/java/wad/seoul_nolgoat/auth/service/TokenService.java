@@ -13,6 +13,8 @@ public class TokenService {
 
     public static final String REFRESH_TOKEN_PREFIX = "RT:";
     public static final String ACCESS_TOKEN_PREFIX = "AT:";
+    public static final String OAUTH2_REFRESH_TOKEN_PREFIX = "RT(oauth2):";
+    public static final String OAUTH2_ACCESS_TOKEN_PREFIX = "AT(oauth2):";
 
     private final RedisTemplate<String, String> redisTemplate;
 
