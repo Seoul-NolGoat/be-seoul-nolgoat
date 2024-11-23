@@ -20,6 +20,7 @@ import wad.seoul_nolgoat.auth.jwt.JwtAuthenticationEntryPoint;
 import wad.seoul_nolgoat.auth.jwt.JwtFilter;
 import wad.seoul_nolgoat.auth.oauth2.CustomOAuth2UserService;
 import wad.seoul_nolgoat.auth.oauth2.CustomSuccessHandler;
+import wad.seoul_nolgoat.auth.oauth2.RedisOAuth2AuthorizedClientService;
 import wad.seoul_nolgoat.auth.service.AuthService;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class SecurityConfig {
     private final CustomSuccessHandler customSuccessHandler;
     private final AuthService authService;
     private final ObjectMapper objectMapper;
+    private final RedisOAuth2AuthorizedClientService oAuth2AuthorizedClientService;
 
     @Value("${app.urls.frontend-base-url}")
     private String frontendBaseUrl;
@@ -52,6 +54,7 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
+                        .authorizedClientService(oAuth2AuthorizedClientService)
                         .successHandler(customSuccessHandler)
                 )
                 .exceptionHandling(exceptions -> exceptions
