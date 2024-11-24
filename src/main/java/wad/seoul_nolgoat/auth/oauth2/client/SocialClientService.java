@@ -14,6 +14,7 @@ public class SocialClientService {
 
     private final KakaoAuthClient kakaoAuthClient;
     private final KakaoApiClient kakaoApiClient;
+    private final GoogleClient googleClient;
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String kakaoClientId;
@@ -21,7 +22,13 @@ public class SocialClientService {
     @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
     private String kakaoClientSecret;
 
-    public KakaoTokenResponse reissueKakaoToken(String refreshToken) {
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    private String googleClientId;
+
+    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+    private String googleClientSecret;
+
+    public TokenResponse reissueKakaoToken(String refreshToken) {
         return kakaoAuthClient.reissueToken(
                 GRANT_TYPE_REFRESH_TOKEN,
                 kakaoClientId,
@@ -33,5 +40,19 @@ public class SocialClientService {
     public void unlinkKakao(String accessToken) {
         UnlinkResponse response = kakaoApiClient.unlink(accessToken);
         log.info("Kakao Unlink 회원번호 : {}", response.getId());
+    }
+
+    public TokenResponse reissueGoogleToken(String refreshToken) {
+        return googleClient.reissueToken(
+                GRANT_TYPE_REFRESH_TOKEN,
+                googleClientId,
+                refreshToken,
+                googleClientSecret
+        );
+    }
+
+    public void unlinkGoogle(String accessToken) {
+        googleClient.unlink(accessToken);
+        log.info("Google Unlink");
     }
 }
