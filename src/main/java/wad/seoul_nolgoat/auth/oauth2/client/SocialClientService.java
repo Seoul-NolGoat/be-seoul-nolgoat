@@ -4,9 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import wad.seoul_nolgoat.auth.service.TokenService;
-
-import java.util.Date;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -17,7 +14,6 @@ public class SocialClientService {
 
     private final KakaoAuthClient kakaoAuthClient;
     private final KakaoApiClient kakaoApiClient;
-    private final TokenService tokenService;
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
@@ -25,18 +21,12 @@ public class SocialClientService {
     @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
     private String clientSecret;
 
-    public void reissueKakaoToken(String loginId, String refreshToken) {
-        KakaoTokenResponse response = kakaoAuthClient.reissueToken(
+    public KakaoTokenResponse reissueKakaoToken(String refreshToken) {
+        return kakaoAuthClient.reissueToken(
                 KAKAO_GRANT_TYPE_REFRESH_TOKEN,
                 clientId,
                 refreshToken,
                 clientSecret
-        );
-        String key = TokenService.OAUTH2_ACCESS_TOKEN_PREFIX + loginId;
-        tokenService.saveToken(
-                key,
-                response.getAccess_token(),
-                new Date(System.currentTimeMillis() + (response.getExpires_in() * 1000L))
         );
     }
 
