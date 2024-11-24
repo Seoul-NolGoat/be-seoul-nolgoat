@@ -184,13 +184,13 @@ public class AuthService {
 
     @Transactional
     public void deleteUserByLoginId(String loginId) {
-        String key = TokenService.OAUTH2_ACCESS_TOKEN_PREFIX + loginId;
-        String accessToken = tokenService.getToken(key);
+        String accessKey = TokenService.OAUTH2_ACCESS_TOKEN_PREFIX + loginId;
+        String accessToken = tokenService.getToken(accessKey);
 
         // Access 토큰이 null이면 Refresh 토큰을 이용해 재발급
+        String refreshKey = TokenService.OAUTH2_REFRESH_TOKEN_PREFIX + loginId;
         if (accessToken == null) {
-            key = TokenService.OAUTH2_REFRESH_TOKEN_PREFIX + loginId;
-            KakaoTokenResponse kakaoTokenResponse = socialClientService.reissueKakaoToken(tokenService.getToken(key));
+            KakaoTokenResponse kakaoTokenResponse = socialClientService.reissueKakaoToken(tokenService.getToken(refreshKey));
 
             // 회원 탈퇴를 위한 재발급이기 때문에, Redis에 저장하지 않음
             accessToken = kakaoTokenResponse.getAccess_token();
@@ -198,7 +198,7 @@ public class AuthService {
         socialClientService.unlinkKakao(BEARER_PREFIX + accessToken);
 
         // Refresh 토큰은 남아있기 때문에 삭제
-        tokenService.deleteToken(key);
+        tokenService.deleteToken(refreshKey);
 
         // 유저의 isDeleted를 true로 변경
         userService.deleteByLoginId(loginId);
