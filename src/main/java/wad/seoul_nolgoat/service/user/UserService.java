@@ -50,8 +50,8 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteById(Long userId) {
-        User user = userRepository.findById(userId)
+    public void deleteByLoginId(String loginId) {
+        User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         user.delete();
     }
