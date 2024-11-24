@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class KakaoTokenResponse {
+public class TokenResponse {
 
     private final String token_type;
     private final String access_token;
