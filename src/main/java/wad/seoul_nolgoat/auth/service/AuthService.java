@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.auth.jwt.JwtProvider;
-import wad.seoul_nolgoat.auth.oauth2.client.KakaoTokenResponse;
 import wad.seoul_nolgoat.auth.oauth2.client.SocialClientService;
+import wad.seoul_nolgoat.auth.oauth2.client.TokenResponse;
 import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.user.UserService;
 
@@ -184,18 +184,28 @@ public class AuthService {
 
     @Transactional
     public void deleteUserByLoginId(String loginId) {
+        String refreshKey = TokenService.OAUTH2_REFRESH_TOKEN_PREFIX + loginId;
         String accessKey = TokenService.OAUTH2_ACCESS_TOKEN_PREFIX + loginId;
         String accessToken = tokenService.getToken(accessKey);
 
-        // Access 토큰이 null이면 Refresh 토큰을 이용해 재발급
-        String refreshKey = TokenService.OAUTH2_REFRESH_TOKEN_PREFIX + loginId;
-        if (accessToken == null) {
-            KakaoTokenResponse kakaoTokenResponse = socialClientService.reissueKakaoToken(tokenService.getToken(refreshKey));
+        String registrationId = loginId.split("_")[0];
+        if (registrationId.equals("kakao")) {
+            // Access 토큰이 null이면 Refresh 토큰을 이용해 재발급
+            if (accessToken == null) {
+                TokenResponse tokenResponse = socialClientService.reissueKakaoToken(tokenService.getToken(refreshKey));
 
-            // 회원 탈퇴를 위한 재발급이기 때문에, Redis에 저장하지 않음
-            accessToken = kakaoTokenResponse.getAccess_token();
+                // 회원 탈퇴를 위한 재발급이기 때문에, Redis에 저장하지 않음
+                accessToken = tokenResponse.getAccess_token();
+            }
+            socialClientService.unlinkKakao(BEARER_PREFIX + accessToken);
         }
-        socialClientService.unlinkKakao(BEARER_PREFIX + accessToken);
+        if (registrationId.equals("google")) {
+            if (accessToken == null) {
+                TokenResponse tokenResponse = socialClientService.reissueGoogleToken(tokenService.getToken(refreshKey));
+                accessToken = tokenResponse.getAccess_token();
+            }
+            socialClientService.unlinkGoogle(accessToken);
+        }
 
         // Refresh 토큰은 남아있기 때문에 삭제
         tokenService.deleteToken(refreshKey);
