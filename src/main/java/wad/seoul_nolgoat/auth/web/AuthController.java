@@ -37,7 +37,8 @@ public class AuthController {
         authService.verifyCsrfProtectionUuid(csrfProtectionUuid);
 
         // Refresh 토큰 및 CSRF Protection UUID 검증에 성공하면 Access 토큰을 재발급
-        response.setHeader(AUTHORIZATION_HEADER, authService.reissueAccessToken(refreshToken));
+        String accessToken = authService.reissueAccessToken(refreshToken);
+        response.setHeader(AUTHORIZATION_HEADER, accessToken);
 
         return ResponseEntity
                 .ok()
@@ -66,6 +67,34 @@ public class AuthController {
 
         return ResponseEntity
                 .ok()
+                .build();
+    }
+
+    @DeleteMapping("/user/delete")
+    public ResponseEntity<Void> deleteUserByLoginId(
+            @AuthenticationPrincipal OAuth2User loginUser,
+            @RequestHeader(AUTHORIZATION_HEADER) String authorizationHeader,
+            @RequestHeader(CSRF_PROTECTION_UUID_HEADER) String csrfProtectionUuid,
+            @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME) String refreshToken,
+            HttpServletResponse response
+    ) {
+        authService.verifyRefreshToken(refreshToken, response);
+        authService.verifyCsrfProtectionUuid(csrfProtectionUuid);
+
+        String loginId = loginUser.getName();
+
+        // 캐시 및 쿠키에서 Refresh 토큰 삭제
+        authService.deleteRefreshToken(loginId);
+        authService.deleteRefreshTokenCookie(response);
+
+        // Access 토큰 블랙리스트 처리
+        authService.saveAccessTokenToBlacklist(authorizationHeader.split(" ")[1]);
+
+        // 소셜 계정 연동 unlink 및 유저 상태 변경
+        authService.deleteUserByLoginId(loginUser.getName());
+
+        return ResponseEntity
+                .noContent()
                 .build();
     }
 }
