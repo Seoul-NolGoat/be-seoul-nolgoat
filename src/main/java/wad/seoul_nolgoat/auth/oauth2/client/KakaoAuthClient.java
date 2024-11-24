@@ -9,7 +9,7 @@ public interface KakaoAuthClient {
 
     @PostMapping("/oauth/token")
     KakaoTokenResponse reissueToken(
-            @RequestParam("grant_type") String grantType,
+            @RequestParam("grant_type") String grantType, // "refresh_token"으로 고정
             @RequestParam("client_id") String clientId,
             @RequestParam("refresh_token") String refreshToken,
             @RequestParam("client_secret") String clientSecret
