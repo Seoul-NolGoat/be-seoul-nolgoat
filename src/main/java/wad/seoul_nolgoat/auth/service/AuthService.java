@@ -17,6 +17,7 @@ import wad.seoul_nolgoat.service.user.UserService;
 import java.util.Objects;
 
 import static wad.seoul_nolgoat.auth.jwt.JwtProvider.*;
+import static wad.seoul_nolgoat.auth.oauth2.CustomOAuth2UserService.*;
 import static wad.seoul_nolgoat.auth.service.TokenService.ACCESS_TOKEN_PREFIX;
 import static wad.seoul_nolgoat.auth.service.TokenService.REFRESH_TOKEN_PREFIX;
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
@@ -188,8 +189,8 @@ public class AuthService {
         String accessKey = TokenService.OAUTH2_ACCESS_TOKEN_PREFIX + loginId;
         String accessToken = tokenService.getToken(accessKey);
 
-        String registrationId = loginId.split("_")[0];
-        if (registrationId.equals("kakao")) {
+        String registrationId = loginId.split(PROVIDER_ID_DELIMITER)[0];
+        if (registrationId.equals(KAKAO)) {
             // Access 토큰이 null이면 Refresh 토큰을 이용해 재발급
             if (accessToken == null) {
                 TokenResponse tokenResponse = socialClientService.reissueKakaoToken(tokenService.getToken(refreshKey));
@@ -199,7 +200,7 @@ public class AuthService {
             }
             socialClientService.unlinkKakao(BEARER_PREFIX + accessToken);
         }
-        if (registrationId.equals("google")) {
+        if (registrationId.equals(GOOGLE)) {
             if (accessToken == null) {
                 TokenResponse tokenResponse = socialClientService.reissueGoogleToken(tokenService.getToken(refreshKey));
                 accessToken = tokenResponse.getAccess_token();
