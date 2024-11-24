@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface KakaoAuthClient {
 
     @PostMapping("/oauth/token")
-    KakaoTokenResponse reissueToken(
+    TokenResponse reissueToken(
             @RequestParam("grant_type") String grantType, // "refresh_token"으로 고정
             @RequestParam("client_id") String clientId,
             @RequestParam("refresh_token") String refreshToken,
