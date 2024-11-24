@@ -7,8 +7,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.auth.jwt.JwtProvider;
+import wad.seoul_nolgoat.auth.oauth2.client.KakaoTokenResponse;
+import wad.seoul_nolgoat.auth.oauth2.client.SocialClientService;
 import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.service.user.UserService;
 
 import java.util.Objects;
 
@@ -30,6 +34,8 @@ public class AuthService {
 
     private final JwtProvider jwtProvider;
     private final TokenService tokenService;
+    private final SocialClientService socialClientService;
+    private final UserService userService;
 
     @Value("${spring.csrf.protection.uuid}")
     private String csrfProtectionUuid;
@@ -174,5 +180,27 @@ public class AuthService {
 
     public String getLoginId(String token) {
         return jwtProvider.getLoginId(token);
+    }
+
+    @Transactional
+    public void deleteUserByLoginId(String loginId) {
+        String key = TokenService.OAUTH2_ACCESS_TOKEN_PREFIX + loginId;
+        String accessToken = tokenService.getToken(key);
+
+        // Access 토큰이 null이면 Refresh 토큰을 이용해 재발급
+        if (accessToken == null) {
+            key = TokenService.OAUTH2_REFRESH_TOKEN_PREFIX + loginId;
+            KakaoTokenResponse kakaoTokenResponse = socialClientService.reissueKakaoToken(tokenService.getToken(key));
+
+            // 회원 탈퇴를 위한 재발급이기 때문에, Redis에 저장하지 않음
+            accessToken = kakaoTokenResponse.getAccess_token();
+        }
+        socialClientService.unlinkKakao(BEARER_PREFIX + accessToken);
+
+        // Refresh 토큰은 남아있기 때문에 삭제
+        tokenService.deleteToken(key);
+
+        // 유저의 isDeleted를 true로 변경
+        userService.deleteByLoginId(loginId);
     }
 }
