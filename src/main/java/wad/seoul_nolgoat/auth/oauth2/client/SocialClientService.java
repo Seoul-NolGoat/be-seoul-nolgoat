@@ -10,23 +10,23 @@ import org.springframework.stereotype.Service;
 @Service
 public class SocialClientService {
 
-    private static final String KAKAO_GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
+    private static final String GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
 
     private final KakaoAuthClient kakaoAuthClient;
     private final KakaoApiClient kakaoApiClient;
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
-    private String clientId;
+    private String kakaoClientId;
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
-    private String clientSecret;
+    private String kakaoClientSecret;
 
     public KakaoTokenResponse reissueKakaoToken(String refreshToken) {
         return kakaoAuthClient.reissueToken(
-                KAKAO_GRANT_TYPE_REFRESH_TOKEN,
-                clientId,
+                GRANT_TYPE_REFRESH_TOKEN,
+                kakaoClientId,
                 refreshToken,
-                clientSecret
+                kakaoClientSecret
         );
     }
 
