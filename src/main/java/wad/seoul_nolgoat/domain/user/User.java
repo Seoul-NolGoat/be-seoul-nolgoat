@@ -57,4 +57,8 @@ public class User extends BaseTimeEntity {
     public void delete() {
         this.isDeleted = true;
     }
+
+    public void reactivate() {
+        this.isDeleted = false;
+    }
 }
