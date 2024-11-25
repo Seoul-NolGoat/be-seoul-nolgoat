@@ -11,8 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.auth.jwt.JwtProvider;
 import wad.seoul_nolgoat.auth.oauth2.client.SocialClientService;
 import wad.seoul_nolgoat.auth.oauth2.client.TokenResponse;
+import wad.seoul_nolgoat.domain.user.User;
+import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApiException;
-import wad.seoul_nolgoat.service.user.UserService;
 
 import java.util.Objects;
 
@@ -36,7 +37,7 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final TokenService tokenService;
     private final SocialClientService socialClientService;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Value("${spring.csrf.protection.uuid}")
     private String csrfProtectionUuid;
@@ -212,6 +213,8 @@ public class AuthService {
         tokenService.deleteToken(refreshKey);
 
         // 유저의 isDeleted를 true로 변경
-        userService.deleteByLoginId(loginId);
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        user.delete();
     }
 }
