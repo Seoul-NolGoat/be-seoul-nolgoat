@@ -93,7 +93,7 @@ public class AuthService {
             String key = REFRESH_TOKEN_KEY_PREFIX + getLoginId(refreshToken);
 
             // 캐시에 해당 Refresh 토큰이 존재하는지 확인
-            if (Objects.equals(redisTokenService.getToken(key), refreshToken)) {
+            if (!Objects.equals(redisTokenService.getToken(key), refreshToken)) {
                 throw new ApiException(REFRESH_TOKEN_NOT_FOUND);
             }
 
