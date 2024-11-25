@@ -30,7 +30,7 @@ public class RedisOAuth2AuthorizedClientService implements OAuth2AuthorizedClien
         OAuth2RefreshToken refreshToken = authorizedClient.getRefreshToken();
         OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
 
-        String key = RedisTokenService.OAUTH2_REFRESH_TOKEN_PREFIX + loginId;
+        String key = RedisTokenService.OAUTH2_REFRESH_TOKEN_KEY_PREFIX + loginId;
         redisTokenService.saveToken(
                 key,
                 refreshToken.getTokenValue(),
@@ -42,7 +42,7 @@ public class RedisOAuth2AuthorizedClientService implements OAuth2AuthorizedClien
                 )
         );
 
-        key = RedisTokenService.OAUTH2_ACCESS_TOKEN_PREFIX + loginId;
+        key = RedisTokenService.OAUTH2_ACCESS_TOKEN_KEY_PREFIX + loginId;
         redisTokenService.saveToken(
                 key,
                 accessToken.getTokenValue(),

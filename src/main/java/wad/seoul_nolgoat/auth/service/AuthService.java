@@ -19,8 +19,8 @@ import java.util.Objects;
 
 import static wad.seoul_nolgoat.auth.jwt.JwtProvider.*;
 import static wad.seoul_nolgoat.auth.oauth2.CustomOAuth2UserService.*;
-import static wad.seoul_nolgoat.auth.service.RedisTokenService.ACCESS_TOKEN_PREFIX;
-import static wad.seoul_nolgoat.auth.service.RedisTokenService.REFRESH_TOKEN_PREFIX;
+import static wad.seoul_nolgoat.auth.service.RedisTokenService.ACCESS_TOKEN_KEY_PREFIX;
+import static wad.seoul_nolgoat.auth.service.RedisTokenService.REFRESH_TOKEN_KEY_PREFIX;
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
@@ -50,7 +50,7 @@ public class AuthService {
                 REFRESH_TOKEN_EXPIRATION_TIME
         );
 
-        String key = REFRESH_TOKEN_PREFIX + loginId;
+        String key = REFRESH_TOKEN_KEY_PREFIX + loginId;
         redisTokenService.saveToken(
                 key,
                 refreshToken,
@@ -90,7 +90,7 @@ public class AuthService {
     // Refresh 토큰 검증
     public void verifyRefreshToken(String refreshToken, HttpServletResponse response) {
         try {
-            String key = REFRESH_TOKEN_PREFIX + getLoginId(refreshToken);
+            String key = REFRESH_TOKEN_KEY_PREFIX + getLoginId(refreshToken);
 
             // 캐시에 해당 Refresh 토큰이 존재하는지 확인
             if (Objects.equals(redisTokenService.getToken(key), refreshToken)) {
@@ -129,7 +129,7 @@ public class AuthService {
 
     // Access 토큰 검증
     public void verifyAccessToken(String accessToken) {
-        String key = ACCESS_TOKEN_PREFIX + getLoginId(accessToken);
+        String key = ACCESS_TOKEN_KEY_PREFIX + getLoginId(accessToken);
 
         // Access 토큰 블랙리스트 여부 확인
         if (Objects.equals(redisTokenService.getToken(key), accessToken)) {
@@ -149,12 +149,12 @@ public class AuthService {
 
     // 캐시에서 Refresh 토큰 삭제
     public void deleteRefreshToken(String loginId) {
-        redisTokenService.deleteToken(REFRESH_TOKEN_PREFIX + loginId);
+        redisTokenService.deleteToken(REFRESH_TOKEN_KEY_PREFIX + loginId);
     }
 
     // 캐시에 Access 토큰 블랙리스트 처리
     public void saveAccessTokenToBlacklist(String accessToken) {
-        String key = ACCESS_TOKEN_PREFIX + getLoginId(accessToken);
+        String key = ACCESS_TOKEN_KEY_PREFIX + getLoginId(accessToken);
         redisTokenService.saveToken(
                 key,
                 accessToken,
@@ -186,8 +186,8 @@ public class AuthService {
 
     @Transactional
     public void deleteUserByLoginId(String loginId) {
-        String refreshKey = RedisTokenService.OAUTH2_REFRESH_TOKEN_PREFIX + loginId;
-        String accessKey = RedisTokenService.OAUTH2_ACCESS_TOKEN_PREFIX + loginId;
+        String refreshKey = RedisTokenService.OAUTH2_REFRESH_TOKEN_KEY_PREFIX + loginId;
+        String accessKey = RedisTokenService.OAUTH2_ACCESS_TOKEN_KEY_PREFIX + loginId;
         String accessToken = redisTokenService.getToken(accessKey);
 
         String registrationId = loginId.split(PROVIDER_ID_DELIMITER)[0];
