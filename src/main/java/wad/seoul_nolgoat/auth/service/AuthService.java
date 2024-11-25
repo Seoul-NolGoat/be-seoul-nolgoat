@@ -19,8 +19,8 @@ import java.util.Objects;
 
 import static wad.seoul_nolgoat.auth.jwt.JwtProvider.*;
 import static wad.seoul_nolgoat.auth.oauth2.CustomOAuth2UserService.*;
-import static wad.seoul_nolgoat.auth.service.TokenService.ACCESS_TOKEN_PREFIX;
-import static wad.seoul_nolgoat.auth.service.TokenService.REFRESH_TOKEN_PREFIX;
+import static wad.seoul_nolgoat.auth.service.RedisTokenService.ACCESS_TOKEN_PREFIX;
+import static wad.seoul_nolgoat.auth.service.RedisTokenService.REFRESH_TOKEN_PREFIX;
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
@@ -35,7 +35,7 @@ public class AuthService {
     private static final int REFRESH_TOKEN_COOKIE_EXPIRATION_TIME = 14 * 24 * 60 * 60; // 14 days
 
     private final JwtProvider jwtProvider;
-    private final TokenService tokenService;
+    private final RedisTokenService redisTokenService;
     private final SocialClientService socialClientService;
     private final UserRepository userRepository;
 
@@ -51,7 +51,7 @@ public class AuthService {
         );
 
         String key = REFRESH_TOKEN_PREFIX + loginId;
-        tokenService.saveToken(
+        redisTokenService.saveToken(
                 key,
                 refreshToken,
                 jwtProvider.getExpiration(refreshToken)
@@ -93,7 +93,7 @@ public class AuthService {
             String key = REFRESH_TOKEN_PREFIX + getLoginId(refreshToken);
 
             // 캐시에 해당 Refresh 토큰이 존재하는지 확인
-            if (Objects.equals(tokenService.getToken(key), refreshToken)) {
+            if (Objects.equals(redisTokenService.getToken(key), refreshToken)) {
                 throw new ApiException(REFRESH_TOKEN_NOT_FOUND);
             }
 
@@ -132,7 +132,7 @@ public class AuthService {
         String key = ACCESS_TOKEN_PREFIX + getLoginId(accessToken);
 
         // Access 토큰 블랙리스트 여부 확인
-        if (Objects.equals(tokenService.getToken(key), accessToken)) {
+        if (Objects.equals(redisTokenService.getToken(key), accessToken)) {
             throw new ApiException(ACCESS_TOKEN_BLACKLISTED);
         }
 
@@ -149,13 +149,13 @@ public class AuthService {
 
     // 캐시에서 Refresh 토큰 삭제
     public void deleteRefreshToken(String loginId) {
-        tokenService.deleteToken(REFRESH_TOKEN_PREFIX + loginId);
+        redisTokenService.deleteToken(REFRESH_TOKEN_PREFIX + loginId);
     }
 
     // 캐시에 Access 토큰 블랙리스트 처리
     public void saveAccessTokenToBlacklist(String accessToken) {
         String key = ACCESS_TOKEN_PREFIX + getLoginId(accessToken);
-        tokenService.saveToken(
+        redisTokenService.saveToken(
                 key,
                 accessToken,
                 jwtProvider.getExpiration(accessToken)
@@ -186,15 +186,15 @@ public class AuthService {
 
     @Transactional
     public void deleteUserByLoginId(String loginId) {
-        String refreshKey = TokenService.OAUTH2_REFRESH_TOKEN_PREFIX + loginId;
-        String accessKey = TokenService.OAUTH2_ACCESS_TOKEN_PREFIX + loginId;
-        String accessToken = tokenService.getToken(accessKey);
+        String refreshKey = RedisTokenService.OAUTH2_REFRESH_TOKEN_PREFIX + loginId;
+        String accessKey = RedisTokenService.OAUTH2_ACCESS_TOKEN_PREFIX + loginId;
+        String accessToken = redisTokenService.getToken(accessKey);
 
         String registrationId = loginId.split(PROVIDER_ID_DELIMITER)[0];
         if (registrationId.equals(KAKAO)) {
             // Access 토큰이 null이면 Refresh 토큰을 이용해 재발급
             if (accessToken == null) {
-                TokenResponse tokenResponse = socialClientService.reissueKakaoToken(tokenService.getToken(refreshKey));
+                TokenResponse tokenResponse = socialClientService.reissueKakaoToken(redisTokenService.getToken(refreshKey));
 
                 // 회원 탈퇴를 위한 재발급이기 때문에, Redis에 저장하지 않음
                 accessToken = tokenResponse.getAccess_token();
@@ -203,14 +203,14 @@ public class AuthService {
         }
         if (registrationId.equals(GOOGLE)) {
             if (accessToken == null) {
-                TokenResponse tokenResponse = socialClientService.reissueGoogleToken(tokenService.getToken(refreshKey));
+                TokenResponse tokenResponse = socialClientService.reissueGoogleToken(redisTokenService.getToken(refreshKey));
                 accessToken = tokenResponse.getAccess_token();
             }
             socialClientService.unlinkGoogle(accessToken);
         }
 
         // Refresh 토큰은 남아있기 때문에 삭제
-        tokenService.deleteToken(refreshKey);
+        redisTokenService.deleteToken(refreshKey);
 
         // 유저의 isDeleted를 true로 변경
         User user = userRepository.findByLoginId(loginId)

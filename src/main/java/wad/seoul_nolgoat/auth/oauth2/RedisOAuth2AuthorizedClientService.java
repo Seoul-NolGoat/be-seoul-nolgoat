@@ -7,7 +7,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.stereotype.Service;
-import wad.seoul_nolgoat.auth.service.TokenService;
+import wad.seoul_nolgoat.auth.service.RedisTokenService;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -17,7 +17,7 @@ import java.util.Date;
 @Service
 public class RedisOAuth2AuthorizedClientService implements OAuth2AuthorizedClientService {
 
-    private final TokenService tokenService;
+    private final RedisTokenService redisTokenService;
 
     @Override
     public <T extends OAuth2AuthorizedClient> T loadAuthorizedClient(String clientRegistrationId, String principalName) {
@@ -30,8 +30,8 @@ public class RedisOAuth2AuthorizedClientService implements OAuth2AuthorizedClien
         OAuth2RefreshToken refreshToken = authorizedClient.getRefreshToken();
         OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
 
-        String key = TokenService.OAUTH2_REFRESH_TOKEN_PREFIX + loginId;
-        tokenService.saveToken(
+        String key = RedisTokenService.OAUTH2_REFRESH_TOKEN_PREFIX + loginId;
+        redisTokenService.saveToken(
                 key,
                 refreshToken.getTokenValue(),
                 Date.from(
@@ -42,8 +42,8 @@ public class RedisOAuth2AuthorizedClientService implements OAuth2AuthorizedClien
                 )
         );
 
-        key = TokenService.OAUTH2_ACCESS_TOKEN_PREFIX + loginId;
-        tokenService.saveToken(
+        key = RedisTokenService.OAUTH2_ACCESS_TOKEN_PREFIX + loginId;
+        redisTokenService.saveToken(
                 key,
                 accessToken.getTokenValue(),
                 Date.from(accessToken.getExpiresAt())
