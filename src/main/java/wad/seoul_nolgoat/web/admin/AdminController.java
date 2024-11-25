@@ -34,7 +34,7 @@ public class AdminController {
     public ResponseEntity<TestTokenDto> getTestToken() {
         String accessToken = authService.createTestToken(TEST_ID, "access", 3 * 60 * 1000L);
         String refreshToken = authService.createTestToken(TEST_ID, "refresh", 3 * 60 * 1000L);
-        redisTokenService.saveToken(RedisTokenService.REFRESH_TOKEN_PREFIX + TEST_ID, refreshToken, new Date(System.currentTimeMillis() + 3 * 60 * 1000L));
+        redisTokenService.saveToken(RedisTokenService.REFRESH_TOKEN_KEY_PREFIX + TEST_ID, refreshToken, new Date(System.currentTimeMillis() + 3 * 60 * 1000L));
 
         return ResponseEntity
                 .ok(new TestTokenDto(accessToken, refreshToken));
