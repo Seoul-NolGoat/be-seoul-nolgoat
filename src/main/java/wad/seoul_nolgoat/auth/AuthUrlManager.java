@@ -21,13 +21,12 @@ public class AuthUrlManager {
 
                 new AntPathRequestMatcher("/api/parties/**"),
 
-                new AntPathRequestMatcher("/api/inquiries/{userId}", "POST"),
+                new AntPathRequestMatcher("/api/inquiries", "POST"),
                 new AntPathRequestMatcher("/api/inquiries/{inquiryId}", "PUT"),
                 new AntPathRequestMatcher("/api/inquiries/{inquiryId}", "DELETE"),
 
-                new AntPathRequestMatcher("/api/notices/{userId}", "POST"),
+                new AntPathRequestMatcher("/api/notices", "POST"),
                 new AntPathRequestMatcher("/api/notices/{noticeId}", "PUT"),
-                new AntPathRequestMatcher("/api/notices/{noticeId}/views", "PUT"),
                 new AntPathRequestMatcher("/api/notices/{noticeId}", "DELETE")
         };
     }
