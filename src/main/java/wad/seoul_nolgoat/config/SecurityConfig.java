@@ -83,6 +83,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of(frontendBaseUrl));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("Authorization")); // FE에서 받을 수 있도록 설정
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
