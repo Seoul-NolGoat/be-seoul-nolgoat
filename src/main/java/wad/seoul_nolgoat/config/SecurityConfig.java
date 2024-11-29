@@ -1,6 +1,5 @@
 package wad.seoul_nolgoat.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +20,6 @@ import wad.seoul_nolgoat.auth.oauth2.security.OAuth2AuthorizationRequestResolver
 import wad.seoul_nolgoat.auth.oauth2.security.RedisOAuth2AuthorizedClientService;
 import wad.seoul_nolgoat.auth.security.AuthFilter;
 import wad.seoul_nolgoat.auth.security.AuthenticationEntryPointImpl;
-import wad.seoul_nolgoat.auth.service.AuthService;
 import wad.seoul_nolgoat.auth.util.AuthUrlManager;
 
 import java.util.List;
@@ -31,12 +29,12 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    private final CustomOAuth2UserService customOAuth2UserService;
-    private final CustomSuccessHandler customSuccessHandler;
-    private final AuthService authService;
-    private final ObjectMapper objectMapper;
-    private final RedisOAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final OAuth2AuthorizationRequestResolverImpl oAuth2AuthorizationRequestResolver;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final RedisOAuth2AuthorizedClientService oAuth2AuthorizedClientService;
+    private final CustomSuccessHandler customSuccessHandler;
+    private final AuthenticationEntryPointImpl authenticationEntryPoint;
+    private final AuthFilter authFilter;
 
     @Value("${app.urls.frontend-base-url}")
     private String frontendBaseUrl;
@@ -63,13 +61,13 @@ public class SecurityConfig {
                         .successHandler(customSuccessHandler)
                 )
                 .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint(new AuthenticationEntryPointImpl(objectMapper))
+                        .authenticationEntryPoint(authenticationEntryPoint)
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(AuthUrlManager.getUserRequestMatchers()).authenticated()
                         .anyRequest().permitAll()
                 )
-                .addFilterBefore(new AuthFilter(authService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(s -> s
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
