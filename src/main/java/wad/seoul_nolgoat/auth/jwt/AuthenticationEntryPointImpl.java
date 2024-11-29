@@ -21,7 +21,7 @@ import static wad.seoul_nolgoat.exception.ErrorCode.TOKEN_EXPIRED;
 
 @RequiredArgsConstructor
 @Component
-public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 
     private final ObjectMapper objectMapper;
 

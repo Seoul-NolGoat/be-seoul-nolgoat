@@ -16,8 +16,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import wad.seoul_nolgoat.auth.AuthUrlManager;
-import wad.seoul_nolgoat.auth.jwt.JwtAuthenticationEntryPoint;
-import wad.seoul_nolgoat.auth.jwt.JwtFilter;
+import wad.seoul_nolgoat.auth.jwt.AuthFilter;
+import wad.seoul_nolgoat.auth.jwt.AuthenticationEntryPointImpl;
 import wad.seoul_nolgoat.auth.oauth2.CustomOAuth2UserService;
 import wad.seoul_nolgoat.auth.oauth2.CustomSuccessHandler;
 import wad.seoul_nolgoat.auth.oauth2.OAuth2AuthorizationRequestResolverImpl;
@@ -63,13 +63,13 @@ public class SecurityConfig {
                         .successHandler(customSuccessHandler)
                 )
                 .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint(objectMapper))
+                        .authenticationEntryPoint(new AuthenticationEntryPointImpl(objectMapper))
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(AuthUrlManager.getUserRequestMatchers()).authenticated()
                         .anyRequest().permitAll()
                 )
-                .addFilterBefore(new JwtFilter(authService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new AuthFilter(authService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(s -> s
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );

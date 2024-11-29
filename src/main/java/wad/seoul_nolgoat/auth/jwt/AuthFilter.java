@@ -22,7 +22,7 @@ import java.util.Collections;
 import static wad.seoul_nolgoat.auth.service.AuthService.AUTHORIZATION_HEADER;
 
 @RequiredArgsConstructor
-public class JwtFilter extends OncePerRequestFilter {
+public class AuthFilter extends OncePerRequestFilter {
 
     private final AuthService authService;
 
