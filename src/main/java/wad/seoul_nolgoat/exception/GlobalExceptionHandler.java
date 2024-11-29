@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestCookieException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wad.seoul_nolgoat.web.exception.dto.response.ErrorResponse;
@@ -11,8 +12,7 @@ import wad.seoul_nolgoat.web.exception.dto.response.ErrorResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_INPUT_VALUE;
-import static wad.seoul_nolgoat.exception.ErrorCode.MISSING_REFRESH_TOKEN;
+import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -44,7 +44,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MissingRequestCookieException.class)
     public ResponseEntity<ErrorResponse> handleMissingRequestCookieException(MissingRequestCookieException e) {
-        ErrorCode errorCode = MISSING_REFRESH_TOKEN;
+        ErrorCode errorCode = MISSING_COOKIE;
+
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(new ErrorResponse(errorCode));
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseEntity<ErrorResponse> handleMissingRequestHeaderException(MissingRequestHeaderException e) {
+        ErrorCode errorCode = MISSING_HEADER;
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
