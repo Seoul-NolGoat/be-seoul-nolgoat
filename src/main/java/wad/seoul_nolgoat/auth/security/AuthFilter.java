@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2UserDto;
 import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2UserImpl;
@@ -22,6 +23,7 @@ import java.util.Collections;
 import static wad.seoul_nolgoat.auth.service.AuthService.AUTHORIZATION_HEADER;
 
 @RequiredArgsConstructor
+@Component
 public class AuthFilter extends OncePerRequestFilter {
 
     private final AuthService authService;
