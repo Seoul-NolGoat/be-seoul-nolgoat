@@ -15,10 +15,11 @@ public enum ErrorCode {
     INVALID_TOKEN_FORMAT(HttpStatus.UNAUTHORIZED, "AUTH004", "토큰 형식이 올바르지 않습니다."),
     INVALID_TOKEN_TYPE(HttpStatus.UNAUTHORIZED, "AUTH005", "토큰 타입이 올바르지 않습니다."),
     INVALID_TOKEN_ISSUER(HttpStatus.UNAUTHORIZED, "AUTH006", "토큰 발급자가 올바르지 않습니다."),
-    MISSING_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "AUTH007", "Refresh 토큰 쿠키가 누락되었습니다."),
-    REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "AUTH008", "저장소에 존재하지 않는 Refresh 토큰입니다."),
-    ACCESS_TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "AUTH009", "블랙리스트에 등록된 Access 토큰입니다."),
-    INVALID_CSRF_PROTECTION_UUID(HttpStatus.UNAUTHORIZED, "AUTH010", "유효하지 않은 CSRF Protection UUID입니다."),
+    MISSING_COOKIE(HttpStatus.BAD_REQUEST, "AUTH007", "필수 쿠키가 누락되었습니다."),
+    MISSING_HEADER(HttpStatus.BAD_REQUEST, "AUTH008", "필수 헤더가 누락되었습니다."),
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "AUTH009", "저장소에 존재하지 않는 Refresh 토큰입니다."),
+    ACCESS_TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "AUTH010", "블랙리스트에 등록된 Access 토큰입니다."),
+    INVALID_CSRF_PROTECTION_UUID(HttpStatus.UNAUTHORIZED, "AUTH011", "유효하지 않은 CSRF Protection UUID입니다."),
 
     // 유저 관련
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER001", "존재하지 않는 유저입니다."),
