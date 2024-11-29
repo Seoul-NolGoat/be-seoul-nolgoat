@@ -30,9 +30,9 @@ import java.util.List;
 public class SecurityConfig {
 
     private final OAuth2AuthorizationRequestResolverImpl oAuth2AuthorizationRequestResolver;
-    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2UserService oAuth2UserService;
     private final RedisOAuth2AuthorizedClientService oAuth2AuthorizedClientService;
-    private final CustomSuccessHandler customSuccessHandler;
+    private final CustomSuccessHandler successHandler;
     private final AuthenticationEntryPointImpl authenticationEntryPoint;
     private final AuthFilter authFilter;
 
@@ -55,10 +55,10 @@ public class SecurityConfig {
                                 .authorizationRequestResolver(oAuth2AuthorizationRequestResolver)
                         )
                         .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customOAuth2UserService)
+                                .userService(oAuth2UserService)
                         )
                         .authorizedClientService(oAuth2AuthorizedClientService)
-                        .successHandler(customSuccessHandler)
+                        .successHandler(successHandler)
                 )
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(authenticationEntryPoint)
