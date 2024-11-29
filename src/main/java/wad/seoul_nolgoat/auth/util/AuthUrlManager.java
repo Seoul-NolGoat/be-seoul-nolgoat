@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.auth;
+package wad.seoul_nolgoat.auth.util;
 
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;

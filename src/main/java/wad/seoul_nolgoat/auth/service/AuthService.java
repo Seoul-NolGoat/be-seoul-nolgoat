@@ -18,7 +18,7 @@ import wad.seoul_nolgoat.exception.ApiException;
 import java.util.Objects;
 
 import static wad.seoul_nolgoat.auth.jwt.JwtProvider.*;
-import static wad.seoul_nolgoat.auth.oauth2.CustomOAuth2UserService.*;
+import static wad.seoul_nolgoat.auth.oauth2.security.CustomOAuth2UserService.*;
 import static wad.seoul_nolgoat.auth.service.RedisTokenService.ACCESS_TOKEN_KEY_PREFIX;
 import static wad.seoul_nolgoat.auth.service.RedisTokenService.REFRESH_TOKEN_KEY_PREFIX;
 import static wad.seoul_nolgoat.exception.ErrorCode.*;

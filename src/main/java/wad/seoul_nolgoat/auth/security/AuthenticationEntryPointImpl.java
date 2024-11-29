@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.auth.jwt;
+package wad.seoul_nolgoat.auth.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;

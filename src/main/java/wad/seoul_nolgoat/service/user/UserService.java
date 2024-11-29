@@ -16,7 +16,7 @@ import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
 import wad.seoul_nolgoat.web.user.dto.request.UserUpdateDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserDetailsDto;
 
-import static wad.seoul_nolgoat.auth.oauth2.CustomOAuth2UserService.PROVIDER_ID_DELIMITER;
+import static wad.seoul_nolgoat.auth.oauth2.security.CustomOAuth2UserService.PROVIDER_ID_DELIMITER;
 import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
 
 @RequiredArgsConstructor

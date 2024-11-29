@@ -15,14 +15,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import wad.seoul_nolgoat.auth.AuthUrlManager;
-import wad.seoul_nolgoat.auth.jwt.AuthFilter;
-import wad.seoul_nolgoat.auth.jwt.AuthenticationEntryPointImpl;
-import wad.seoul_nolgoat.auth.oauth2.CustomOAuth2UserService;
-import wad.seoul_nolgoat.auth.oauth2.CustomSuccessHandler;
-import wad.seoul_nolgoat.auth.oauth2.OAuth2AuthorizationRequestResolverImpl;
-import wad.seoul_nolgoat.auth.oauth2.RedisOAuth2AuthorizedClientService;
+import wad.seoul_nolgoat.auth.oauth2.security.CustomOAuth2UserService;
+import wad.seoul_nolgoat.auth.oauth2.security.CustomSuccessHandler;
+import wad.seoul_nolgoat.auth.oauth2.security.OAuth2AuthorizationRequestResolverImpl;
+import wad.seoul_nolgoat.auth.oauth2.security.RedisOAuth2AuthorizedClientService;
+import wad.seoul_nolgoat.auth.security.AuthFilter;
+import wad.seoul_nolgoat.auth.security.AuthenticationEntryPointImpl;
 import wad.seoul_nolgoat.auth.service.AuthService;
+import wad.seoul_nolgoat.auth.util.AuthUrlManager;
 
 import java.util.List;
 
