@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.auth.oauth2;
+package wad.seoul_nolgoat.auth.oauth2.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

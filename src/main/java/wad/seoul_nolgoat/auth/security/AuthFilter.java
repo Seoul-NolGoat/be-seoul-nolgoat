@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.auth.jwt;
+package wad.seoul_nolgoat.auth.security;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -9,10 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import wad.seoul_nolgoat.auth.AuthUrlManager;
 import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2UserDto;
 import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2UserImpl;
 import wad.seoul_nolgoat.auth.service.AuthService;
+import wad.seoul_nolgoat.auth.util.AuthUrlManager;
 import wad.seoul_nolgoat.exception.ApiException;
 
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.auth.oauth2;
+package wad.seoul_nolgoat.auth.oauth2.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
