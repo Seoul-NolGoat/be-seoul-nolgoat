@@ -20,7 +20,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<?> createUser(
+    public ResponseEntity<Void> createUser(
             @Valid @RequestBody UserSaveDto userSaveDto,
             UriComponentsBuilder uriComponentsBuilder
     ) {
@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<?> update(
+    public ResponseEntity<Void> update(
             @PathVariable Long userId,
             @Valid @RequestBody UserUpdateDto userUpdateDto
     ) {

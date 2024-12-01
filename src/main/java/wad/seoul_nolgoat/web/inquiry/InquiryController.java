@@ -51,7 +51,7 @@ public class InquiryController {
     }
 
     @PutMapping("/{inquiryId}")
-    public ResponseEntity<?> update(
+    public ResponseEntity<Void> update(
             @PathVariable Long inquiryId,
             @RequestBody InquiryUpdateDto inquiryUpdateDto
     ) {

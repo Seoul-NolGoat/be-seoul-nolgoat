@@ -24,7 +24,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping("/{storeId}")
-    public ResponseEntity<?> createReview(
+    public ResponseEntity<Void> createReview(
             @AuthenticationPrincipal OAuth2User loginUser,
             @PathVariable Long storeId,
             @RequestPart(value = "file", required = false) MultipartFile image,
@@ -54,7 +54,7 @@ public class ReviewController {
 
     // 현재 사용하지 않음
     @PutMapping("/{reviewId}")
-    public ResponseEntity<?> update(
+    public ResponseEntity<Void> update(
             @PathVariable Long reviewId,
             @Valid @RequestBody ReviewUpdateDto reviewUpdateDto
     ) {
