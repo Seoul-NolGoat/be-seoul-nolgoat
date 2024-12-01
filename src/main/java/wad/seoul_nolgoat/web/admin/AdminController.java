@@ -1,5 +1,6 @@
 package wad.seoul_nolgoat.web.admin;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +12,7 @@ import wad.seoul_nolgoat.web.admin.dto.response.TestTokenDto;
 
 import java.util.Date;
 
+@Hidden
 @RequiredArgsConstructor
 @RequestMapping("/api/admins")
 @RestController

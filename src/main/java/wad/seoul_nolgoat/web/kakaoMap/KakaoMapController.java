@@ -1,5 +1,6 @@
 package wad.seoul_nolgoat.web.kakaoMap;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,7 @@ import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 import java.util.Optional;
 
+@Hidden
 @RequiredArgsConstructor
 @RequestMapping("/api/kakao/map")
 @RestController
