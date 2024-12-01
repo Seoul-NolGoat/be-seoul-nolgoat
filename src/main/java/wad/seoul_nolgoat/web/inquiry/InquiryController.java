@@ -1,5 +1,7 @@
 package wad.seoul_nolgoat.web.inquiry;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +17,7 @@ import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryListDto;
 import java.net.URI;
 import java.util.List;
 
+@Tag(name = "건의 사항")
 @RequiredArgsConstructor
 @RequestMapping("/api/inquiries")
 @RestController
@@ -22,6 +25,7 @@ public class InquiryController {
 
     private final InquiryService inquiryService;
 
+    @Operation(summary = "건의 사항 작성")
     @PostMapping
     public ResponseEntity<Void> createInquiry(
             @AuthenticationPrincipal OAuth2User loginUser,
@@ -38,18 +42,21 @@ public class InquiryController {
                 .build();
     }
 
+    @Operation(summary = "건의 사항 단건 조회")
     @GetMapping("/{inquiryId}")
     public ResponseEntity<InquiryDetailsDto> showInquiryByInquiryId(@PathVariable Long inquiryId) {
         return ResponseEntity
                 .ok(inquiryService.findByInquiryId(inquiryId));
     }
 
+    @Operation(summary = "건의 사항 목록 조회")
     @GetMapping
     public ResponseEntity<List<InquiryListDto>> showAllInquiries() {
         return ResponseEntity
                 .ok(inquiryService.findAllInquiry());
     }
 
+    @Operation(summary = "건의 사항 수정")
     @PutMapping("/{inquiryId}")
     public ResponseEntity<Void> update(
             @PathVariable Long inquiryId,
@@ -62,6 +69,7 @@ public class InquiryController {
                 .build();
     }
 
+    @Operation(summary = "건의 사항 삭제")
     @DeleteMapping("/{inquiryId}")
     public ResponseEntity<Void> deleteById(@PathVariable Long inquiryId) {
         inquiryService.deleteById(inquiryId);
