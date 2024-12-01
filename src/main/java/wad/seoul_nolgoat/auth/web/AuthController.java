@@ -91,7 +91,7 @@ public class AuthController {
         authService.saveAccessTokenToBlacklist(authorizationHeader.split(" ")[1]);
 
         // 소셜 계정 연동 unlink 및 유저 상태 변경
-        authService.deleteUserByLoginId(loginUser.getName());
+        authService.unlinkSocialAccount(loginUser.getName());
 
         return ResponseEntity
                 .noContent()

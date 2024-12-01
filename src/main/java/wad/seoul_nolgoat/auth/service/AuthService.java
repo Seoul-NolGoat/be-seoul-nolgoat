@@ -6,14 +6,15 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.auth.jwt.JwtProvider;
 import wad.seoul_nolgoat.auth.oauth2.client.SocialClientService;
 import wad.seoul_nolgoat.auth.oauth2.client.TokenResponse;
-import wad.seoul_nolgoat.domain.user.User;
+import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2Response;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.service.user.UserService;
 
 import java.util.Objects;
 
@@ -38,6 +39,7 @@ public class AuthService {
     private final RedisTokenService redisTokenService;
     private final SocialClientService socialClientService;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @Value("${spring.csrf.protection.uuid}")
     private String csrfProtectionUuid;
@@ -184,8 +186,13 @@ public class AuthService {
         return jwtProvider.getLoginId(token);
     }
 
-    @Transactional
-    public void deleteUserByLoginId(String loginId) {
+    // OAuth2 유저 정보 처리
+    public OAuth2User processOAuth2User(OAuth2Response oAuth2Response) {
+        String uniqueProviderId = oAuth2Response.getProvider() + PROVIDER_ID_DELIMITER + oAuth2Response.getProviderId();
+        return userService.syncOAuth2User(uniqueProviderId, oAuth2Response);
+    }
+
+    public void unlinkSocialAccount(String loginId) {
         String refreshKey = RedisTokenService.OAUTH2_REFRESH_TOKEN_KEY_PREFIX + loginId;
         String accessKey = RedisTokenService.OAUTH2_ACCESS_TOKEN_KEY_PREFIX + loginId;
         String accessToken = redisTokenService.getToken(accessKey);
@@ -213,8 +220,6 @@ public class AuthService {
         redisTokenService.deleteToken(refreshKey);
 
         // 유저의 isDeleted를 true로 변경
-        User user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        user.delete();
+        userService.deleteUserByLoginId(loginId);
     }
 }

@@ -16,7 +16,6 @@ import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
 import wad.seoul_nolgoat.web.user.dto.request.UserUpdateDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserDetailsDto;
 
-import static wad.seoul_nolgoat.auth.oauth2.security.CustomOAuth2UserService.PROVIDER_ID_DELIMITER;
 import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
 
 @RequiredArgsConstructor
@@ -53,8 +52,26 @@ public class UserService {
     }
 
     @Transactional
-    public OAuth2User processOAuth2User(OAuth2Response oAuth2Response) {
-        String uniqueProviderId = oAuth2Response.getProvider() + PROVIDER_ID_DELIMITER + oAuth2Response.getProviderId();
+    public void update(Long userId, UserUpdateDto userUpdateDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        user.update(
+                userUpdateDto.getPassword(),
+                userUpdateDto.getNickname(),
+                userUpdateDto.getProfileImage()
+        );
+    }
+
+    @Transactional
+    public void deleteUserByLoginId(String loginId) {
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        user.delete();
+    }
+
+    // OAuth2 유저 정보 동기화
+    @Transactional
+    public OAuth2User syncOAuth2User(String uniqueProviderId, OAuth2Response oAuth2Response) {
         String nickname = oAuth2Response.getNickname();
         String profileImage = oAuth2Response.getProfileImage();
 
@@ -75,6 +92,8 @@ public class UserService {
 
         User user = userRepository.findByLoginId(uniqueProviderId)
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+
+        // 탈퇴 유저라면 계정을 다시 활성화
         if (user.isDeleted()) {
             user.reactivate();
         }
@@ -87,16 +106,5 @@ public class UserService {
         OAuth2UserDto oAuth2UserDto = new OAuth2UserDto(uniqueProviderId);
 
         return new OAuth2UserImpl(oAuth2UserDto);
-    }
-
-    @Transactional
-    public void update(Long userId, UserUpdateDto userUpdateDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        user.update(
-                userUpdateDto.getPassword(),
-                userUpdateDto.getNickname(),
-                userUpdateDto.getProfileImage()
-        );
     }
 }
