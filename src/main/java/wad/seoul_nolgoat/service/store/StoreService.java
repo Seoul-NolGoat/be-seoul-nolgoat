@@ -13,6 +13,7 @@ import wad.seoul_nolgoat.web.store.dto.response.StoreDetailsDto;
 import static wad.seoul_nolgoat.exception.ErrorCode.STORE_NOT_FOUND;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class StoreService {
 
