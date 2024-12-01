@@ -1,5 +1,7 @@
 package wad.seoul_nolgoat.auth.web;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import wad.seoul_nolgoat.service.user.UserService;
 
 import static wad.seoul_nolgoat.auth.service.AuthService.*;
 
+@Tag(name = "인증")
 @RequiredArgsConstructor
 @RequestMapping("/api/auths")
 @RestController
@@ -20,6 +23,7 @@ public class AuthController {
     private final UserService userService;
     private final AuthService authService;
 
+    @Operation(summary = "로그인 사용자 정보 조회")
     @GetMapping("/me")
     public ResponseEntity<UserProfileDto> showUserProfile(@AuthenticationPrincipal OAuth2User loginUser) {
         String loginId = loginUser.getName();
@@ -27,6 +31,7 @@ public class AuthController {
                 .ok(userService.getLoginUserDetails(loginId));
     }
 
+    @Operation(summary = "토큰 재발급 요청")
     @PostMapping("/token/reissue")
     public ResponseEntity<Void> reissueTokens(
             @RequestHeader(CSRF_PROTECTION_UUID_HEADER) String csrfProtectionUuid,
@@ -45,6 +50,7 @@ public class AuthController {
                 .build();
     }
 
+    @Operation(summary = "로그아웃")
     @PostMapping("/logout")
     public ResponseEntity<String> logout(
             @AuthenticationPrincipal OAuth2User loginUser,
@@ -70,6 +76,7 @@ public class AuthController {
                 .build();
     }
 
+    @Operation(summary = "회원 탈퇴")
     @DeleteMapping("/user/delete")
     public ResponseEntity<Void> deleteUserByLoginId(
             @AuthenticationPrincipal OAuth2User loginUser,
