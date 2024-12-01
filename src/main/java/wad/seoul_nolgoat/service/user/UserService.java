@@ -68,7 +68,10 @@ public class UserService {
         String nickname = oAuth2Response.getNickname();
         String profileImage = oAuth2Response.getProfileImage();
 
-        if (!userRepository.existsByLoginId(uniqueProviderId)) {
+        User user = userRepository.findByLoginId(uniqueProviderId)
+                .orElse(null);
+
+        if (user == null) {
             userRepository.save(
                     new User(
                             uniqueProviderId,
@@ -82,9 +85,6 @@ public class UserService {
             OAuth2UserDto oAuth2UserDto = new OAuth2UserDto(uniqueProviderId);
             return new OAuth2UserImpl(oAuth2UserDto);
         }
-
-        User user = userRepository.findByLoginId(uniqueProviderId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
         // 탈퇴 유저라면 계정을 다시 활성화
         if (user.isDeleted()) {
