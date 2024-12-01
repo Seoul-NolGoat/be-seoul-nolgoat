@@ -37,13 +37,6 @@ public class UserService {
         return UserMapper.toUserDetailsDto(user);
     }
 
-    public User findByLoginId(String loginId) {
-        User user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-
-        return user;
-    }
-
     public UserProfileDto getLoginUserDetails(String loginId) {
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
