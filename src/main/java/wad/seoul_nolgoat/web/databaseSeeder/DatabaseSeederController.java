@@ -1,5 +1,6 @@
 package wad.seoul_nolgoat.web.databaseSeeder;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import wad.seoul_nolgoat.domain.store.StoreType;
 import wad.seoul_nolgoat.service.databaseSeeder.DatabaseSeederService;
 
+@Hidden
 @RequiredArgsConstructor
 @RequestMapping("/seeder")
 @RestController

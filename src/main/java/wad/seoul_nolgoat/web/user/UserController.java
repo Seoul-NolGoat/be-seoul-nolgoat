@@ -1,5 +1,6 @@
 package wad.seoul_nolgoat.web.user;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import wad.seoul_nolgoat.web.user.dto.response.UserDetailsDto;
 
 import java.net.URI;
 
+@Hidden
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
 @RestController
