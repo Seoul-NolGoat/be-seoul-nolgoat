@@ -12,7 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import wad.seoul_nolgoat.exception.ApiException;
-import wad.seoul_nolgoat.web.exception.dto.response.ErrorResponse;
+import wad.seoul_nolgoat.exception.dto.response.ErrorResponse;
 
 import java.io.IOException;
 
