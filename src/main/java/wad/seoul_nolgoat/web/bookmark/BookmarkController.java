@@ -1,5 +1,7 @@
 package wad.seoul_nolgoat.web.bookmark;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,6 +12,7 @@ import wad.seoul_nolgoat.service.bookmark.BookmarkService;
 
 import java.net.URI;
 
+@Tag(name = "즐겨찾기")
 @RequiredArgsConstructor
 @RequestMapping("/api/bookmarks")
 @RestController
@@ -17,6 +20,7 @@ public class BookmarkController {
 
     private final BookmarkService bookmarkService;
 
+    @Operation(summary = "즐겨찾기 등록")
     @PostMapping("/{storeId}")
     public ResponseEntity<Void> createBookmark(
             @AuthenticationPrincipal OAuth2User loginUser,
@@ -33,6 +37,7 @@ public class BookmarkController {
                 .build();
     }
 
+    @Operation(summary = "즐겨찾기 삭제")
     @DeleteMapping("/{userId}/{storeId}")
     public ResponseEntity<Void> deleteById(@PathVariable Long userId, @PathVariable Long storeId) {
         bookmarkService.deleteById(userId, storeId);
@@ -42,6 +47,7 @@ public class BookmarkController {
                 .build();
     }
 
+    @Operation(summary = "즐겨찾기 여부 확인")
     @GetMapping("/{userId}/{storeId}")
     public ResponseEntity<Boolean> checkIfBookmarked(@PathVariable Long userId, @PathVariable Long storeId) {
         return ResponseEntity
