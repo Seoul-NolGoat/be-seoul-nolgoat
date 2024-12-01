@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.web.exception.dto.response;
+package wad.seoul_nolgoat.exception.dto.response;
 
 import lombok.Getter;
 import wad.seoul_nolgoat.exception.ErrorCode;

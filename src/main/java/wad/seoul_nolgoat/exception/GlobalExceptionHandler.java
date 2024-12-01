@@ -7,7 +7,7 @@ import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wad.seoul_nolgoat.web.exception.dto.response.ErrorResponse;
+import wad.seoul_nolgoat.exception.dto.response.ErrorResponse;
 
 import java.util.HashMap;
 import java.util.Map;
