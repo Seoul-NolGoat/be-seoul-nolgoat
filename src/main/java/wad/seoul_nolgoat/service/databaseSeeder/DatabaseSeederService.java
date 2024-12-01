@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.store.StoreRepository;
 import wad.seoul_nolgoat.domain.store.StoreType;
@@ -34,6 +35,7 @@ public class DatabaseSeederService {
 
     private final RateLimiter rateLimiter = RateLimiter.create(RATE_LIMIT); // 초당 50회 호출 제한
 
+    @Transactional
     public void seedInitialStoreData(StoreType storeType) {
         int startIdx = INITIAL_START_IDX;
         int endIdx = INITIAL_END_IDX;

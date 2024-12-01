@@ -2,6 +2,7 @@ package wad.seoul_nolgoat.service.search.filter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.store.StoreRepository;
 import wad.seoul_nolgoat.domain.store.StoreType;
 import wad.seoul_nolgoat.service.search.dto.StoreForDistanceSortDto;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class FilterService {
 

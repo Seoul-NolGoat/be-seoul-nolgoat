@@ -21,12 +21,14 @@ import static wad.seoul_nolgoat.exception.ErrorCode.INQUIRY_NOT_FOUND;
 import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class InquiryService {
 
     private final InquiryRepository inquiryRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public Long save(String loginId, InquirySaveDto inquirySaveDto) {
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
@@ -61,6 +63,7 @@ public class InquiryService {
         );
     }
 
+    @Transactional
     public void deleteById(Long inquiryId) {
         if (!inquiryRepository.existsById(inquiryId)) {
             throw new ApiException(INQUIRY_NOT_FOUND);

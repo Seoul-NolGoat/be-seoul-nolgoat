@@ -24,6 +24,7 @@ import java.util.Optional;
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class ReviewService {
 
@@ -33,6 +34,7 @@ public class ReviewService {
     private final StoreService storeService;
     private final S3Service s3Service;
 
+    @Transactional
     public Long save(
             String loginId,
             Long storeId,
@@ -84,6 +86,7 @@ public class ReviewService {
         );
     }
 
+    @Transactional
     public void deleteById(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ApiException(REVIEW_NOT_FOUND));

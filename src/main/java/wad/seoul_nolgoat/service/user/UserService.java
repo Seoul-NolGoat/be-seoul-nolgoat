@@ -20,11 +20,13 @@ import static wad.seoul_nolgoat.auth.oauth2.security.CustomOAuth2UserService.PRO
 import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
 
+    @Transactional
     public Long save(UserSaveDto userSaveDto) {
         return userRepository.save(UserMapper.toEntity(userSaveDto)).getId();
     }

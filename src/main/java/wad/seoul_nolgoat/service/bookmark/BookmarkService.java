@@ -2,6 +2,7 @@ package wad.seoul_nolgoat.service.bookmark;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.bookmark.Bookmark;
 import wad.seoul_nolgoat.domain.bookmark.BookmarkRepository;
 import wad.seoul_nolgoat.domain.store.Store;
@@ -18,6 +19,7 @@ import static wad.seoul_nolgoat.exception.ErrorCode.STORE_NOT_FOUND;
 import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class BookmarkService {
 
@@ -25,6 +27,7 @@ public class BookmarkService {
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
 
+    @Transactional
     public Long save(String loginId, Long storeId) {
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
@@ -39,6 +42,7 @@ public class BookmarkService {
         ).getId();
     }
 
+    @Transactional
     public void deleteById(Long userId, Long storeId) {
         if (!bookmarkRepository.existsByUserIdAndStoreId(userId, storeId)) {
             throw new RuntimeException("존재하지 않는 북마크입니다.");
