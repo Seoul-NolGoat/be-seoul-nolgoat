@@ -23,7 +23,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
     private static final String ST_Y_TEMPLATE = "ST_Y({0})";  // Y 좌표용 템플릿
     private static final String ST_X_TEMPLATE = "ST_X({0})";  // X 좌표용 템플릿
-    private static final int MAX_RESULT_COUNT = 10; // 평점 정렬 시, 최대 개수의 기준이 되는 인덱스
+    private static final int GRADE_SORT_MAX_RESULT_COUNT = 10; // 평점 기준 정렬 시, 최대 개수 기준
+    private static final int DISTANCE_SORT_MAX_RESULT_COUNT = 30; // 거리 기준 정렬 시, 최대 개수 기준
 
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -33,17 +34,25 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
-        return Collections.unmodifiableList(
-                createBaseQueryForDistanceSorted()
-                        .where(
-                                buildRangeAndCategoryCondition(
-                                        startCoordinate,
-                                        radiusRange,
-                                        category
-                                )
+        NumberExpression<Double> distance = calculateHaversineDistance(startCoordinate);
+        List<StoreForDistanceSortDto> result = createBaseQueryForDistanceSorted(distance)
+                .where(
+                        buildRangeAndCategoryCondition(
+                                startCoordinate,
+                                radiusRange,
+                                category
                         )
-                        .fetch()
-        );
+                )
+                .orderBy(distance.asc())
+                .fetch();
+
+        // 조회 결과를 모두 사용하면 개수가 너무 많기 때문에 적당한 기준 설정
+        int resultCount = Math.min(DISTANCE_SORT_MAX_RESULT_COUNT, result.size());
+        Double baseDistance = result.get(resultCount - 1).getDistance();
+
+        return result.stream()
+                .filter(store -> store.getDistance() <= baseDistance)
+                .toList();
     }
 
     @Override
@@ -52,18 +61,26 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
-        return Collections.unmodifiableList(
-                createBaseQueryForDistanceSorted()
-                        .distinct()
-                        .where(
-                                buildRangeAndCategoryAndTypeCondition(
-                                        startCoordinate,
-                                        radiusRange,
-                                        category
-                                )
+        NumberExpression<Double> distance = calculateHaversineDistance(startCoordinate);
+        List<StoreForDistanceSortDto> result = createBaseQueryForDistanceSorted(distance)
+                .distinct() // 카테고리와 가게 타입 조건으로 인해 발생할 수 있는 중복 데이터 제거
+                .where(
+                        buildRangeAndCategoryAndTypeCondition(
+                                startCoordinate,
+                                radiusRange,
+                                category
                         )
-                        .fetch()
-        );
+                )
+                .orderBy(distance.asc())
+                .fetch();
+
+        // 조회 결과를 모두 사용하면 개수가 너무 많기 때문에 적당한 기준 설정
+        int resultCount = Math.min(DISTANCE_SORT_MAX_RESULT_COUNT, result.size());
+        Double baseDistance = result.get(resultCount - 1).getDistance();
+
+        return result.stream()
+                .filter(store -> store.getDistance() <= baseDistance)
+                .toList();
     }
 
     @Override
@@ -86,7 +103,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .orderBy(store.kakaoAverageGrade.desc())
                 .fetch();
 
-        int resultCount = Math.min(MAX_RESULT_COUNT, result.size());
+        int resultCount = Math.min(GRADE_SORT_MAX_RESULT_COUNT, result.size());
         Double baseKakaoAverageGrade = result.get(resultCount - 1).get(1, Double.class);
 
         return Collections.unmodifiableList(
@@ -124,7 +141,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .orderBy(store.kakaoAverageGrade.desc())
                 .fetch();
 
-        int resultCount = Math.min(MAX_RESULT_COUNT, result.size());
+        int resultCount = Math.min(GRADE_SORT_MAX_RESULT_COUNT, result.size());
         Double baseKakaoAverageGrade = result.get(resultCount - 1).get(1, Double.class);
 
         return Collections.unmodifiableList(
@@ -162,7 +179,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .orderBy(store.nolgoatAverageGrade.desc())
                 .fetch();
 
-        int resultCount = Math.min(MAX_RESULT_COUNT, result.size());
+        int resultCount = Math.min(GRADE_SORT_MAX_RESULT_COUNT, result.size());
         Double baseNolgoatAverageGrade = result.get(resultCount - 1).get(1, Double.class);
 
         return Collections.unmodifiableList(
@@ -199,7 +216,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .orderBy(store.nolgoatAverageGrade.desc())
                 .fetch();
 
-        int resultCount = Math.min(MAX_RESULT_COUNT, result.size());
+        int resultCount = Math.min(GRADE_SORT_MAX_RESULT_COUNT, result.size());
         Double baseNolgoatAverageGrade = result.get(resultCount - 1).get(1, Double.class);
 
         return Collections.unmodifiableList(
@@ -238,7 +255,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     }
 
     // 거리 기준 정렬을 위한 기본 쿼리
-    private JPAQuery<StoreForDistanceSortDto> createBaseQueryForDistanceSorted() {
+    private JPAQuery<StoreForDistanceSortDto> createBaseQueryForDistanceSorted(NumberExpression<Double> distance) {
         return jpaQueryFactory
                 .select(
                         Projections.constructor(
@@ -251,7 +268,9 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                                         numberTemplate(Double.class, ST_X_TEMPLATE, store.location)
                                 ),
                                 store.kakaoAverageGrade,
-                                store.nolgoatAverageGrade
+                                store.nolgoatAverageGrade,
+                                store.location,
+                                distance.as("distance")
                         )
                 )
                 .from(store);
