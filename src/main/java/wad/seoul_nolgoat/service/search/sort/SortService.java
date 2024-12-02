@@ -174,7 +174,7 @@ public class SortService {
 
     // 10번째 조합의 총 평점을 기준으로 잡고 그 점수 이상인 조합들을 추출
     private List<GradeSortCombinationDto> filterByBaseTotalGrade(List<GradeSortCombinationDto> gradeCombinations) {
-        double baseTotalGrade = gradeCombinations.get(Math.min(9, gradeCombinations.size())).getTotalGrade();
+        double baseTotalGrade = gradeCombinations.get(Math.min(9, gradeCombinations.size() - 1)).getTotalGrade();
 
         return gradeCombinations.stream()
                 .filter(combination -> combination.getTotalGrade() >= baseTotalGrade)
