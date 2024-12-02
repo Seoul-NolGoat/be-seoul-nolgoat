@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.Point;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 @Getter
@@ -16,4 +17,6 @@ public class StoreForDistanceSortDto {
     private CoordinateDto coordinate;
     private double kakaoAverageGrade;
     private double nolgoatAverageGrade;
+    private Point location;
+    private double distance;
 }
