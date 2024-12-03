@@ -165,7 +165,7 @@ public class TMapService {
             WalkRouteInfoDto secondWalkRouteInfo = fetchWalkRouteInfo(pass2, endCoordinate);
 
             return new WalkRouteInfoDto(
-                    firstWalkRouteInfo.getTotalDistance() + secondWalkRouteInfo.getTotalDistance(),
+                    firstWalkRouteInfo.getTMapTotalDistance() + secondWalkRouteInfo.getTMapTotalDistance(),
                     firstWalkRouteInfo.getTotalTime() + secondWalkRouteInfo.getTotalTime()
             );
         }

@@ -48,7 +48,7 @@ public class SortService {
                 totalRounds
         );
 
-        return groupAndShuffleByDistance(tMapFetchedDistanceCombinations);
+        return groupAndShuffleByTMapDistance(tMapFetchedDistanceCombinations);
     }
 
     // 테스트를 위해 접근제어자를 public으로 변경
@@ -214,9 +214,11 @@ public class SortService {
 
     // 거리별로 그룹화
     // 앞 순서의 가게가 상위권에 쏠리지 않도록 그룹내에서 순서를 무작위로 설정
-    private List<DistanceSortCombinationDto> groupAndShuffleByDistance(List<DistanceSortCombinationDto> tMapFetchedDistanceCombinations) {
+    private List<DistanceSortCombinationDto> groupAndShuffleByTMapDistance(List<DistanceSortCombinationDto> tMapFetchedDistanceCombinations) {
         Map<Integer, List<DistanceSortCombinationDto>> groupedByDistance = tMapFetchedDistanceCombinations.stream()
-                .collect(Collectors.groupingBy(combination -> combination.getWalkRouteInfoDto().getTotalDistance()));
+                .collect(Collectors.groupingBy(
+                        combination -> combination.getWalkRouteInfoDto().getTMapTotalDistance())
+                );
         groupedByDistance.forEach((totalDistance, group) -> Collections.shuffle(group));
 
         return groupedByDistance.values().stream()
@@ -359,7 +361,9 @@ public class SortService {
                 }).toList();
 
         return combinations.stream()
-                .sorted(Comparator.comparingInt(combination -> combination.getWalkRouteInfoDto().getTotalDistance()))
+                .sorted(Comparator.comparingInt(
+                        combination -> combination.getWalkRouteInfoDto().getTMapTotalDistance())
+                )
                 .toList();
     }
 
