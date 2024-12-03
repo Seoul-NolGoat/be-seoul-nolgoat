@@ -17,6 +17,8 @@ public class StoreForDistanceSortDto {
     private CoordinateDto coordinate;
     private double kakaoAverageGrade;
     private double nolgoatAverageGrade;
+
+    // Querydsl 빈 생성을 위한 필드
     private Point location;
     private double distance;
 }
