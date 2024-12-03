@@ -7,6 +7,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WalkRouteInfoDto {
 
-    private final int totalDistance;
+    private final int tMapTotalDistance;
     private final int totalTime;
 }
