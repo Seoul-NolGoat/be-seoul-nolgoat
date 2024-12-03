@@ -17,8 +17,8 @@ import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_GATHERING_ROUND;
 @Service
 public class SortService {
 
-    private static final int TOP_FIRST = 0;
-    private static final int TOP_TWENTIETH = 20;
+    private static final int TOTAL_GRADE_SORT_MAX_RESULT_COUNT = 10;
+    private static final int TOTAL_DISTANCE_SORT_MAX_RESULT_COUNT = 20;
 
     private final TMapService tMapService;
     private final DistanceCalculator distanceCalculator;
@@ -38,12 +38,17 @@ public class SortService {
                 sortConditionDto,
                 totalRounds
         );
+        sortCombinationsByDistance(distanceCombinations);
+        List<DistanceSortCombinationDto> combinationsUnderBaseDistance = filterByBaseTotalDistance(distanceCombinations);
 
-        return fetchDistancesFromTMapApi(
+        // TMap 도보 거리 측정
+        List<DistanceSortCombinationDto> tMapFetchedDistanceCombinations = fetchDistancesFromTMapApi(
                 sortConditionDto.getStartCoordinate(),
-                distanceCombinations.subList(TOP_FIRST, Math.min(distanceCombinations.size(), TOP_TWENTIETH)),
+                combinationsUnderBaseDistance,
                 totalRounds
         );
+
+        return groupAndShuffleByDistance(tMapFetchedDistanceCombinations);
     }
 
     // 테스트를 위해 접근제어자를 public으로 변경
@@ -57,26 +62,20 @@ public class SortService {
                     sortConditionDto.getSecondFilteredStores(),
                     sortConditionDto.getThirdFilteredStores(),
                     sortConditionDto.getStartCoordinate()
-            ).stream()
-                    .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistance))
-                    .toList();
+            );
         }
         if (totalRounds == SearchService.TWO_ROUND) {
             return createDistanceCombinationsForTwoRounds(
                     sortConditionDto.getFirstFilteredStores(),
                     sortConditionDto.getSecondFilteredStores(),
                     sortConditionDto.getStartCoordinate()
-            ).stream()
-                    .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistance))
-                    .toList();
+            );
         }
         if (totalRounds == SearchService.ONE_ROUND) {
             return createDistanceCombinationsForOneRound(
                     sortConditionDto.getFirstFilteredStores(),
                     sortConditionDto.getStartCoordinate()
-            ).stream()
-                    .sorted(Comparator.comparingDouble(DistanceSortCombinationDto::getTotalDistance))
-                    .toList();
+            );
         }
         throw new ApiException(INVALID_GATHERING_ROUND);
     }
@@ -165,19 +164,39 @@ public class SortService {
 
     private void sortCombinationsByGrade(List<GradeSortCombinationDto> combinations) {
         combinations.sort((combination1, combination2) -> {
-            double firstRate = combination1.getTotalGrade();
-            double secondRate = combination2.getTotalGrade();
+            double firstGrade = combination1.getTotalGrade();
+            double secondGrade = combination2.getTotalGrade();
 
-            return Double.compare(secondRate, firstRate);
+            return Double.compare(secondGrade, firstGrade);
+        });
+    }
+
+    private void sortCombinationsByDistance(List<DistanceSortCombinationDto> distanceCombinations) {
+        distanceCombinations.sort((combination1, combination2) -> {
+            double firstDistance = combination1.getTotalDistance();
+            double secondDistance = combination2.getTotalDistance();
+
+            return Double.compare(firstDistance, secondDistance);
         });
     }
 
     // 10번째 조합의 총 평점을 기준으로 잡고 그 점수 이상인 조합들을 추출
     private List<GradeSortCombinationDto> filterByBaseTotalGrade(List<GradeSortCombinationDto> gradeCombinations) {
-        double baseTotalGrade = gradeCombinations.get(Math.min(9, gradeCombinations.size() - 1)).getTotalGrade();
+        int combinationCount = Math.min(gradeCombinations.size(), TOTAL_GRADE_SORT_MAX_RESULT_COUNT);
+        double baseTotalGrade = gradeCombinations.get(combinationCount - 1).getTotalGrade();
 
         return gradeCombinations.stream()
                 .filter(combination -> combination.getTotalGrade() >= baseTotalGrade)
+                .toList();
+    }
+
+    // TMap 도보 거리 비교를 위해, 최대 20번째 조합의 총거리를 기준으로 필터링
+    private List<DistanceSortCombinationDto> filterByBaseTotalDistance(List<DistanceSortCombinationDto> distanceCombinations) {
+        int combinationCount = Math.min(distanceCombinations.size(), TOTAL_DISTANCE_SORT_MAX_RESULT_COUNT);
+        double baseTotalDistance = distanceCombinations.get(combinationCount - 1).getTotalDistance();
+
+        return distanceCombinations.stream()
+                .filter(combination -> combination.getTotalDistance() <= baseTotalDistance)
                 .toList();
     }
 
@@ -189,6 +208,18 @@ public class SortService {
         groupedByGrade.forEach((totalGrade, group) -> Collections.shuffle(group));
 
         return groupedByGrade.values().stream()
+                .flatMap(List::stream)
+                .toList();
+    }
+
+    // 거리별로 그룹화
+    // 앞 순서의 가게가 상위권에 쏠리지 않도록 그룹내에서 순서를 무작위로 설정
+    private List<DistanceSortCombinationDto> groupAndShuffleByDistance(List<DistanceSortCombinationDto> tMapFetchedDistanceCombinations) {
+        Map<Integer, List<DistanceSortCombinationDto>> groupedByDistance = tMapFetchedDistanceCombinations.stream()
+                .collect(Collectors.groupingBy(combination -> combination.getWalkRouteInfoDto().getTotalDistance()));
+        groupedByDistance.forEach((totalDistance, group) -> Collections.shuffle(group));
+
+        return groupedByDistance.values().stream()
                 .flatMap(List::stream)
                 .toList();
     }
