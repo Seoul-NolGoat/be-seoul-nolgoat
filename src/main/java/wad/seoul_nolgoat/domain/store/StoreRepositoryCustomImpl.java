@@ -91,7 +91,6 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     ) {
         List<Tuple> result = jpaQueryFactory
                 .select(store.id, store.kakaoAverageGrade)
-                .distinct()
                 .from(store)
                 .where(
                         buildRangeAndCategoryCondition(
@@ -129,7 +128,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     ) {
         List<Tuple> result = jpaQueryFactory
                 .select(store.id, store.kakaoAverageGrade)
-                .distinct()
+                .distinct() // 카테고리와 가게 타입 조건으로 인해 발생할 수 있는 중복 데이터 제거
                 .from(store)
                 .where(
                         buildRangeAndCategoryAndTypeCondition(
@@ -167,7 +166,6 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     ) {
         List<Tuple> result = jpaQueryFactory
                 .select(store.id, store.nolgoatAverageGrade)
-                .distinct()
                 .from(store)
                 .where(
                         buildRangeAndCategoryCondition(
@@ -204,7 +202,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     ) {
         List<Tuple> result = jpaQueryFactory
                 .select(store.id, store.nolgoatAverageGrade)
-                .distinct()
+                .distinct() // 카테고리와 가게 타입 조건으로 인해 발생할 수 있는 중복 데이터 제거
                 .from(store)
                 .where(
                         buildRangeAndCategoryAndTypeCondition(
