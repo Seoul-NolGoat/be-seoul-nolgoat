@@ -1,6 +1,5 @@
 package wad.seoul_nolgoat.domain.store;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
@@ -12,7 +11,6 @@ import wad.seoul_nolgoat.service.search.dto.StoreForGradeSortDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForPossibleCategoriesDto;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
-import java.util.Collections;
 import java.util.List;
 
 import static com.querydsl.core.types.dsl.Expressions.numberTemplate;
@@ -48,7 +46,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
         // 조회 결과를 모두 사용하면 개수가 너무 많기 때문에 적당한 기준 설정
         int resultCount = Math.min(DISTANCE_SORT_MAX_RESULT_COUNT, result.size());
-        Double baseDistance = result.get(resultCount - 1).getDistance();
+        double baseDistance = result.get(resultCount - 1).getDistance();
 
         return result.stream()
                 .filter(store -> store.getDistance() <= baseDistance)
@@ -76,7 +74,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
         // 조회 결과를 모두 사용하면 개수가 너무 많기 때문에 적당한 기준 설정
         int resultCount = Math.min(DISTANCE_SORT_MAX_RESULT_COUNT, result.size());
-        Double baseDistance = result.get(resultCount - 1).getDistance();
+        double baseDistance = result.get(resultCount - 1).getDistance();
 
         return result.stream()
                 .filter(store -> store.getDistance() <= baseDistance)
@@ -89,9 +87,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
-        List<Tuple> result = jpaQueryFactory
-                .select(store.id, store.kakaoAverageGrade)
-                .from(store)
+        List<StoreForGradeSortDto> result = createBaseQueryForKakaoGradeSorted()
                 .where(
                         buildRangeAndCategoryCondition(
                                 startCoordinate,
@@ -103,20 +99,11 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .fetch();
 
         int resultCount = Math.min(GRADE_SORT_MAX_RESULT_COUNT, result.size());
-        Double baseKakaoAverageGrade = result.get(resultCount - 1).get(1, Double.class);
+        double baseKakaoAverageGrade = result.get(resultCount - 1).getKakaoAverageGrade();
 
-        return Collections.unmodifiableList(
-                createBaseQueryForKakaoGradeSorted()
-                        .where(
-                                buildRangeAndCategoryCondition(
-                                        startCoordinate,
-                                        radiusRange,
-                                        category
-                                ),
-                                store.kakaoAverageGrade.goe(baseKakaoAverageGrade)
-                        )
-                        .fetch()
-        );
+        return result.stream()
+                .filter(store -> store.getKakaoAverageGrade() >= baseKakaoAverageGrade)
+                .toList();
     }
 
 
@@ -126,10 +113,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
-        List<Tuple> result = jpaQueryFactory
-                .select(store.id, store.kakaoAverageGrade)
-                .distinct() // 카테고리와 가게 타입 조건으로 인해 발생할 수 있는 중복 데이터 제거
-                .from(store)
+        List<StoreForGradeSortDto> result = createBaseQueryForKakaoGradeSorted()
+                .distinct()
                 .where(
                         buildRangeAndCategoryAndTypeCondition(
                                 startCoordinate,
@@ -137,25 +122,14 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                                 category
                         )
                 )
-                .orderBy(store.kakaoAverageGrade.desc())
                 .fetch();
 
         int resultCount = Math.min(GRADE_SORT_MAX_RESULT_COUNT, result.size());
-        Double baseKakaoAverageGrade = result.get(resultCount - 1).get(1, Double.class);
+        double baseKakaoAverageGrade = result.get(resultCount - 1).getKakaoAverageGrade();
 
-        return Collections.unmodifiableList(
-                createBaseQueryForKakaoGradeSorted()
-                        .distinct()
-                        .where(
-                                buildRangeAndCategoryAndTypeCondition(
-                                        startCoordinate,
-                                        radiusRange,
-                                        category
-                                ),
-                                store.kakaoAverageGrade.goe(baseKakaoAverageGrade)
-                        )
-                        .fetch()
-        );
+        return result.stream()
+                .filter(store -> store.getKakaoAverageGrade() >= baseKakaoAverageGrade)
+                .toList();
     }
 
     @Override
@@ -164,9 +138,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
-        List<Tuple> result = jpaQueryFactory
-                .select(store.id, store.nolgoatAverageGrade)
-                .from(store)
+        List<StoreForGradeSortDto> result = createBaseQueryForNolgoatGradeSorted()
                 .where(
                         buildRangeAndCategoryCondition(
                                 startCoordinate,
@@ -174,24 +146,14 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                                 category
                         )
                 )
-                .orderBy(store.nolgoatAverageGrade.desc())
                 .fetch();
 
         int resultCount = Math.min(GRADE_SORT_MAX_RESULT_COUNT, result.size());
-        Double baseNolgoatAverageGrade = result.get(resultCount - 1).get(1, Double.class);
+        double baseNolgoatAverageGrade = result.get(resultCount - 1).getNolgoatAverageGrade();
 
-        return Collections.unmodifiableList(
-                createBaseQueryForNolgoatGradeSorted()
-                        .where(
-                                buildRangeAndCategoryCondition(
-                                        startCoordinate,
-                                        radiusRange,
-                                        category
-                                ),
-                                store.nolgoatAverageGrade.goe(baseNolgoatAverageGrade)
-                        )
-                        .fetch()
-        );
+        return result.stream()
+                .filter(store -> store.getNolgoatAverageGrade() <= baseNolgoatAverageGrade)
+                .toList();
     }
 
     @Override
@@ -200,10 +162,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             double radiusRange,
             String category
     ) {
-        List<Tuple> result = jpaQueryFactory
-                .select(store.id, store.nolgoatAverageGrade)
-                .distinct() // 카테고리와 가게 타입 조건으로 인해 발생할 수 있는 중복 데이터 제거
-                .from(store)
+        List<StoreForGradeSortDto> result = createBaseQueryForNolgoatGradeSorted()
+                .distinct()
                 .where(
                         buildRangeAndCategoryAndTypeCondition(
                                 startCoordinate,
@@ -211,25 +171,14 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                                 category
                         )
                 )
-                .orderBy(store.nolgoatAverageGrade.desc())
                 .fetch();
 
         int resultCount = Math.min(GRADE_SORT_MAX_RESULT_COUNT, result.size());
-        Double baseNolgoatAverageGrade = result.get(resultCount - 1).get(1, Double.class);
+        double baseNolgoatAverageGrade = result.get(resultCount - 1).getNolgoatAverageGrade();
 
-        return Collections.unmodifiableList(
-                createBaseQueryForNolgoatGradeSorted()
-                        .distinct()
-                        .where(
-                                buildRangeAndCategoryAndTypeCondition(
-                                        startCoordinate,
-                                        radiusRange,
-                                        category
-                                ),
-                                store.nolgoatAverageGrade.goe(baseNolgoatAverageGrade)
-                        )
-                        .fetch()
-        );
+        return result.stream()
+                .filter(store -> store.getNolgoatAverageGrade() >= baseNolgoatAverageGrade)
+                .toList();
     }
 
     @Override
