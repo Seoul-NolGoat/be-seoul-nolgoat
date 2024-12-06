@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.tMap.dto.WalkRouteInfoDto;
@@ -19,8 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static wad.seoul_nolgoat.exception.ErrorCode.TMAP_API_CALL_FAILED;
-import static wad.seoul_nolgoat.exception.ErrorCode.WALKING_DISTANCE_CALCULATION_FAILED;
+import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -131,6 +131,12 @@ public class TMapService {
                 }
             }
             throw new ApiException(WALKING_DISTANCE_CALCULATION_FAILED);
+        } catch (HttpClientErrorException.TooManyRequests e) {
+            String body = e.getResponseBodyAsString();
+            if (body.contains("QUOTA_EXCEEDED")) {
+                throw new ApiException(API_QUOTA_EXCEEDED);
+            }
+            throw new ApiException(API_RATE_LIMIT_EXCEEDED);
         } catch (Exception e) {
             throw new ApiException(TMAP_API_CALL_FAILED);
         }
