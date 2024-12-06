@@ -224,7 +224,7 @@ public class SortService {
     private List<DistanceSortCombinationDto> groupAndShuffleByTMapDistance(List<DistanceSortCombinationDto> tMapFetchedDistanceCombinations) {
         Map<Integer, List<DistanceSortCombinationDto>> groupedByDistance = tMapFetchedDistanceCombinations.stream()
                 .collect(Collectors.groupingBy(
-                        combination -> combination.getWalkRouteInfoDto().getTMapTotalDistance())
+                        combination -> combination.getWalkRouteInfoDto().getTotalDistance())
                 );
         groupedByDistance.forEach((totalDistance, group) -> Collections.shuffle(group));
 
@@ -379,7 +379,7 @@ public class SortService {
 
         return combinations.stream()
                 .sorted(Comparator.comparingInt(
-                        combination -> combination.getWalkRouteInfoDto().getTMapTotalDistance())
+                        combination -> combination.getWalkRouteInfoDto().getTotalDistance())
                 )
                 .toList();
     }
