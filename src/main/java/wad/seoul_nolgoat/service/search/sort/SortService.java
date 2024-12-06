@@ -23,7 +23,6 @@ public class SortService {
     private static final int TOTAL_DISTANCE_SORT_MAX_RESULT_COUNT = 20;
 
     private final TMapService tMapService;
-    private final DistanceCalculator distanceCalculator;
 
     public List<GradeSortCombinationDto> sortStoresByGrade(SortConditionDto<StoreForGradeSortDto> sortConditionDto) {
         int totalRounds = sortConditionDto.getTotalRounds();
@@ -271,7 +270,7 @@ public class SortService {
                             secondStore,
                             thirdStore
                     );
-                    double totalDistance = distanceCalculator.calculateTotalDistance(
+                    double totalDistance = DistanceCalculator.calculateTotalDistance(
                             distanceSortCombinationDto.getFirstStore(),
                             distanceSortCombinationDto.getSecondStore(),
                             distanceSortCombinationDto.getThirdStore(),
@@ -291,7 +290,6 @@ public class SortService {
             List<StoreForDistanceSortDto> secondStores,
             CoordinateDto coordinateDto
     ) {
-        DistanceCalculator distanceCalculator = new DistanceCalculator();
         List<DistanceSortCombinationDto> combinations = new ArrayList<>();
         for (StoreForDistanceSortDto firstStore : firstStores) {
             for (StoreForDistanceSortDto secondStore : secondStores) {
@@ -302,7 +300,7 @@ public class SortService {
                         firstStore,
                         secondStore
                 );
-                double totalDistance = distanceCalculator.calculateTotalDistance(
+                double totalDistance = DistanceCalculator.calculateTotalDistance(
                         distanceSortCombinationDto.getFirstStore(),
                         distanceSortCombinationDto.getSecondStore(),
                         coordinateDto);
@@ -318,11 +316,10 @@ public class SortService {
             List<StoreForDistanceSortDto> firstStores,
             CoordinateDto coordinateDto
     ) {
-        DistanceCalculator distanceCalculator = new DistanceCalculator();
         List<DistanceSortCombinationDto> combinations = new ArrayList<>();
         for (StoreForDistanceSortDto firstStore : firstStores) {
             DistanceSortCombinationDto distanceSortCombinationDto = new DistanceSortCombinationDto(firstStore);
-            double totalDistance = distanceCalculator.calculateTotalDistance(
+            double totalDistance = DistanceCalculator.calculateTotalDistance(
                     distanceSortCombinationDto.getFirstStore(), coordinateDto);
             distanceSortCombinationDto.setTotalDistance(totalDistance);
             combinations.add(distanceSortCombinationDto);
