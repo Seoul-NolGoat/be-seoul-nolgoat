@@ -56,6 +56,8 @@ public enum ErrorCode {
     TMAP_API_CALL_FAILED(HttpStatus.BAD_REQUEST, "MAP001", "TMap API 호출에 실패했습니다."),
     ADDRESS_CONVERSION_FAILED(HttpStatus.BAD_REQUEST, "MAP002", "주소로 변환할 수 없습니다."),
     WALKING_DISTANCE_CALCULATION_FAILED(HttpStatus.BAD_REQUEST, "MAP003", "도보 거리를 계산할 수 없습니다."),
+    API_RATE_LIMIT_EXCEEDED(HttpStatus.TOO_MANY_REQUESTS, "MAP004", "TMap API 초당 호출 건수를 초과했습니다."),
+    API_QUOTA_EXCEEDED(HttpStatus.TOO_MANY_REQUESTS, "MAP005", "TMap API 사용 할당량(SLA)을 초과했습니다."),
 
     // 유효성 검사 관련
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "VALIDATION001", "입력값이 유효하지 않습니다."),
