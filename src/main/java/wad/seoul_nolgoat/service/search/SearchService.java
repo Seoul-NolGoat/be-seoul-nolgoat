@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.domain.store.StoreCategory;
 import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.TMapException;
 import wad.seoul_nolgoat.service.search.dto.SortConditionDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForPossibleCategoriesDto;
 import wad.seoul_nolgoat.service.search.filter.FilterService;
@@ -393,7 +394,7 @@ public class SearchService {
                             return combination;
                         }
                         throw new ApiException(INVALID_GATHERING_ROUND);
-                    } catch (ApiException e) {
+                    } catch (TMapException e) {
                         log.error("TMap Error : {}", e.getMessage());
                         int totalDistance = DistanceCalculator.calculateTotalDistanceForGradeWithFallback(
                                 totalRounds,
