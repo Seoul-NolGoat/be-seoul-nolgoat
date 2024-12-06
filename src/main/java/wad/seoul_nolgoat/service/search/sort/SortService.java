@@ -1,6 +1,7 @@
 package wad.seoul_nolgoat.service.search.sort;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.search.SearchService;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_GATHERING_ROUND;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class SortService {
@@ -42,11 +44,17 @@ public class SortService {
         List<DistanceSortCombinationDto> combinationsUnderBaseDistance = filterByBaseTotalDistance(distanceCombinations);
 
         // TMap 도보 거리 측정
-        List<DistanceSortCombinationDto> tMapFetchedDistanceCombinations = fetchDistancesFromTMapApi(
-                sortConditionDto.getStartCoordinate(),
-                combinationsUnderBaseDistance,
-                totalRounds
-        );
+        List<DistanceSortCombinationDto> tMapFetchedDistanceCombinations;
+        try {
+            tMapFetchedDistanceCombinations = fetchDistancesFromTMapApi(
+                    sortConditionDto.getStartCoordinate(),
+                    combinationsUnderBaseDistance,
+                    totalRounds
+            );
+        } catch (ApiException e) {
+            log.error("TMap Error : {}", e.getMessage());
+            return groupAndShuffleByDistance(combinationsUnderBaseDistance);
+        }
 
         return groupAndShuffleByTMapDistance(tMapFetchedDistanceCombinations);
     }
@@ -212,13 +220,25 @@ public class SortService {
                 .toList();
     }
 
-    // 거리별로 그룹화
+    // TMap 도보 거리 측정 결과로 그룹화
     // 앞 순서의 가게가 상위권에 쏠리지 않도록 그룹내에서 순서를 무작위로 설정
     private List<DistanceSortCombinationDto> groupAndShuffleByTMapDistance(List<DistanceSortCombinationDto> tMapFetchedDistanceCombinations) {
         Map<Integer, List<DistanceSortCombinationDto>> groupedByDistance = tMapFetchedDistanceCombinations.stream()
                 .collect(Collectors.groupingBy(
                         combination -> combination.getWalkRouteInfoDto().getTMapTotalDistance())
                 );
+        groupedByDistance.forEach((totalDistance, group) -> Collections.shuffle(group));
+
+        return groupedByDistance.values().stream()
+                .flatMap(List::stream)
+                .toList();
+    }
+
+    // 직선 거리 계산 결과로 그룹화
+    // 앞 순서의 가게가 상위권에 쏠리지 않도록 그룹내에서 순서를 무작위로 설정
+    private List<DistanceSortCombinationDto> groupAndShuffleByDistance(List<DistanceSortCombinationDto> combinationsUnderBaseDistance) {
+        Map<Double, List<DistanceSortCombinationDto>> groupedByDistance = combinationsUnderBaseDistance.stream()
+                .collect(Collectors.groupingBy(DistanceSortCombinationDto::getTotalDistance));
         groupedByDistance.forEach((totalDistance, group) -> Collections.shuffle(group));
 
         return groupedByDistance.values().stream()
