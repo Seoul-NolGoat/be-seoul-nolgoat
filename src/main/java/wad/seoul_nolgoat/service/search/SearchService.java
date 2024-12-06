@@ -1,14 +1,17 @@
 package wad.seoul_nolgoat.service.search;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.domain.store.StoreCategory;
 import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.search.dto.SortConditionDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForPossibleCategoriesDto;
 import wad.seoul_nolgoat.service.search.filter.FilterService;
+import wad.seoul_nolgoat.service.search.sort.DistanceCalculator;
 import wad.seoul_nolgoat.service.search.sort.SortService;
 import wad.seoul_nolgoat.service.tMap.TMapService;
+import wad.seoul_nolgoat.service.tMap.dto.WalkRouteInfoDto;
 import wad.seoul_nolgoat.util.mapper.CombinationMapper;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 import wad.seoul_nolgoat.web.search.dto.request.PossibleCategoriesConditionDto;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_GATHERING_ROUND;
 import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_SEARCH_CRITERIA;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class SearchService {
@@ -354,40 +358,52 @@ public class SearchService {
     ) {
         return combinationDtos.stream()
                 .map(combination -> {
-                    if (totalRounds == THREE_ROUND) {
-                        CoordinateDto pass1 = combination.getFirstStore().getCoordinate();
-                        CoordinateDto pass2 = combination.getSecondStore().getCoordinate();
-                        CoordinateDto endCoordinate = combination.getThirdStore().getCoordinate();
-                        combination.setWalkRouteInfoDto(tMapService.fetchWalkRouteInfo(
-                                startCoordinate,
-                                pass1,
-                                pass2,
-                                endCoordinate
-                        ));
+                    try {
+                        if (totalRounds == THREE_ROUND) {
+                            CoordinateDto pass1 = combination.getFirstStore().getCoordinate();
+                            CoordinateDto pass2 = combination.getSecondStore().getCoordinate();
+                            CoordinateDto endCoordinate = combination.getThirdStore().getCoordinate();
+                            combination.setWalkRouteInfoDto(tMapService.fetchWalkRouteInfo(
+                                    startCoordinate,
+                                    pass1,
+                                    pass2,
+                                    endCoordinate
+                            ));
+
+                            return combination;
+                        }
+                        if (totalRounds == TWO_ROUND) {
+                            CoordinateDto pass = combination.getFirstStore().getCoordinate();
+                            CoordinateDto endCoordinate = combination.getSecondStore().getCoordinate();
+                            combination.setWalkRouteInfoDto(tMapService.fetchWalkRouteInfo(
+                                    startCoordinate,
+                                    pass,
+                                    endCoordinate
+                            ));
+
+                            return combination;
+                        }
+                        if (totalRounds == ONE_ROUND) {
+                            CoordinateDto endCoordinate = combination.getFirstStore().getCoordinate();
+                            combination.setWalkRouteInfoDto(tMapService.fetchWalkRouteInfo(
+                                    startCoordinate,
+                                    endCoordinate
+                            ));
+
+                            return combination;
+                        }
+                        throw new ApiException(INVALID_GATHERING_ROUND);
+                    } catch (ApiException e) {
+                        log.error("TMap Error : {}", e.getMessage());
+                        int totalDistance = DistanceCalculator.calculateTotalDistanceForGradeWithFallback(
+                                totalRounds,
+                                combination,
+                                startCoordinate
+                        );
+                        combination.setWalkRouteInfoDto(new WalkRouteInfoDto(totalDistance, TMapService.INVALID_TIME));
 
                         return combination;
                     }
-                    if (totalRounds == TWO_ROUND) {
-                        CoordinateDto pass = combination.getFirstStore().getCoordinate();
-                        CoordinateDto endCoordinate = combination.getSecondStore().getCoordinate();
-                        combination.setWalkRouteInfoDto(tMapService.fetchWalkRouteInfo(
-                                startCoordinate,
-                                pass,
-                                endCoordinate
-                        ));
-
-                        return combination;
-                    }
-                    if (totalRounds == ONE_ROUND) {
-                        CoordinateDto endCoordinate = combination.getFirstStore().getCoordinate();
-                        combination.setWalkRouteInfoDto(tMapService.fetchWalkRouteInfo(
-                                startCoordinate,
-                                endCoordinate
-                        ));
-
-                        return combination;
-                    }
-                    throw new ApiException(INVALID_GATHERING_ROUND);
                 })
                 .collect(Collectors.toList());
     }
