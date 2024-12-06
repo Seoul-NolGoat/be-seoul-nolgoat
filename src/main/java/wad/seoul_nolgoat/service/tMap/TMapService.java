@@ -26,6 +26,8 @@ import static wad.seoul_nolgoat.exception.ErrorCode.*;
 @Service
 public class TMapService {
 
+    public static final int INVALID_TIME = -1;
+
     private static final String START_NAME = "%EC%B6%9C%EB%B0%9C%EC%A7%80%EC%A0%90";
     private static final String END_NAME = "%EB%8F%84%EC%B0%A9%EC%A7%80%EC%A0%90";
     private static final String SEARCH_OPTION = "10";
