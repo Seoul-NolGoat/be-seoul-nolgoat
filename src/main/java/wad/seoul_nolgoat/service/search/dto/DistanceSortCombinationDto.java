@@ -15,7 +15,7 @@ public class DistanceSortCombinationDto {
     private final int totalRounds;
 
     @Setter
-    private double totalDistance;
+    private int totalDistance;
 
     public DistanceSortCombinationDto(
             StoreForDistanceSortDto firstStore,

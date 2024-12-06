@@ -14,7 +14,7 @@ public class CombinationMapper {
     public static CombinationDto toCombinationDto(DistanceSortCombinationDto distanceSortCombinationDto) {
         WalkRouteInfoDto walkRouteInfoDto = distanceSortCombinationDto.getWalkRouteInfoDto();
         if (walkRouteInfoDto == null) {
-            walkRouteInfoDto = new WalkRouteInfoDto((int) (distanceSortCombinationDto.getTotalDistance() * 1000), -1);
+            walkRouteInfoDto = new WalkRouteInfoDto(distanceSortCombinationDto.getTotalDistance(), -1);
         }
         if (distanceSortCombinationDto.getTotalRounds() == SearchService.THREE_ROUND) {
             return new CombinationDto(

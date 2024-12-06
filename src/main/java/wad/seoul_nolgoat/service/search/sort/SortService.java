@@ -236,7 +236,7 @@ public class SortService {
     // 직선 거리 계산 결과로 그룹화
     // 앞 순서의 가게가 상위권에 쏠리지 않도록 그룹내에서 순서를 무작위로 설정
     private List<DistanceSortCombinationDto> groupAndShuffleByDistance(List<DistanceSortCombinationDto> combinationsUnderBaseDistance) {
-        Map<Double, List<DistanceSortCombinationDto>> groupedByDistance = combinationsUnderBaseDistance.stream()
+        Map<Integer, List<DistanceSortCombinationDto>> groupedByDistance = combinationsUnderBaseDistance.stream()
                 .collect(Collectors.groupingBy(DistanceSortCombinationDto::getTotalDistance));
         groupedByDistance.forEach((totalDistance, group) -> Collections.shuffle(group));
 
@@ -270,7 +270,7 @@ public class SortService {
                             secondStore,
                             thirdStore
                     );
-                    double totalDistance = DistanceCalculator.calculateTotalDistance(
+                    int totalDistance = DistanceCalculator.calculateTotalDistance(
                             distanceSortCombinationDto.getFirstStore(),
                             distanceSortCombinationDto.getSecondStore(),
                             distanceSortCombinationDto.getThirdStore(),
@@ -300,7 +300,7 @@ public class SortService {
                         firstStore,
                         secondStore
                 );
-                double totalDistance = DistanceCalculator.calculateTotalDistance(
+                int totalDistance = DistanceCalculator.calculateTotalDistance(
                         distanceSortCombinationDto.getFirstStore(),
                         distanceSortCombinationDto.getSecondStore(),
                         coordinateDto);
@@ -319,7 +319,7 @@ public class SortService {
         List<DistanceSortCombinationDto> combinations = new ArrayList<>();
         for (StoreForDistanceSortDto firstStore : firstStores) {
             DistanceSortCombinationDto distanceSortCombinationDto = new DistanceSortCombinationDto(firstStore);
-            double totalDistance = DistanceCalculator.calculateTotalDistance(
+            int totalDistance = DistanceCalculator.calculateTotalDistance(
                     distanceSortCombinationDto.getFirstStore(), coordinateDto);
             distanceSortCombinationDto.setTotalDistance(totalDistance);
             combinations.add(distanceSortCombinationDto);
