@@ -4,6 +4,7 @@ import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.search.SearchService;
 import wad.seoul_nolgoat.service.search.dto.DistanceSortCombinationDto;
 import wad.seoul_nolgoat.service.search.dto.GradeSortCombinationDto;
+import wad.seoul_nolgoat.service.tMap.TMapService;
 import wad.seoul_nolgoat.service.tMap.dto.WalkRouteInfoDto;
 import wad.seoul_nolgoat.web.search.dto.response.CombinationDto;
 
@@ -14,7 +15,7 @@ public class CombinationMapper {
     public static CombinationDto toCombinationDto(DistanceSortCombinationDto distanceSortCombinationDto) {
         WalkRouteInfoDto walkRouteInfoDto = distanceSortCombinationDto.getWalkRouteInfoDto();
         if (walkRouteInfoDto == null) {
-            walkRouteInfoDto = new WalkRouteInfoDto(distanceSortCombinationDto.getTotalDistance(), -1);
+            walkRouteInfoDto = new WalkRouteInfoDto(distanceSortCombinationDto.getTotalDistance(), TMapService.INVALID_TIME);
         }
         if (distanceSortCombinationDto.getTotalRounds() == SearchService.THREE_ROUND) {
             return new CombinationDto(
