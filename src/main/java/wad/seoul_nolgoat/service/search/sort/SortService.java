@@ -12,8 +12,6 @@ import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_GATHERING_ROUND;
-
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -78,13 +76,12 @@ public class SortService {
                     sortConditionDto.getStartCoordinate()
             );
         }
-        if (totalRounds == SearchService.ONE_ROUND) {
-            return createDistanceCombinationsForOneRound(
-                    sortConditionDto.getFirstFilteredStores(),
-                    sortConditionDto.getStartCoordinate()
-            );
-        }
-        throw new ApiException(INVALID_GATHERING_ROUND);
+
+        // 1차인 경우
+        return createDistanceCombinationsForOneRound(
+                sortConditionDto.getFirstFilteredStores(),
+                sortConditionDto.getStartCoordinate()
+        );
     }
 
     private List<GradeSortCombinationDto> generateGradeCombinations(
@@ -104,10 +101,9 @@ public class SortService {
                     sortConditionDto.getSecondFilteredStores()
             );
         }
-        if (totalRounds == SearchService.ONE_ROUND) {
-            return createGradeCombinationsForOneRound(sortConditionDto.getFirstFilteredStores());
-        }
-        throw new ApiException(INVALID_GATHERING_ROUND);
+
+        // 1차인 경우
+        return createGradeCombinationsForOneRound(sortConditionDto.getFirstFilteredStores());
     }
 
     private List<GradeSortCombinationDto> createGradeCombinationsForThreeRounds(
@@ -366,15 +362,14 @@ public class SortService {
                                 )
                         );
                     }
-                    if (totalRounds == SearchService.ONE_ROUND) {
-                        CoordinateDto endCoordinate = combination.getFirstStore().getCoordinate();
 
-                        return new DistanceSortCombinationDto(
-                                combination.getFirstStore(),
-                                tMapService.fetchFullPathWalkRouteInfo(startCoordinate, endCoordinate)
-                        );
-                    }
-                    throw new ApiException(INVALID_GATHERING_ROUND);
+                    // 1차인 경우
+                    CoordinateDto endCoordinate = combination.getFirstStore().getCoordinate();
+
+                    return new DistanceSortCombinationDto(
+                            combination.getFirstStore(),
+                            tMapService.fetchFullPathWalkRouteInfo(startCoordinate, endCoordinate)
+                    );
                 }).toList();
 
         return combinations.stream()
