@@ -11,9 +11,10 @@ public class DistanceCalculator {
 
     public static final double EARTH_RADIUS_KM = 6371.0;
 
+    private static final int METER_CONVERSION_FACTOR = 1000;
     private static final double TO_RADIAN = Math.PI / 180;
 
-    public static double calculateTotalDistance(
+    public static int calculateTotalDistance(
             StoreForDistanceSortDto firstStore,
             StoreForDistanceSortDto secondStore,
             StoreForDistanceSortDto thirdStore,
@@ -23,12 +24,14 @@ public class DistanceCalculator {
         CoordinateDto secondCoordinate = secondStore.getCoordinate();
         CoordinateDto thirdCoordinate = thirdStore.getCoordinate();
 
-        return calculateDistance(startCoordinate, firstCoordinate)
-                + calculateDistance(firstCoordinate, secondCoordinate)
-                + calculateDistance(secondCoordinate, thirdCoordinate);
+        return (int) (
+                (calculateDistance(startCoordinate, firstCoordinate)
+                        + calculateDistance(firstCoordinate, secondCoordinate)
+                        + calculateDistance(secondCoordinate, thirdCoordinate)) * METER_CONVERSION_FACTOR
+        );
     }
 
-    public static double calculateTotalDistance(
+    public static int calculateTotalDistance(
             StoreForDistanceSortDto firstStore,
             StoreForDistanceSortDto secondStore,
             CoordinateDto startCoordinate
@@ -36,17 +39,19 @@ public class DistanceCalculator {
         CoordinateDto firstCoordinate = firstStore.getCoordinate();
         CoordinateDto secondCoordinate = secondStore.getCoordinate();
 
-        return calculateDistance(startCoordinate, firstCoordinate)
-                + calculateDistance(firstCoordinate, secondCoordinate);
+        return (int) (
+                (calculateDistance(startCoordinate, firstCoordinate)
+                        + calculateDistance(firstCoordinate, secondCoordinate)) * METER_CONVERSION_FACTOR
+        );
     }
 
-    public static double calculateTotalDistance(StoreForDistanceSortDto firstStore, CoordinateDto startCoordinate) {
+    public static int calculateTotalDistance(StoreForDistanceSortDto firstStore, CoordinateDto startCoordinate) {
         CoordinateDto firstCoordinate = firstStore.getCoordinate();
 
-        return calculateDistance(startCoordinate, firstCoordinate);
+        return (int) (calculateDistance(startCoordinate, firstCoordinate) * METER_CONVERSION_FACTOR);
     }
 
-    public static double calculateTotalDistanceForGradeWithFallback(
+    public static int calculateTotalDistanceForGradeWithFallback(
             int totalRounds,
             CombinationDto combinationDto,
             CoordinateDto startCoordinate
@@ -55,19 +60,23 @@ public class DistanceCalculator {
             CoordinateDto firstCoordinate = combinationDto.getFirstStore().getCoordinate();
             CoordinateDto secondCoordinate = combinationDto.getSecondStore().getCoordinate();
             CoordinateDto thirdCoordinate = combinationDto.getThirdStore().getCoordinate();
-            return calculateDistance(startCoordinate, firstCoordinate)
-                    + calculateDistance(firstCoordinate, secondCoordinate)
-                    + calculateDistance(secondCoordinate, thirdCoordinate);
+            return (int) (
+                    (calculateDistance(startCoordinate, firstCoordinate)
+                            + calculateDistance(firstCoordinate, secondCoordinate)
+                            + calculateDistance(secondCoordinate, thirdCoordinate)) * METER_CONVERSION_FACTOR
+            );
         }
         if (totalRounds == 2) {
             CoordinateDto firstCoordinate = combinationDto.getFirstStore().getCoordinate();
             CoordinateDto secondCoordinate = combinationDto.getSecondStore().getCoordinate();
-            return calculateDistance(startCoordinate, firstCoordinate)
-                    + calculateDistance(firstCoordinate, secondCoordinate);
+            return (int) (
+                    (calculateDistance(startCoordinate, firstCoordinate)
+                            + calculateDistance(firstCoordinate, secondCoordinate)) * METER_CONVERSION_FACTOR
+            );
         }
         if (totalRounds == 1) {
             CoordinateDto firstCoordinate = combinationDto.getFirstStore().getCoordinate();
-            return calculateDistance(startCoordinate, firstCoordinate);
+            return (int) (calculateDistance(startCoordinate, firstCoordinate) * METER_CONVERSION_FACTOR);
         }
         throw new ApiException(INVALID_GATHERING_ROUND);
     }
