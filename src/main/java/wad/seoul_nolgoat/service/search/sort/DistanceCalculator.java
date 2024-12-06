@@ -1,17 +1,19 @@
 package wad.seoul_nolgoat.service.search.sort;
 
-import org.springframework.stereotype.Component;
+import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.search.dto.StoreForDistanceSortDto;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
+import wad.seoul_nolgoat.web.search.dto.response.CombinationDto;
 
-@Component
+import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_GATHERING_ROUND;
+
 public class DistanceCalculator {
 
     public static final double EARTH_RADIUS_KM = 6371.0;
 
     private static final double TO_RADIAN = Math.PI / 180;
 
-    public double calculateTotalDistance(
+    public static double calculateTotalDistance(
             StoreForDistanceSortDto firstStore,
             StoreForDistanceSortDto secondStore,
             StoreForDistanceSortDto thirdStore,
@@ -26,7 +28,7 @@ public class DistanceCalculator {
                 + calculateDistance(secondCoordinate, thirdCoordinate);
     }
 
-    public double calculateTotalDistance(
+    public static double calculateTotalDistance(
             StoreForDistanceSortDto firstStore,
             StoreForDistanceSortDto secondStore,
             CoordinateDto startCoordinate
@@ -38,13 +40,39 @@ public class DistanceCalculator {
                 + calculateDistance(firstCoordinate, secondCoordinate);
     }
 
-    public double calculateTotalDistance(StoreForDistanceSortDto firstStore, CoordinateDto startCoordinate) {
+    public static double calculateTotalDistance(StoreForDistanceSortDto firstStore, CoordinateDto startCoordinate) {
         CoordinateDto firstCoordinate = firstStore.getCoordinate();
 
         return calculateDistance(startCoordinate, firstCoordinate);
     }
 
-    private double calculateDistance(CoordinateDto firstCoordinate, CoordinateDto secondCoordinate) {
+    public static double calculateTotalDistanceForGradeWithFallback(
+            int totalRounds,
+            CombinationDto combinationDto,
+            CoordinateDto startCoordinate
+    ) {
+        if (totalRounds == 3) {
+            CoordinateDto firstCoordinate = combinationDto.getFirstStore().getCoordinate();
+            CoordinateDto secondCoordinate = combinationDto.getSecondStore().getCoordinate();
+            CoordinateDto thirdCoordinate = combinationDto.getThirdStore().getCoordinate();
+            return calculateDistance(startCoordinate, firstCoordinate)
+                    + calculateDistance(firstCoordinate, secondCoordinate)
+                    + calculateDistance(secondCoordinate, thirdCoordinate);
+        }
+        if (totalRounds == 2) {
+            CoordinateDto firstCoordinate = combinationDto.getFirstStore().getCoordinate();
+            CoordinateDto secondCoordinate = combinationDto.getSecondStore().getCoordinate();
+            return calculateDistance(startCoordinate, firstCoordinate)
+                    + calculateDistance(firstCoordinate, secondCoordinate);
+        }
+        if (totalRounds == 1) {
+            CoordinateDto firstCoordinate = combinationDto.getFirstStore().getCoordinate();
+            return calculateDistance(startCoordinate, firstCoordinate);
+        }
+        throw new ApiException(INVALID_GATHERING_ROUND);
+    }
+
+    private static double calculateDistance(CoordinateDto firstCoordinate, CoordinateDto secondCoordinate) {
         double firstLatitude = firstCoordinate.getLatitude();
         double firstLongitude = firstCoordinate.getLongitude();
         double secondLatitude = secondCoordinate.getLatitude();
