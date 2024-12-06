@@ -1,11 +1,8 @@
 package wad.seoul_nolgoat.service.search.sort;
 
-import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.search.dto.StoreForDistanceSortDto;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 import wad.seoul_nolgoat.web.search.dto.response.CombinationDto;
-
-import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_GATHERING_ROUND;
 
 public class DistanceCalculator {
 
@@ -74,11 +71,10 @@ public class DistanceCalculator {
                             + calculateDistance(firstCoordinate, secondCoordinate)) * METER_CONVERSION_FACTOR
             );
         }
-        if (totalRounds == 1) {
-            CoordinateDto firstCoordinate = combinationDto.getFirstStore().getCoordinate();
-            return (int) (calculateDistance(startCoordinate, firstCoordinate) * METER_CONVERSION_FACTOR);
-        }
-        throw new ApiException(INVALID_GATHERING_ROUND);
+
+        // 1차인 경우
+        CoordinateDto firstCoordinate = combinationDto.getFirstStore().getCoordinate();
+        return (int) (calculateDistance(startCoordinate, firstCoordinate) * METER_CONVERSION_FACTOR);
     }
 
     private static double calculateDistance(CoordinateDto firstCoordinate, CoordinateDto secondCoordinate) {
