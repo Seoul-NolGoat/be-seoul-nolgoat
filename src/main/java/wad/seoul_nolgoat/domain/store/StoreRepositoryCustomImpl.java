@@ -61,7 +61,6 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     ) {
         NumberExpression<Double> distance = calculateHaversineDistance(startCoordinate);
         List<StoreForDistanceSortDto> result = createBaseQueryForDistanceSorted(distance)
-                .distinct() // 카테고리와 가게 타입 조건으로 인해 발생할 수 있는 중복 데이터 제거
                 .where(
                         buildRangeAndCategoryAndTypeCondition(
                                 startCoordinate,
@@ -114,7 +113,6 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             String category
     ) {
         List<StoreForGradeSortDto> result = createBaseQueryForKakaoGradeSorted()
-                .distinct()
                 .where(
                         buildRangeAndCategoryAndTypeCondition(
                                 startCoordinate,
@@ -163,7 +161,6 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             String category
     ) {
         List<StoreForGradeSortDto> result = createBaseQueryForNolgoatGradeSorted()
-                .distinct()
                 .where(
                         buildRangeAndCategoryAndTypeCondition(
                                 startCoordinate,
@@ -191,7 +188,6 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                                 store.category
                         )
                 )
-                .distinct()
                 .from(store)
                 .where(
                         calculateHaversineDistance(startCoordinate).loe(radiusRange),
