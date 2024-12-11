@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.domain.store.StoreCategory;
+import wad.seoul_nolgoat.domain.store.StoreType;
 import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.exception.TMapException;
 import wad.seoul_nolgoat.service.search.dto.SortConditionDto;
@@ -75,6 +76,10 @@ public class SearchService {
 
         Set<String> possibleCategories = new HashSet<>();
         for (StoreForPossibleCategoriesDto untokenizedCategory : untokenizedCategories) {
+            if (!untokenizedCategory.getStoreType().equals(StoreType.RESTAURANT)) {
+                possibleCategories.add(untokenizedCategory.getStoreType().toString());
+                continue;
+            }
             String[] tokens = untokenizedCategory.getCategory().replace(SPACE, EMPTY).split(DELIMITER);
             for (String token : tokens) {
                 Optional<String> primaryCategory = StoreCategory.findPrimaryCategoryName(token);
