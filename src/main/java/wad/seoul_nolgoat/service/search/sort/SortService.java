@@ -219,8 +219,12 @@ public class SortService {
     // 앞 순서의 가게가 상위권에 쏠리지 않도록 그룹내에서 순서를 무작위로 설정
     private List<DistanceSortCombinationDto> groupAndShuffleByTMapDistance(List<DistanceSortCombinationDto> tMapFetchedDistanceCombinations) {
         Map<Integer, List<DistanceSortCombinationDto>> groupedByDistance = tMapFetchedDistanceCombinations.stream()
-                .collect(Collectors.groupingBy(
-                        combination -> combination.getWalkRouteInfoDto().getTotalDistance())
+                .collect(
+                        Collectors.groupingBy(
+                                combination -> combination.getWalkRouteInfoDto().getTotalDistance(),
+                                LinkedHashMap::new,
+                                Collectors.toList()
+                        )
                 );
         groupedByDistance.forEach((totalDistance, group) -> Collections.shuffle(group));
 
@@ -233,7 +237,13 @@ public class SortService {
     // 앞 순서의 가게가 상위권에 쏠리지 않도록 그룹내에서 순서를 무작위로 설정
     private List<DistanceSortCombinationDto> groupAndShuffleByDistance(List<DistanceSortCombinationDto> combinationsUnderBaseDistance) {
         Map<Integer, List<DistanceSortCombinationDto>> groupedByDistance = combinationsUnderBaseDistance.stream()
-                .collect(Collectors.groupingBy(DistanceSortCombinationDto::getTotalDistance));
+                .collect(
+                        Collectors.groupingBy(
+                                DistanceSortCombinationDto::getTotalDistance,
+                                LinkedHashMap::new,
+                                Collectors.toList()
+                        )
+                );
         groupedByDistance.forEach((totalDistance, group) -> Collections.shuffle(group));
 
         return groupedByDistance.values().stream()
