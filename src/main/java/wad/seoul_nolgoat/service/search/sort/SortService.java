@@ -207,7 +207,13 @@ public class SortService {
     // 앞 순서의 가게가 상위권에 쏠리지 않도록 그룹내에서 순서를 무작위로 설정
     private List<GradeSortCombinationDto> groupAndShuffleByGrade(List<GradeSortCombinationDto> filteredGradeCombinations) {
         Map<Double, List<GradeSortCombinationDto>> groupedByGrade = filteredGradeCombinations.stream()
-                .collect(Collectors.groupingBy(GradeSortCombinationDto::getTotalGrade, LinkedHashMap::new, Collectors.toList()));
+                .collect(
+                        Collectors.groupingBy(
+                                GradeSortCombinationDto::getTotalGrade,
+                                LinkedHashMap::new,
+                                Collectors.toList()
+                        )
+                );
         groupedByGrade.forEach((totalGrade, group) -> Collections.shuffle(group));
 
         return groupedByGrade.values().stream()
