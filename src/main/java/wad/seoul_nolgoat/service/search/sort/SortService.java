@@ -3,7 +3,7 @@ package wad.seoul_nolgoat.service.search.sort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.TMapException;
 import wad.seoul_nolgoat.service.search.SearchService;
 import wad.seoul_nolgoat.service.search.dto.*;
 import wad.seoul_nolgoat.service.tMap.TMapService;
@@ -48,7 +48,7 @@ public class SortService {
                     combinationsUnderBaseDistance,
                     totalRounds
             );
-        } catch (ApiException e) {
+        } catch (TMapException e) {
             log.error("TMap Error : {}", e.getMessage());
             return groupAndShuffleByDistance(combinationsUnderBaseDistance);
         }
