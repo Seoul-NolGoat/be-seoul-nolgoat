@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
@@ -13,7 +14,8 @@ import org.springframework.context.annotation.Configuration;
                 version = "1.0",
                 description = "NolGoat API 명세서"
         ),
-        security = @SecurityRequirement(name = "bearerAuth")
+        security = @SecurityRequirement(name = "bearerAuth"),
+        servers = @Server(url = "https://server.nolgoat.site")
 )
 @SecurityScheme(
         name = "bearerAuth",
