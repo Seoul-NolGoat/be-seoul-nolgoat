@@ -1,17 +1,31 @@
 package wad.seoul_nolgoat.web.inquiry.dto.response;
 
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import wad.seoul_nolgoat.util.DateTimeUtil;
+
+import java.time.LocalDateTime;
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class InquiryListDto {
 
-    private final Long id;
-    private final String title;
-    private final Boolean isPublic;
-    private final Long userId;
-    private final String userNickname;
-    private final String userProfileImage;
-    private final String createDate;
+    private Long id;
+    private String title;
+    private Boolean isPublic;
+    private Long userId;
+    private String userNickname;
+    private String userProfileImage;
+    private String createDate;
+
+    public InquiryListDto(Long id, String title, Boolean isPublic, Long userId, String userNickname, String userProfileImage, LocalDateTime createDate) {
+        this.id = id;
+        this.title = title;
+        this.isPublic = isPublic;
+        this.userId = userId;
+        this.userNickname = userNickname;
+        this.userProfileImage = userProfileImage;
+        this.createDate = DateTimeUtil.formatDate(createDate);
+    }
 }
