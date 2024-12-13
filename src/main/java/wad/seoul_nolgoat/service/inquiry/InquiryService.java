@@ -1,6 +1,8 @@
 package wad.seoul_nolgoat.service.inquiry;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.inquiry.Inquiry;
@@ -13,9 +15,6 @@ import wad.seoul_nolgoat.web.inquiry.dto.request.InquirySaveDto;
 import wad.seoul_nolgoat.web.inquiry.dto.request.InquiryUpdateDto;
 import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryDetailsDto;
 import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryListDto;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.INQUIRY_NOT_FOUND;
 import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
@@ -43,12 +42,8 @@ public class InquiryService {
         return InquiryMapper.toInquiryDetailsDto(inquiry);
     }
 
-    public List<InquiryListDto> findAllInquiry() {
-        List<Inquiry> inquiries = inquiryRepository.findAll();
-
-        return inquiries.stream()
-                .map(InquiryMapper::toInquiryListDto)
-                .collect(Collectors.toList());
+    public Page<InquiryListDto> findAllInquiryWithPagination(Pageable pageable) {
+        return inquiryRepository.findAllWithPagination(pageable);
     }
 
     @Transactional
