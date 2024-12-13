@@ -12,12 +12,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.user.UserService;
 import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
 import wad.seoul_nolgoat.web.user.dto.request.UserUpdateDto;
-import wad.seoul_nolgoat.web.user.dto.response.UserDetailsDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserProfileDto;
 
 import java.net.URI;
 
-@Hidden
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
 @RestController
@@ -25,6 +23,7 @@ public class UserController {
 
     private final UserService userService;
 
+    @Hidden
     @PostMapping
     public ResponseEntity<Void> createUser(
             @Valid @RequestBody UserSaveDto userSaveDto,
@@ -48,12 +47,7 @@ public class UserController {
                 .ok(userService.getLoginUserDetails(loginId));
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserDetailsDto> showUserByUserId(@PathVariable Long userId) {
-        return ResponseEntity
-                .ok(userService.findByUserId(userId));
-    }
-
+    @Hidden
     @PutMapping("/{userId}")
     public ResponseEntity<Void> update(
             @PathVariable Long userId,
