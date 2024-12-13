@@ -3,6 +3,8 @@ package wad.seoul_nolgoat.web.inquiry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -15,7 +17,6 @@ import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryDetailsDto;
 import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryListDto;
 
 import java.net.URI;
-import java.util.List;
 
 @Tag(name = "건의 사항")
 @RequiredArgsConstructor
@@ -49,11 +50,11 @@ public class InquiryController {
                 .ok(inquiryService.findByInquiryId(inquiryId));
     }
 
-    @Operation(summary = "건의 사항 목록 조회")
+    @Operation(summary = "건의 사항 목록 조회(페이지네이션)")
     @GetMapping
-    public ResponseEntity<List<InquiryListDto>> showAllInquiries() {
+    public ResponseEntity<Page<InquiryListDto>> showAllInquiries(Pageable pageable) {
         return ResponseEntity
-                .ok(inquiryService.findAllInquiry());
+                .ok(inquiryService.findAllInquiryWithPagination(pageable));
     }
 
     @Operation(summary = "건의 사항 수정")
