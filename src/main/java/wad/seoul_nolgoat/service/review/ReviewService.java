@@ -52,7 +52,6 @@ public class ReviewService {
                 .filter(file -> !file.isEmpty())
                 .map(s3Service::saveFile);
 
-        // accommodation averageGrade 업데이트
         storeService.updateAverageGradeOnReviewAdd(storeId, reviewSaveDto.getGrade());
 
         Store store = storeRepository.findById(storeId)
@@ -87,18 +86,22 @@ public class ReviewService {
     }
 
     @Transactional
-    public void deleteById(Long reviewId) {
+    public void delete(String loginId, Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ApiException(REVIEW_NOT_FOUND));
 
-        // accommodation averageGrade 업데이트
+        if (!loginId.equals(review.getUser().getLoginId())) {
+            throw new ApiException(REVIEW_WRITER_MISMATCH);
+        }
+
         storeService.updateAverageGradeOnReviewDelete(review.getStore().getId(), review.getGrade());
+
         // s3 이미지 파일 삭제
         if (review.hasImageUrl()) {
             s3Service.deleteFile(review.getImageUrl());
         }
 
         review.delete();
-        reviewRepository.deleteById(reviewId);
+        reviewRepository.delete(review);
     }
 }
