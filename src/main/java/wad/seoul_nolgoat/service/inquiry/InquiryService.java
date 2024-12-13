@@ -16,8 +16,7 @@ import wad.seoul_nolgoat.web.inquiry.dto.request.InquiryUpdateDto;
 import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryDetailsDto;
 import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryListDto;
 
-import static wad.seoul_nolgoat.exception.ErrorCode.INQUIRY_NOT_FOUND;
-import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
+import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -47,9 +46,18 @@ public class InquiryService {
     }
 
     @Transactional
-    public void update(Long inquiryId, InquiryUpdateDto inquiryUpdateDto) {
+    public void update(
+            String loginId,
+            Long inquiryId,
+            InquiryUpdateDto inquiryUpdateDto
+    ) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new ApiException(INQUIRY_NOT_FOUND));
+
+        // 건의 작성자가 맞는지 검증
+        if (!loginId.equals(inquiry.getUser().getLoginId())) {
+            throw new ApiException(INQUIRY_WRITER_MISMATCH);
+        }
 
         inquiry.update(
                 inquiryUpdateDto.getTitle(),
@@ -59,11 +67,15 @@ public class InquiryService {
     }
 
     @Transactional
-    public void deleteById(Long inquiryId) {
-        if (!inquiryRepository.existsById(inquiryId)) {
-            throw new ApiException(INQUIRY_NOT_FOUND);
+    public void delete(String loginId, Long inquiryId) {
+        Inquiry inquiry = inquiryRepository.findById(inquiryId)
+                .orElseThrow(() -> new ApiException(INQUIRY_NOT_FOUND));
+
+        // 건의 작성자가 맞는지 검증
+        if (!loginId.equals(inquiry.getUser().getLoginId())) {
+            throw new ApiException(INQUIRY_WRITER_MISMATCH);
         }
 
-        inquiryRepository.deleteById(inquiryId);
+        inquiryRepository.delete(inquiry);
     }
 }

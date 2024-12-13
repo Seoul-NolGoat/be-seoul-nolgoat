@@ -61,10 +61,15 @@ public class InquiryController {
     @Operation(summary = "건의 사항 수정")
     @PutMapping("/{inquiryId}")
     public ResponseEntity<Void> update(
+            @AuthenticationPrincipal OAuth2User loginUser,
             @PathVariable Long inquiryId,
             @Valid @RequestBody InquiryUpdateDto inquiryUpdateDto
     ) {
-        inquiryService.update(inquiryId, inquiryUpdateDto);
+        inquiryService.update(
+                loginUser.getName(),
+                inquiryId,
+                inquiryUpdateDto
+        );
 
         return ResponseEntity
                 .noContent()
@@ -73,8 +78,11 @@ public class InquiryController {
 
     @Operation(summary = "건의 사항 삭제")
     @DeleteMapping("/{inquiryId}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long inquiryId) {
-        inquiryService.deleteById(inquiryId);
+    public ResponseEntity<Void> delete(
+            @AuthenticationPrincipal OAuth2User loginUser,
+            @PathVariable Long inquiryId
+    ) {
+        inquiryService.delete(loginUser.getName(), inquiryId);
 
         return ResponseEntity
                 .noContent()
