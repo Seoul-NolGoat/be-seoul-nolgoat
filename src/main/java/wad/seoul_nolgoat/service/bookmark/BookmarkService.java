@@ -15,8 +15,7 @@ import wad.seoul_nolgoat.web.store.dto.response.StoreForBookmarkDto;
 
 import java.util.List;
 
-import static wad.seoul_nolgoat.exception.ErrorCode.STORE_NOT_FOUND;
-import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
+import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -43,12 +42,21 @@ public class BookmarkService {
     }
 
     @Transactional
-    public void deleteById(Long userId, Long storeId) {
-        if (!bookmarkRepository.existsByUserIdAndStoreId(userId, storeId)) {
-            throw new RuntimeException("존재하지 않는 북마크입니다.");
+    public void delete(
+            String loginId,
+            Long userId,
+            Long storeId
+    ) {
+        Bookmark bookmark = bookmarkRepository.findByUserIdAndStoreId(userId, storeId)
+                .orElseThrow(() -> new ApiException(BOOKMARK_NOT_FOUND));
+
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        if (!user.getId().equals(userId)) {
+            throw new ApiException(BOOKMARK_REGISTRANT_MISMATCH);
         }
 
-        bookmarkRepository.deleteByUserIdAndStoreId(userId, storeId);
+        bookmarkRepository.delete(bookmark);
     }
 
     public boolean checkIfBookmarked(Long userId, Long storeId) {

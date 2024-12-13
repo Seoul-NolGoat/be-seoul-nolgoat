@@ -39,8 +39,16 @@ public class BookmarkController {
 
     @Operation(summary = "즐겨찾기 삭제")
     @DeleteMapping("/{userId}/{storeId}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long userId, @PathVariable Long storeId) {
-        bookmarkService.deleteById(userId, storeId);
+    public ResponseEntity<Void> delete(
+            @AuthenticationPrincipal OAuth2User loginUser,
+            @PathVariable Long userId,
+            @PathVariable Long storeId
+    ) {
+        bookmarkService.delete(
+                loginUser.getName(),
+                userId,
+                storeId
+        );
 
         return ResponseEntity
                 .noContent()
