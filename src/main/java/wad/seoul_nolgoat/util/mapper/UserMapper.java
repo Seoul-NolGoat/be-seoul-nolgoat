@@ -1,9 +1,9 @@
 package wad.seoul_nolgoat.util.mapper;
 
-import wad.seoul_nolgoat.auth.web.dto.response.UserProfileDto;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserDetailsDto;
+import wad.seoul_nolgoat.web.user.dto.response.UserProfileDto;
 
 public class UserMapper {
 
