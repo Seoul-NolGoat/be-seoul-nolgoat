@@ -1,6 +1,8 @@
 package wad.seoul_nolgoat.service.notice;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.notice.Notice;
@@ -13,9 +15,6 @@ import wad.seoul_nolgoat.web.notice.dto.request.NoticeSaveDto;
 import wad.seoul_nolgoat.web.notice.dto.request.NoticeUpdateDto;
 import wad.seoul_nolgoat.web.notice.dto.response.NoticeDetailsDto;
 import wad.seoul_nolgoat.web.notice.dto.response.NoticeListDto;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.NOTICE_NOT_FOUND;
 import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
@@ -43,12 +42,8 @@ public class NoticeService {
         return NoticeMapper.toNoticeDetailsDto(notice);
     }
 
-    public List<NoticeListDto> findAllNotice() {
-        List<Notice> notices = noticeRepository.findAll();
-
-        return notices.stream()
-                .map(NoticeMapper::toNoticeListDto)
-                .collect(Collectors.toList());
+    public Page<NoticeListDto> findAllNoticeWithPagination(Pageable pageable) {
+        return noticeRepository.findAllWithPagination(pageable);
     }
 
     @Transactional
