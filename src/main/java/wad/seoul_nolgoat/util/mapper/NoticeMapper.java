@@ -4,7 +4,6 @@ import wad.seoul_nolgoat.domain.notice.Notice;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.web.notice.dto.request.NoticeSaveDto;
 import wad.seoul_nolgoat.web.notice.dto.response.NoticeDetailsDto;
-import wad.seoul_nolgoat.web.notice.dto.response.NoticeListDto;
 
 import static wad.seoul_nolgoat.util.DateTimeUtil.formatDate;
 
@@ -23,18 +22,6 @@ public class NoticeMapper {
                 notice.getId(),
                 notice.getTitle(),
                 notice.getContent(),
-                notice.getViews(),
-                notice.getUser().getId(),
-                notice.getUser().getNickname(),
-                notice.getUser().getProfileImage(),
-                formatDate(notice.getCreatedDate())
-        );
-    }
-
-    public static NoticeListDto toNoticeListDto(Notice notice) {
-        return new NoticeListDto(
-                notice.getId(),
-                notice.getTitle(),
                 notice.getViews(),
                 notice.getUser().getId(),
                 notice.getUser().getNickname(),
