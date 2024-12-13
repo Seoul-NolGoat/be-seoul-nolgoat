@@ -52,9 +52,9 @@ public class InquiryController {
 
     @Operation(summary = "건의 사항 목록 조회(페이지네이션)")
     @GetMapping
-    public ResponseEntity<Page<InquiryListDto>> showAllInquiries(Pageable pageable) {
+    public ResponseEntity<Page<InquiryListDto>> showInquiries(Pageable pageable) {
         return ResponseEntity
-                .ok(inquiryService.findAllInquiryWithPagination(pageable));
+                .ok(inquiryService.findInquiriesWithPagination(pageable));
     }
 
     @Operation(summary = "건의 사항 수정")

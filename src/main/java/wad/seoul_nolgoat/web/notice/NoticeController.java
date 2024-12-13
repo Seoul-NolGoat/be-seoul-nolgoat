@@ -53,9 +53,9 @@ public class NoticeController {
 
     @Operation(summary = "공지 사항 목록 조회(페이지네이션)")
     @GetMapping
-    public ResponseEntity<Page<NoticeListDto>> showAllNotices(Pageable pageable) {
+    public ResponseEntity<Page<NoticeListDto>> showNotices(Pageable pageable) {
         return ResponseEntity
-                .ok(noticeService.findAllNoticeWithPagination(pageable));
+                .ok(noticeService.findNoticesWithPagination(pageable));
     }
 
     @Operation(summary = "공지 사항 수정")

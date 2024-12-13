@@ -42,7 +42,7 @@ public class InquiryService {
         return InquiryMapper.toInquiryDetailsDto(inquiry);
     }
 
-    public Page<InquiryListDto> findAllInquiryWithPagination(Pageable pageable) {
+    public Page<InquiryListDto> findInquiriesWithPagination(Pageable pageable) {
         return inquiryRepository.findAllWithPagination(pageable);
     }
 

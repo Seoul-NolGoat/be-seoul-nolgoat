@@ -42,7 +42,7 @@ public class NoticeService {
         return NoticeMapper.toNoticeDetailsDto(notice);
     }
 
-    public Page<NoticeListDto> findAllNoticeWithPagination(Pageable pageable) {
+    public Page<NoticeListDto> findNoticesWithPagination(Pageable pageable) {
         return noticeRepository.findAllWithPagination(pageable);
     }
 
