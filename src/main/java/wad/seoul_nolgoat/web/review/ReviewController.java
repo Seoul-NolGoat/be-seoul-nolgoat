@@ -74,8 +74,11 @@ public class ReviewController {
 
     @Operation(summary = "리뷰 삭제")
     @DeleteMapping("/{reviewId}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long reviewId) {
-        reviewService.deleteById(reviewId);
+    public ResponseEntity<Void> delete(
+            @AuthenticationPrincipal OAuth2User loginUser,
+            @PathVariable Long reviewId
+    ) {
+        reviewService.delete(loginUser.getName(), reviewId);
 
         return ResponseEntity
                 .noContent()
