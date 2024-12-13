@@ -16,8 +16,7 @@ import wad.seoul_nolgoat.web.notice.dto.request.NoticeUpdateDto;
 import wad.seoul_nolgoat.web.notice.dto.response.NoticeDetailsDto;
 import wad.seoul_nolgoat.web.notice.dto.response.NoticeListDto;
 
-import static wad.seoul_nolgoat.exception.ErrorCode.NOTICE_NOT_FOUND;
-import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
+import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -47,9 +46,18 @@ public class NoticeService {
     }
 
     @Transactional
-    public void update(Long noticeId, NoticeUpdateDto noticeUpdateDto) {
+    public void update(
+            String loginId,
+            Long noticeId,
+            NoticeUpdateDto noticeUpdateDto
+    ) {
         Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new ApiException(NOTICE_NOT_FOUND));
+
+        // 공지 작성자가 맞는지 검증
+        if (!loginId.equals(notice.getUser().getLoginId())) {
+            throw new ApiException(NOTICE_WRITER_MISMATCH);
+        }
 
         notice.update(
                 noticeUpdateDto.getTitle(),
@@ -58,12 +66,16 @@ public class NoticeService {
     }
 
     @Transactional
-    public void deleteById(Long noticeId) {
-        if (!noticeRepository.existsById(noticeId)) {
-            throw new ApiException(NOTICE_NOT_FOUND);
+    public void delete(String loginId, Long noticeId) {
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new ApiException(NOTICE_NOT_FOUND));
+
+        // 공지 작성자가 맞는지 검증
+        if (!loginId.equals(notice.getUser().getLoginId())) {
+            throw new ApiException(NOTICE_WRITER_MISMATCH);
         }
 
-        noticeRepository.deleteById(noticeId);
+        noticeRepository.delete(notice);
     }
 
     @Transactional

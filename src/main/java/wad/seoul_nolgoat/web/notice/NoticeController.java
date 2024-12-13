@@ -62,10 +62,15 @@ public class NoticeController {
     @Operation(summary = "공지 사항 수정")
     @PutMapping("/{noticeId}")
     public ResponseEntity<Void> update(
+            @AuthenticationPrincipal OAuth2User loginUser,
             @PathVariable Long noticeId,
             @Valid @RequestBody NoticeUpdateDto noticeUpdateDto
     ) {
-        noticeService.update(noticeId, noticeUpdateDto);
+        noticeService.update(
+                loginUser.getName(),
+                noticeId,
+                noticeUpdateDto
+        );
 
         return ResponseEntity
                 .noContent()
@@ -74,8 +79,11 @@ public class NoticeController {
 
     @Operation(summary = "공지 사항 삭제")
     @DeleteMapping("/{noticeId}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long noticeId) {
-        noticeService.deleteById(noticeId);
+    public ResponseEntity<Void> delete(
+            @AuthenticationPrincipal OAuth2User loginUser,
+            @PathVariable Long noticeId
+    ) {
+        noticeService.delete(loginUser.getName(), noticeId);
 
         return ResponseEntity
                 .noContent()
