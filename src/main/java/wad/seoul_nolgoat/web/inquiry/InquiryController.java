@@ -2,6 +2,7 @@ package wad.seoul_nolgoat.web.inquiry;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ public class InquiryController {
     @PostMapping
     public ResponseEntity<Void> createInquiry(
             @AuthenticationPrincipal OAuth2User loginUser,
-            @RequestBody InquirySaveDto inquirySaveDto,
+            @Valid @RequestBody InquirySaveDto inquirySaveDto,
             UriComponentsBuilder uriComponentsBuilder
     ) {
         Long inquiryId = inquiryService.save(loginUser.getName(), inquirySaveDto);
@@ -61,7 +62,7 @@ public class InquiryController {
     @PutMapping("/{inquiryId}")
     public ResponseEntity<Void> update(
             @PathVariable Long inquiryId,
-            @RequestBody InquiryUpdateDto inquiryUpdateDto
+            @Valid @RequestBody InquiryUpdateDto inquiryUpdateDto
     ) {
         inquiryService.update(inquiryId, inquiryUpdateDto);
 
