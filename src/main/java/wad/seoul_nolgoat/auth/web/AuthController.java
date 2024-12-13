@@ -9,8 +9,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import wad.seoul_nolgoat.auth.service.AuthService;
-import wad.seoul_nolgoat.auth.web.dto.response.UserProfileDto;
-import wad.seoul_nolgoat.service.user.UserService;
 
 import static wad.seoul_nolgoat.auth.service.AuthService.*;
 
@@ -20,16 +18,7 @@ import static wad.seoul_nolgoat.auth.service.AuthService.*;
 @RestController
 public class AuthController {
 
-    private final UserService userService;
     private final AuthService authService;
-
-    @Operation(summary = "로그인 사용자 정보 조회")
-    @GetMapping("/me")
-    public ResponseEntity<UserProfileDto> showUserProfile(@AuthenticationPrincipal OAuth2User loginUser) {
-        String loginId = loginUser.getName();
-        return ResponseEntity
-                .ok(userService.getLoginUserDetails(loginId));
-    }
 
     @Operation(summary = "토큰 재발급 요청")
     @PostMapping("/token/reissue")

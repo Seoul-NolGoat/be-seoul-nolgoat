@@ -1,11 +1,15 @@
 package wad.seoul_nolgoat.web.user;
 
 import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import wad.seoul_nolgoat.auth.web.dto.response.UserProfileDto;
 import wad.seoul_nolgoat.service.user.UserService;
 import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
 import wad.seoul_nolgoat.web.user.dto.request.UserUpdateDto;
@@ -34,6 +38,14 @@ public class UserController {
         return ResponseEntity
                 .created(location)
                 .build();
+    }
+
+    @Operation(summary = "로그인 사용자 정보 조회")
+    @GetMapping("/me")
+    public ResponseEntity<UserProfileDto> showUserProfile(@AuthenticationPrincipal OAuth2User loginUser) {
+        String loginId = loginUser.getName();
+        return ResponseEntity
+                .ok(userService.getLoginUserDetails(loginId));
     }
 
     @GetMapping("/{userId}")
