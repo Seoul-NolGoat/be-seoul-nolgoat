@@ -12,7 +12,6 @@ import wad.seoul_nolgoat.auth.jwt.JwtProvider;
 import wad.seoul_nolgoat.auth.oauth2.client.SocialClientService;
 import wad.seoul_nolgoat.auth.oauth2.client.TokenResponse;
 import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2Response;
-import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.user.UserService;
 
@@ -38,7 +37,6 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final RedisTokenService redisTokenService;
     private final SocialClientService socialClientService;
-    private final UserRepository userRepository;
     private final UserService userService;
 
     @Value("${spring.csrf.protection.uuid}")
