@@ -31,6 +31,7 @@ public enum ErrorCode {
     // 리뷰 관련
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW001", "존재하지 않는 리뷰입니다."),
     DUPLICATE_REVIEW(HttpStatus.CONFLICT, "REVIEW002", "가게에는 한 명당 리뷰를 한 개만 작성할 수 있습니다."),
+    REVIEW_WRITER_MISMATCH(HttpStatus.FORBIDDEN, "REVIEW003", "리뷰의 작성자가 아닙니다."),
 
     // 북마크 관련
     BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOKMARK001", "존재하지 않는 북마크입니다."),
