@@ -3,6 +3,7 @@ package wad.seoul_nolgoat.web.notice;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +32,7 @@ public class NoticeController {
     @PostMapping
     public ResponseEntity<Void> createNotice(
             @AuthenticationPrincipal OAuth2User loginUser,
-            @RequestBody NoticeSaveDto noticeSaveDto,
+            @Valid @RequestBody NoticeSaveDto noticeSaveDto,
             UriComponentsBuilder uriComponentsBuilder
     ) {
         Long noticeId = noticeService.save(loginUser.getName(), noticeSaveDto);
@@ -62,7 +63,7 @@ public class NoticeController {
     @PutMapping("/{noticeId}")
     public ResponseEntity<Void> update(
             @PathVariable Long noticeId,
-            @RequestBody NoticeUpdateDto noticeUpdateDto
+            @Valid @RequestBody NoticeUpdateDto noticeUpdateDto
     ) {
         noticeService.update(noticeId, noticeUpdateDto);
 
