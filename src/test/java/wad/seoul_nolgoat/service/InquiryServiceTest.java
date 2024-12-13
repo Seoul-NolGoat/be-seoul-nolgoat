@@ -9,10 +9,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
+import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.inquiry.InquiryService;
+import wad.seoul_nolgoat.web.inquiry.dto.request.InquiryUpdateDto;
 import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryListDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static wad.seoul_nolgoat.exception.ErrorCode.INQUIRY_WRITER_MISMATCH;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -46,5 +50,32 @@ public class InquiryServiceTest {
 
         // 3페이지 검증
         assertThat(thirdPage.getContent().size()).isEqualTo(1);
+    }
+
+    @DisplayName("건의 사항 작성자가 아닌 사용자가 글을 수정하려 하면 예외가 발생합니다.")
+    @Test
+    void update_inquiry_when_non_creator_then_throw_exception() {
+        // given
+        String loginId = "user2";
+        Long inquiryId = 1L;
+        InquiryUpdateDto updateDto = new InquiryUpdateDto("변경된 제목", "변경된 내용", true);
+
+        // when // then
+        assertThatThrownBy(() -> inquiryService.update(loginId, inquiryId, updateDto))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(INQUIRY_WRITER_MISMATCH.getMessage());
+    }
+
+    @DisplayName("건의 사항 작성자가 아닌 사용자가 글을 삭제하려 하면 예외가 발생합니다.")
+    @Test
+    void delete_inquiry_when_non_creator_then_throw_exception() {
+        // given
+        String loginId = "user2";
+        Long inquiryId = 1L;
+
+        // when // then
+        assertThatThrownBy(() -> inquiryService.delete(loginId, inquiryId))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(INQUIRY_WRITER_MISMATCH.getMessage());
     }
 }
