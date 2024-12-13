@@ -2,7 +2,6 @@ package wad.seoul_nolgoat.util.mapper;
 
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
-import wad.seoul_nolgoat.web.user.dto.response.UserDetailsDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserProfileDto;
 
 public class UserMapper {
@@ -15,16 +14,6 @@ public class UserMapper {
                 userSaveDto.getProfileImage(),
                 userSaveDto.getGender(),
                 userSaveDto.getBirthDate()
-        );
-    }
-
-    public static UserDetailsDto toUserDetailsDto(User user) {
-        return new UserDetailsDto(
-                user.getLoginId(),
-                user.getNickname(),
-                user.getProfileImage(),
-                user.getGender(),
-                user.getBirthDate()
         );
     }
 
