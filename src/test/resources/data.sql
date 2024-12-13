@@ -37,3 +37,17 @@ VALUES ('PartyA', 'Party Content A', null, 6, '2024-12-31T23:59:59', false, fals
        ('PartyC', 'Party Content C', null, 4, '2024-11-30T12:00:00', false, false, 3),
        ('PartyD', 'Party Content D', null, 4, '2024-11-11T11:11:11', true, false, 1),
        ('PartyE', 'Party Content E', null, 4, '2024-12-12T12:12:12', true, true, 4);
+
+INSERT INTO inquiry (user_id, title, content, is_public, created_date, last_modified_date)
+VALUES (1, 'InquiryA', 'ContentA', true, '2024-12-01T10:00:00', '2024-12-01T10:10:00'),
+       (2, 'InquiryB', 'ContentB', false, '2024-12-02T11:00:00', '2024-12-02T11:10:00'),
+       (3, 'InquiryC', 'ContentC', true, '2024-12-03T12:00:00', '2024-12-03T12:10:00'),
+       (1, 'InquiryD', 'ContentD', false, '2024-12-04T13:00:00', '2024-12-04T13:10:00'),
+       (4, 'InquiryE', 'ContentE', true, '2024-12-05T14:00:00', '2024-12-05T14:10:00');
+
+INSERT INTO notice (user_id, title, content, views, created_date, last_modified_date)
+VALUES (1, 'noticeA', 'ContentA', 0, '2024-12-01T10:00:00', '2024-12-01T10:10:00'),
+       (2, 'noticeB', 'ContentB', 0, '2024-12-02T11:00:00', '2024-12-02T11:10:00'),
+       (3, 'noticeC', 'ContentC', 0, '2024-12-03T12:00:00', '2024-12-03T12:10:00'),
+       (1, 'noticeD', 'ContentD', 0, '2024-12-04T13:00:00', '2024-12-04T13:10:00'),
+       (4, 'noticeE', 'ContentE', 0, '2024-12-05T14:00:00', '2024-12-05T14:10:00');
