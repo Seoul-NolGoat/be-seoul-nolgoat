@@ -9,10 +9,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
+import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.notice.NoticeService;
+import wad.seoul_nolgoat.web.notice.dto.request.NoticeUpdateDto;
 import wad.seoul_nolgoat.web.notice.dto.response.NoticeListDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static wad.seoul_nolgoat.exception.ErrorCode.NOTICE_WRITER_MISMATCH;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -46,5 +50,32 @@ public class NoticeServiceTest {
 
         // 3페이지 검증
         assertThat(thirdPage.getContent().size()).isEqualTo(1);
+    }
+
+    @DisplayName("공지 사항 작성자가 아닌 사용자가 글을 수정하려 하면 예외가 발생합니다.")
+    @Test
+    void update_notice_when_non_creator_then_throw_exception() {
+        // given
+        String loginId = "user2";
+        Long noticeId = 1L;
+        NoticeUpdateDto updateDto = new NoticeUpdateDto("변경된 제목", "변경된 내용");
+
+        // when // then
+        assertThatThrownBy(() -> noticeService.update(loginId, noticeId, updateDto))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(NOTICE_WRITER_MISMATCH.getMessage());
+    }
+
+    @DisplayName("공지 사항 작성자가 아닌 사용자가 글을 삭제하려 하면 예외가 발생합니다.")
+    @Test
+    void delete_notice_when_non_creator_then_throw_exception() {
+        // given
+        String loginId = "user2";
+        Long noticeId = 1L;
+
+        // when // then
+        assertThatThrownBy(() -> noticeService.delete(loginId, noticeId))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(NOTICE_WRITER_MISMATCH.getMessage());
     }
 }
