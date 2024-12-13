@@ -42,8 +42,9 @@ public enum ErrorCode {
     PARTY_NOT_HOST(HttpStatus.FORBIDDEN, "PARTY007", "파티 생성자만 참여자를 추방할 수 있습니다."),
     PARTY_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "PARTY008", "해당 파티에 참여하지 않은 유저입니다."),
 
-    // 문의 사항 관련
-    INQUIRY_NOT_FOUND(HttpStatus.NOT_FOUND, "INQUIRY001", "존재하지 않는 문의 사항입니다."),
+    // 건의 관련
+    INQUIRY_NOT_FOUND(HttpStatus.NOT_FOUND, "INQUIRY001", "존재하지 않는 건의 사항입니다."),
+    INQUIRY_WRITER_MISMATCH(HttpStatus.FORBIDDEN, "INQUIRY002", "건의 사항의 작성자가 아닙니다."),
 
     // 공지 관련
     NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTICE001", "존재하지 않는 공지입니다."),
