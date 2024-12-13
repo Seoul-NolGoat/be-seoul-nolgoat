@@ -19,7 +19,15 @@ public class InquiryListDto {
     private String userProfileImage;
     private String createDate;
 
-    public InquiryListDto(Long id, String title, Boolean isPublic, Long userId, String userNickname, String userProfileImage, LocalDateTime createDate) {
+    public InquiryListDto(
+            Long id,
+            String title,
+            Boolean isPublic,
+            Long userId,
+            String userNickname,
+            String userProfileImage,
+            LocalDateTime createDate
+    ) {
         this.id = id;
         this.title = title;
         this.isPublic = isPublic;
