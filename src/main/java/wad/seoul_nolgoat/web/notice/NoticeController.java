@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -16,7 +18,6 @@ import wad.seoul_nolgoat.web.notice.dto.response.NoticeDetailsDto;
 import wad.seoul_nolgoat.web.notice.dto.response.NoticeListDto;
 
 import java.net.URI;
-import java.util.List;
 
 @Tag(name = "공지 사항")
 @RequiredArgsConstructor
@@ -50,11 +51,11 @@ public class NoticeController {
                 .ok(noticeService.findByNoticeId(noticeId));
     }
 
-    @Operation(summary = "공지 사항 목록 조회")
+    @Operation(summary = "공지 사항 목록 조회(페이지네이션)")
     @GetMapping
-    public ResponseEntity<List<NoticeListDto>> showAllNotices() {
+    public ResponseEntity<Page<NoticeListDto>> showAllNotices(Pageable pageable) {
         return ResponseEntity
-                .ok(noticeService.findAllNotice());
+                .ok(noticeService.findAllNoticeWithPagination(pageable));
     }
 
     @Operation(summary = "공지 사항 수정")
