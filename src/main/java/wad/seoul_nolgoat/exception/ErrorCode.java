@@ -32,6 +32,10 @@ public enum ErrorCode {
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW001", "존재하지 않는 리뷰입니다."),
     DUPLICATE_REVIEW(HttpStatus.CONFLICT, "REVIEW002", "가게에는 한 명당 리뷰를 한 개만 작성할 수 있습니다."),
 
+    // 북마크 관련
+    BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOKMARK001", "존재하지 않는 북마크입니다."),
+    BOOKMARK_REGISTRANT_MISMATCH(HttpStatus.FORBIDDEN, "BOOKMARK002", "북마크를 등록한 사용자가 아닙니다."),
+
     // 파티 관련
     PARTY_NOT_FOUND(HttpStatus.NOT_FOUND, "PARTY001", "존재하지 않는 파티입니다."),
     PARTY_CAPACITY_EXCEEDED(HttpStatus.BAD_REQUEST, "PARTY002", "참여 가능 인원수를 초과했습니다."),
