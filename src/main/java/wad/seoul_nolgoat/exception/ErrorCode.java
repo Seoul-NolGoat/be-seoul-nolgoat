@@ -47,6 +47,7 @@ public enum ErrorCode {
 
     // 공지 관련
     NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTICE001", "존재하지 않는 공지입니다."),
+    NOTICE_WRITER_MISMATCH(HttpStatus.FORBIDDEN, "NOTICE002", "공지의 작성자가 아닙니다."),
 
     // 검색(필터링, 정렬) 관련
     INVALID_SEARCH_CRITERIA(HttpStatus.BAD_REQUEST, "SEARCH001", "유효하지 않은 검색 기준입니다."),
