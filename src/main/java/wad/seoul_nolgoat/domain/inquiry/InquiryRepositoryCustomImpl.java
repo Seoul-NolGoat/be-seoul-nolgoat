@@ -21,7 +21,7 @@ public class InquiryRepositoryCustomImpl implements InquiryRepositoryCustom {
     @Override
     public Page<InquiryListDto> findAllWithPagination(Pageable pageable) {
 
-        List<InquiryListDto> fetch = jpaQueryFactory
+        List<InquiryListDto> inquiries = jpaQueryFactory
                 .select(
                         Projections.constructor(
                                 InquiryListDto.class,
@@ -44,6 +44,6 @@ public class InquiryRepositoryCustomImpl implements InquiryRepositoryCustom {
                 .select(inquiry.count())
                 .from(inquiry);
 
-        return PageableExecutionUtils.getPage(fetch, pageable, countQuery::fetchOne);
+        return PageableExecutionUtils.getPage(inquiries, pageable, countQuery::fetchOne);
     }
 }
