@@ -9,11 +9,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import wad.seoul_nolgoat.auth.web.dto.response.UserProfileDto;
 import wad.seoul_nolgoat.service.user.UserService;
 import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
 import wad.seoul_nolgoat.web.user.dto.request.UserUpdateDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserDetailsDto;
+import wad.seoul_nolgoat.web.user.dto.response.UserProfileDto;
 
 import java.net.URI;
 

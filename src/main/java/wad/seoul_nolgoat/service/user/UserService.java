@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2Response;
 import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2UserDto;
 import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2UserImpl;
-import wad.seoul_nolgoat.auth.web.dto.response.UserProfileDto;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApiException;
@@ -15,6 +14,7 @@ import wad.seoul_nolgoat.util.mapper.UserMapper;
 import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
 import wad.seoul_nolgoat.web.user.dto.request.UserUpdateDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserDetailsDto;
+import wad.seoul_nolgoat.web.user.dto.response.UserProfileDto;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
 
