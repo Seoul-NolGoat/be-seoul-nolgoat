@@ -28,7 +28,7 @@ public class StoreController {
     @GetMapping("/{storeId}")
     public ResponseEntity<StoreDetailsDto> showStoreByStoreId(@PathVariable Long storeId) {
         return ResponseEntity
-                .ok(storeService.findByStoreId(storeId));
+                .ok(storeService.findStoreWithReviewsByStoreId(storeId));
     }
 
     @Operation(summary = "유저 ID를 통한 즐겨찾기 가게 목록 조회")
