@@ -41,14 +41,7 @@ public class StoreService {
         );
     }
 
-    @Transactional
-    public void deleteById(Long storeId) {
-        Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new ApiException(STORE_NOT_FOUND));
-        store.delete();
-    }
-
-    // Review 추가시 Accommodation averageGrade 업데이트
+    // Review 추가시 Store averageGrade 업데이트
     @Transactional
     public void updateAverageGradeOnReviewAdd(Long storeId, double addedGrade) {
         Store store = storeRepository.findById(storeId).get();
@@ -59,7 +52,7 @@ public class StoreService {
         storeRepository.updateNolgoatAverageGrade(storeId, updatedAverageGrade);
     }
 
-    // Review 업데이트시 Accommodation averageGrade 업데이트
+    // Review 업데이트시 Store averageGrade 업데이트
     @Transactional
     public void updateAverageGradeOnReviewUpdate(Long storeId, double gradeDifference) {
         Store store = storeRepository.findById(storeId).get();
@@ -70,7 +63,7 @@ public class StoreService {
         storeRepository.updateNolgoatAverageGrade(storeId, updatedAverageGrade);
     }
 
-    // Review 삭제시 Accommodation averageGrade 업데이트
+    // Review 삭제시 Store averageGrade 업데이트
     @Transactional
     public void updateAverageGradeOnReviewDelete(Long storeId, double deletedGrade) {
         Store store = storeRepository.findById(storeId).get();
