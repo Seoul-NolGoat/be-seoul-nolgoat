@@ -9,12 +9,18 @@ import lombok.RequiredArgsConstructor;
 import wad.seoul_nolgoat.service.search.dto.StoreForDistanceSortDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForGradeSortDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForPossibleCategoriesDto;
+import wad.seoul_nolgoat.util.mapper.StoreMapper;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
+import wad.seoul_nolgoat.web.store.dto.response.StoreDetailsDto;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static com.querydsl.core.types.dsl.Expressions.numberTemplate;
+import static wad.seoul_nolgoat.domain.review.QReview.review;
 import static wad.seoul_nolgoat.domain.store.QStore.store;
+import static wad.seoul_nolgoat.domain.user.QUser.user;
 
 @RequiredArgsConstructor
 public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
@@ -25,6 +31,28 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     private static final int DISTANCE_SORT_MAX_RESULT_COUNT = 30; // 거리 기준 정렬 시, 최대 개수 기준
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    @Override
+    public Optional<StoreDetailsDto> findStoreWithReviewsByStoreId(Long storeId) {
+        List<Store> result = jpaQueryFactory
+                .selectFrom(store)
+                .leftJoin(store.reviews, review).fetchJoin()
+                .leftJoin(review.user, user).fetchJoin()
+                .where(store.id.eq(storeId))
+                .orderBy(review.createdDate.desc())
+                .fetch();
+
+        // 해당 id의 store가 존재하지 않으면 빈 Optional 반환
+        if (result.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(StoreMapper.toStoreDetailsDto(
+                        result.get(0), // 단건 조회이기 때문에 가게 정보는 모든 튜플에서 동일
+                        Collections.unmodifiableList(result.get(0).getReviews())
+                )
+        );
+    }
 
     @Override
     public List<StoreForDistanceSortDto> findByRadiusRangeAndCategoryForDistanceSort(
