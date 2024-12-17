@@ -7,7 +7,6 @@ import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.store.StoreRepository;
 import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.store.dto.StoreUpdateDto;
-import wad.seoul_nolgoat.util.mapper.StoreMapper;
 import wad.seoul_nolgoat.web.store.dto.response.StoreDetailsDto;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.STORE_NOT_FOUND;
@@ -19,11 +18,9 @@ public class StoreService {
 
     private final StoreRepository storeRepository;
 
-    public StoreDetailsDto findByStoreId(Long storeId) {
-        Store store = storeRepository.findById(storeId)
+    public StoreDetailsDto findStoreWithReviewsByStoreId(Long storeId) {
+        return storeRepository.findStoreWithReviewsByStoreId(storeId)
                 .orElseThrow(() -> new ApiException(STORE_NOT_FOUND));
-
-        return StoreMapper.toStoreDetailsDto(store);
     }
 
     @Transactional
