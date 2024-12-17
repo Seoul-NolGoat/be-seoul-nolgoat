@@ -1,5 +1,6 @@
 package wad.seoul_nolgoat.util.mapper;
 
+import wad.seoul_nolgoat.domain.review.Review;
 import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.service.search.dto.StoreForDistanceSortDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForGradeSortDto;
@@ -7,9 +8,12 @@ import wad.seoul_nolgoat.web.store.dto.response.StoreDetailsDto;
 import wad.seoul_nolgoat.web.store.dto.response.StoreForBookmarkDto;
 import wad.seoul_nolgoat.web.store.dto.response.StoreForCombinationDto;
 
+import java.util.List;
+import java.util.Objects;
+
 public class StoreMapper {
 
-    public static StoreDetailsDto toStoreDetailsDto(Store store) {
+    public static StoreDetailsDto toStoreDetailsDto(Store store, List<Review> reviews) {
         return new StoreDetailsDto(
                 store.getId(),
                 store.getStoreType(),
@@ -24,7 +28,8 @@ public class StoreMapper {
                 store.getKakaoAverageGrade(),
                 store.getNolgoatAverageGrade(),
                 store.getPlaceUrl(),
-                store.getReviews().stream()
+                reviews.stream()
+                        .filter(Objects::nonNull) // review가 존재할 때만 적용
                         .map(ReviewMapper::toReviewDetailsForStoreDto)
                         .toList()
         );
