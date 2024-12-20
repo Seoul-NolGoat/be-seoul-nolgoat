@@ -12,7 +12,6 @@ import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.s3.S3Service;
-import wad.seoul_nolgoat.service.store.StoreService;
 import wad.seoul_nolgoat.util.mapper.ReviewMapper;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewUpdateDto;
@@ -31,7 +30,6 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
-    private final StoreService storeService;
     private final S3Service s3Service;
 
     @Transactional
@@ -80,15 +78,15 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ApiException(REVIEW_NOT_FOUND));
 
-        int previousGrade = review.getGrade();
-        int currentGrade = reviewUpdateDto.getGrade();
-        int gradeDifference = previousGrade - currentGrade;
+        int previousNolgoatGrade = review.getGrade();
+        int currentNolgoatGrade = reviewUpdateDto.getGrade();
+        int nolgoatGradeDifference = previousNolgoatGrade - currentNolgoatGrade;
 
         Store store = review.getStore();
-        store.updateNolgoatAverageGrade(gradeDifference);
+        store.updateNolgoatAverageGradeForEditReview(nolgoatGradeDifference);
 
         review.update(
-                currentGrade,
+                currentNolgoatGrade,
                 reviewUpdateDto.getContent()
         );
     }
@@ -102,7 +100,8 @@ public class ReviewService {
             throw new ApiException(REVIEW_WRITER_MISMATCH);
         }
 
-        storeService.updateAverageGradeOnReviewDelete(review.getStore().getId(), review.getGrade());
+        Store store = review.getStore();
+        store.updateNolgoatAverageGradeForDeleteReview(review.getGrade());
 
         // s3 이미지 파일 삭제
         if (review.hasImageUrl()) {
