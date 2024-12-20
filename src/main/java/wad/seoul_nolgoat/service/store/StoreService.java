@@ -40,42 +40,4 @@ public class StoreService {
                 storeUpdateDto.getPlaceUrl()
         );
     }
-
-    // Review 추가시 Store averageGrade 업데이트
-    @Transactional
-    public void updateAverageGradeOnReviewAdd(Long storeId, double addedGrade) {
-        Store store = storeRepository.findById(storeId).get();
-        double previousAverageGrade = store.getNolgoatAverageGrade();
-        int reviewCount = store.getReviews().size();
-
-        double updatedAverageGrade = (previousAverageGrade * reviewCount + addedGrade) / (reviewCount + 1);
-        storeRepository.updateNolgoatAverageGrade(storeId, updatedAverageGrade);
-    }
-
-    // Review 업데이트시 Store averageGrade 업데이트
-    @Transactional
-    public void updateAverageGradeOnReviewUpdate(Long storeId, double gradeDifference) {
-        Store store = storeRepository.findById(storeId).get();
-        double previousAverageGrade = store.getNolgoatAverageGrade();
-        int reviewCount = store.getReviews().size();
-
-        double updatedAverageGrade = (previousAverageGrade * reviewCount + gradeDifference) / reviewCount;
-        storeRepository.updateNolgoatAverageGrade(storeId, updatedAverageGrade);
-    }
-
-    // Review 삭제시 Store averageGrade 업데이트
-    @Transactional
-    public void updateAverageGradeOnReviewDelete(Long storeId, double deletedGrade) {
-        Store store = storeRepository.findById(storeId).get();
-        double previousAverageGrade = store.getNolgoatAverageGrade();
-        int reviewCount = store.getReviews().size();
-
-        if (reviewCount == 1) {
-            storeRepository.updateNolgoatAverageGrade(storeId, 0);
-            return;
-        }
-
-        double updatedAverageGrade = (previousAverageGrade * reviewCount - deletedGrade) / (reviewCount - 1);
-        storeRepository.updateNolgoatAverageGrade(storeId, updatedAverageGrade);
-    }
 }
