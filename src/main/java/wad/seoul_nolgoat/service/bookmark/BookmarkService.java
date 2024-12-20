@@ -59,15 +59,15 @@ public class BookmarkService {
         bookmarkRepository.delete(bookmark);
     }
 
-    public boolean checkIfBookmarked(Long userId, Long storeId) {
-        return bookmarkRepository.existsByUserIdAndStoreId(userId, storeId);
-    }
-
     public List<StoreForBookmarkDto> findBookmarkedStoresByUserId(Long userId) {
         List<Bookmark> bookmarks = bookmarkRepository.findByUserId(userId);
 
         return bookmarks.stream()
                 .map(bookmark -> StoreMapper.toStoreForBookmarkDto(bookmark.getStore()))
                 .toList();
+    }
+
+    public boolean checkIfBookmarked(Long userId, Long storeId) {
+        return bookmarkRepository.existsByUserIdAndStoreId(userId, storeId);
     }
 }
