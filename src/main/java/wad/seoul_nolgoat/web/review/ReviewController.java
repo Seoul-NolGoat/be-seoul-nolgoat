@@ -14,10 +14,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.review.ReviewService;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewUpdateDto;
-import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
 
 import java.net.URI;
-import java.util.List;
 
 @Tag(name = "리뷰")
 @RequiredArgsConstructor
@@ -49,13 +47,6 @@ public class ReviewController {
         return ResponseEntity
                 .created(location)
                 .build();
-    }
-
-    @Operation(summary = "유저 ID를 통한 리뷰 목록 조회")
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<ReviewDetailsForUserDto>> showReviewsByUserId(@PathVariable Long userId) {
-        return ResponseEntity
-                .ok(reviewService.findByUserId(userId));
     }
 
     @Hidden

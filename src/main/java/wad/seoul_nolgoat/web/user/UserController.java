@@ -9,12 +9,17 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import wad.seoul_nolgoat.service.bookmark.BookmarkService;
+import wad.seoul_nolgoat.service.review.ReviewService;
 import wad.seoul_nolgoat.service.user.UserService;
+import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
+import wad.seoul_nolgoat.web.store.dto.response.StoreForBookmarkDto;
 import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
 import wad.seoul_nolgoat.web.user.dto.request.UserUpdateDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserProfileDto;
 
 import java.net.URI;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
@@ -22,6 +27,8 @@ import java.net.URI;
 public class UserController {
 
     private final UserService userService;
+    private final BookmarkService bookmarkService;
+    private final ReviewService reviewService;
 
     @Hidden
     @PostMapping
@@ -58,5 +65,19 @@ public class UserController {
         return ResponseEntity
                 .noContent()
                 .build();
+    }
+
+    @Operation(summary = "유저 ID를 통한 즐겨찾기 가게 목록 조회")
+    @GetMapping("/{userId}/bookmarks")
+    public ResponseEntity<List<StoreForBookmarkDto>> showBookmarkedStoresByUserId(@PathVariable Long userId) {
+        return ResponseEntity
+                .ok(bookmarkService.findBookmarkedStoresByUserId(userId));
+    }
+
+    @Operation(summary = "유저 ID를 통한 리뷰 목록 조회")
+    @GetMapping("/{userId}/reviews")
+    public ResponseEntity<List<ReviewDetailsForUserDto>> showReviewsByUserId(@PathVariable Long userId) {
+        return ResponseEntity
+                .ok(reviewService.findByUserId(userId));
     }
 }
