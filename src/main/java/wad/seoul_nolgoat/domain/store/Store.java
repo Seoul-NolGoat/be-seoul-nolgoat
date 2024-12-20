@@ -102,6 +102,14 @@ public class Store extends BaseTimeEntity {
         this.nolgoatAverageGrade = ((previousAverageGrade * reviewCount) + addedNolgoatGrade) / (reviewCount + 1);
     }
 
+    // 리뷰를 수정할 때, 기존 평균 평점을 업데이트
+    public void updateNolgoatAverageGrade(int gradeDifference) {
+        double previousAverageGrade = this.nolgoatAverageGrade;
+        int reviewCount = reviews.size();
+
+        this.nolgoatAverageGrade = ((previousAverageGrade * reviewCount) + gradeDifference) / reviewCount;
+    }
+
     public void delete() {
         this.isDeleted = true;
     }
