@@ -37,7 +37,7 @@ public class Store extends BaseTimeEntity {
     private String placeUrl;
     private Boolean isDeleted;
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "store")
     private List<Review> reviews = new ArrayList<>();
 
     public Store(
