@@ -94,20 +94,28 @@ public class Store extends BaseTimeEntity {
         this.kakaoAverageGrade = kakaoAverageGrade;
     }
 
-    // 처음 리뷰를 작성할 때, 해당 평점을 기존 평균 평점에 반영
+    // 처음 리뷰를 작성할 때, 해당 Nolgoat 평점을 기존 Nolgoat 평균 평점에 반영
     public void addNolgoatGrade(int addedNolgoatGrade) {
-        double previousAverageGrade = this.nolgoatAverageGrade;
+        double previousNolgoatAverageGrade = this.nolgoatAverageGrade;
         int reviewCount = reviews.size();
 
-        this.nolgoatAverageGrade = ((previousAverageGrade * reviewCount) + addedNolgoatGrade) / (reviewCount + 1);
+        this.nolgoatAverageGrade = ((previousNolgoatAverageGrade * reviewCount) + addedNolgoatGrade) / (reviewCount + 1);
     }
 
-    // 리뷰를 수정할 때, 기존 평균 평점을 업데이트
-    public void updateNolgoatAverageGrade(int gradeDifference) {
-        double previousAverageGrade = this.nolgoatAverageGrade;
+    // 리뷰를 수정할 때, 기존 Nolgoat 평균 평점을 업데이트
+    public void updateNolgoatAverageGradeForEditReview(int nolgoatGradeDifference) {
+        double previousNolgoatAverageGrade = this.nolgoatAverageGrade;
         int reviewCount = reviews.size();
 
-        this.nolgoatAverageGrade = ((previousAverageGrade * reviewCount) + gradeDifference) / reviewCount;
+        this.nolgoatAverageGrade = ((previousNolgoatAverageGrade * reviewCount) + nolgoatGradeDifference) / reviewCount;
+    }
+
+    // 리뷰를 삭제할 때, 기존 Nolgoat 평균 평점을 업데이트
+    public void updateNolgoatAverageGradeForDeleteReview(int nolgoatGrade) {
+        double previousNolgoatAverageGrade = this.nolgoatAverageGrade;
+        int reviewCount = reviews.size();
+
+        this.nolgoatAverageGrade = ((previousNolgoatAverageGrade * reviewCount) - nolgoatGrade) / (reviewCount - 1);
     }
 
     public void delete() {
