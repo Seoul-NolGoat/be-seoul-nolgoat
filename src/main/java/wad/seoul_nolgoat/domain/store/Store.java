@@ -94,6 +94,14 @@ public class Store extends BaseTimeEntity {
         this.kakaoAverageGrade = kakaoAverageGrade;
     }
 
+    // 처음 리뷰를 작성할 때, 해당 평점을 기존 평균 평점에 반영
+    public void addNolgoatGrade(int addedNolgoatGrade) {
+        double previousAverageGrade = this.nolgoatAverageGrade;
+        int reviewCount = reviews.size();
+
+        this.nolgoatAverageGrade = ((previousAverageGrade * reviewCount) + addedNolgoatGrade) / (reviewCount + 1);
+    }
+
     public void delete() {
         this.isDeleted = true;
     }
