@@ -79,8 +79,16 @@ public class ReviewService {
     public void update(Long reviewId, ReviewUpdateDto reviewUpdateDto) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ApiException(REVIEW_NOT_FOUND));
+
+        int previousGrade = review.getGrade();
+        int currentGrade = reviewUpdateDto.getGrade();
+        int gradeDifference = previousGrade - currentGrade;
+
+        Store store = review.getStore();
+        store.updateNolgoatAverageGrade(gradeDifference);
+
         review.update(
-                reviewUpdateDto.getGrade(),
+                currentGrade,
                 reviewUpdateDto.getContent()
         );
     }
