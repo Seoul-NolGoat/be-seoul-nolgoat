@@ -13,7 +13,5 @@ public class PartySaveDto {
     private final String content;
     private final int maxCapacity;
     private final LocalDateTime deadline;
-
-    // 지역 추가
-    // private Enum? location;
+    private String administrativeDistrict;
 }

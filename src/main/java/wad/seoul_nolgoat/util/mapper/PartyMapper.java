@@ -18,6 +18,7 @@ public class PartyMapper {
                 imageUrl,
                 partySaveDto.getMaxCapacity(),
                 partySaveDto.getDeadline(),
+                partySaveDto.getAdministrativeDistrict(),
                 user
         );
     }
