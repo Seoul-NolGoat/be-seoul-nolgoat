@@ -26,11 +26,8 @@ public class Party extends BaseTimeEntity {
     private boolean isClosed;
     private boolean isDeleted;
 
-    // 지역 추가 예정
-    // private Enum? location;
-
-    // 상점을 연관관계 대신 문자(상점 링크)로 추가
-    // 필터링을 위해서 카테고리는 있어야 할 거 같음
+    @Enumerated(EnumType.STRING)
+    private AdministrativeDistrict administrativeDistrict;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User host;
@@ -41,6 +38,7 @@ public class Party extends BaseTimeEntity {
             String imageUrl,
             int maxCapacity,
             LocalDateTime deadline,
+            String district,
             User host
     ) {
         this.title = title;
@@ -50,6 +48,7 @@ public class Party extends BaseTimeEntity {
         this.deadline = deadline;
         this.isClosed = false;
         this.isDeleted = false;
+        this.administrativeDistrict = AdministrativeDistrict.valueOf(district);
         this.host = host;
     }
 
