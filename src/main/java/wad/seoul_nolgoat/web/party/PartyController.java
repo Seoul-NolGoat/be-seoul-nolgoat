@@ -13,6 +13,7 @@ import wad.seoul_nolgoat.web.party.request.PartySaveDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 
 @Hidden
 @RequiredArgsConstructor
@@ -46,7 +47,11 @@ public class PartyController {
 
     @PostMapping("/{partyId}/join")
     public ResponseEntity<Void> joinParty(@AuthenticationPrincipal OAuth2User loginUser, @PathVariable Long partyId) {
-        partyService.joinParty(loginUser.getName(), partyId);
+        partyService.joinParty(
+                loginUser.getName(),
+                partyId,
+                LocalDateTime.now()
+        );
 
         return ResponseEntity
                 .ok()

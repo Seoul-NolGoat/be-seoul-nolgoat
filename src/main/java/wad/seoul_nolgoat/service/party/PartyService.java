@@ -55,14 +55,17 @@ public class PartyService {
 
     // 파티 참여
     @Transactional
-    public void joinParty(String loginId, Long partyId) {
+    public void joinParty(
+            String loginId,
+            Long partyId,
+            LocalDateTime currentTime
+    ) {
         Party party = partyRepository.findByIdWithLock(partyId)
                 .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
 
         // 파티 마감 날짜 확인
         LocalDateTime deadline = party.getDeadline();
-        LocalDateTime now = LocalDateTime.now();
-        if (deadline.isBefore(now) || deadline.isEqual(now)) {
+        if (deadline.isBefore(currentTime) || deadline.isEqual(currentTime)) {
             party.close();
             throw new ApiException(PARTY_ALREADY_CLOSED);
         }
