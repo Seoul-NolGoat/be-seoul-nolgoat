@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import wad.seoul_nolgoat.domain.party.AdministrativeDistrict;
 import wad.seoul_nolgoat.domain.party.PartyRepository;
 import wad.seoul_nolgoat.domain.party.PartyUserRepository;
 import wad.seoul_nolgoat.exception.ApiException;
@@ -50,15 +51,16 @@ public class PartyServiceTest {
         String content = "맛있는 돈까스";
         int maxCapacity = 4;
         LocalDateTime deadline = LocalDateTime.of(2024, 11, 11, 12, 0);
-        PartySaveDto partySaveDto = new PartySaveDto(title, content, maxCapacity, deadline);
+        String administrativeDistrict = "GANGNAM_GU";
+        PartySaveDto partySaveDto = new PartySaveDto(title, content, maxCapacity, deadline, administrativeDistrict);
 
         // when
         Long partyId = partyService.createParty(loginId, partySaveDto, null);
 
         // then
         assertThat(partyRepository.findById(partyId).get())
-                .extracting("title", "content", "maxCapacity", "deadline")
-                .containsExactly(title, content, maxCapacity, deadline);
+                .extracting("title", "content", "maxCapacity", "deadline", "administrativeDistrict")
+                .containsExactly(title, content, maxCapacity, deadline, AdministrativeDistrict.GANGNAM_GU);
     }
 
     @DisplayName("동시에 여러 유저가 파티에 가입 신청을 해도, 최대 인원을 초과하지 않습니다.")
@@ -71,7 +73,7 @@ public class PartyServiceTest {
 
         Long partyId = 1L;
         String loginIdPrefix = "user";
-        LocalDateTime currentTime = LocalDateTime.parse("2024-09-10T00:00:00");
+        LocalDateTime currentTime = LocalDateTime.of(2024, 9, 10, 0, 0, 0);
         for (int i = 2; i <= threadCount + 1; i++) {
             String loginId = loginIdPrefix + i;
             executorService.submit(() -> {
@@ -96,7 +98,7 @@ public class PartyServiceTest {
         // given
         String loginId = "user2";
         Long partyId = 5L;
-        LocalDateTime currentTime = LocalDateTime.parse("2024-09-10T00:00:00");
+        LocalDateTime currentTime = LocalDateTime.of(2024, 9, 10, 0, 0, 0);
 
         // when // then
         assertThatThrownBy(() -> partyService.joinParty(loginId, partyId, currentTime))
@@ -110,7 +112,7 @@ public class PartyServiceTest {
         // given
         String loginId = "user2";
         Long partyId = 4L;
-        LocalDateTime currentTime = LocalDateTime.parse("2024-09-10T00:00:00");
+        LocalDateTime currentTime = LocalDateTime.of(2024, 9, 10, 0, 0, 0);
 
         // when // then
         assertThatThrownBy(() -> partyService.joinParty(loginId, partyId, currentTime))
@@ -124,7 +126,7 @@ public class PartyServiceTest {
         // given
         String loginId = "user1";
         Long partyId = 1L;
-        LocalDateTime currentTime = LocalDateTime.parse("2024-09-10T00:00:00");
+        LocalDateTime currentTime = LocalDateTime.of(2024, 9, 10, 0, 0, 0);
 
         // when // then
         assertThatThrownBy(() -> partyService.joinParty(loginId, partyId, currentTime))
@@ -138,7 +140,7 @@ public class PartyServiceTest {
         // given
         String loginIdB = "user2";
         Long partyId = 1L;
-        LocalDateTime currentTime = LocalDateTime.parse("2024-09-10T00:00:00");
+        LocalDateTime currentTime = LocalDateTime.of(2024, 9, 10, 0, 0, 0);
 
         partyService.joinParty(loginIdB, partyId, currentTime);
 
@@ -157,7 +159,7 @@ public class PartyServiceTest {
         String loginIdD = "user4";
         String loginIdE = "user5";
         Long partyId = 3L;
-        LocalDateTime currentTime = LocalDateTime.parse("2024-09-10T00:00:00");
+        LocalDateTime currentTime = LocalDateTime.of(2024, 9, 10, 0, 0, 0);
 
         partyService.joinParty(loginIdA, partyId, currentTime);
         partyService.joinParty(loginIdB, partyId, currentTime);
@@ -245,7 +247,7 @@ public class PartyServiceTest {
         String hostLoginId = "user1";
         String participantLoginId = "user2";
         Long partyId = 1L;
-        LocalDateTime currentTime = LocalDateTime.parse("2024-09-10T00:00:00");
+        LocalDateTime currentTime = LocalDateTime.of(2024, 9, 10, 0, 0, 0);
 
         partyService.joinParty(participantLoginId, partyId, currentTime);
 
@@ -263,7 +265,7 @@ public class PartyServiceTest {
         String loginId = "user3";
         String participantLoginId = "user2";
         Long partyId = 1L;
-        LocalDateTime currentTime = LocalDateTime.parse("2024-09-10T00:00:00");
+        LocalDateTime currentTime = LocalDateTime.of(2024, 9, 10, 0, 0, 0);
 
         partyService.joinParty(participantLoginId, partyId, currentTime);
 
