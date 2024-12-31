@@ -13,5 +13,5 @@ public class PartySaveDto {
     private final String content;
     private final int maxCapacity;
     private final LocalDateTime deadline;
-    private String administrativeDistrict;
+    private final String administrativeDistrict;
 }
