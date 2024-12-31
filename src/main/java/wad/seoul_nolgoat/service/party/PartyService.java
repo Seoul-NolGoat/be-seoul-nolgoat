@@ -150,7 +150,7 @@ public class PartyService {
 
         // 파티 생성자인지 검증
         if (!party.getHost().getLoginId().equals(loginId)) {
-            throw new ApiException(PARTY_NOT_HOST);
+            throw new ApiException(PARTY_KICK_NOT_AUTHORIZED);
         }
 
         // 밴 대상이 참여자가 맞는지 검증
