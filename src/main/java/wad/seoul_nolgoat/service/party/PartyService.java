@@ -110,9 +110,14 @@ public class PartyService {
 
     // 파티 마감
     @Transactional
-    public void closeById(Long partyId) {
+    public void closeById(String loginId, Long partyId) {
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+
+        if (!party.getHost().getLoginId().equals(loginId)) {
+            throw new ApiException(PARTY_CLOSE_NOT_AUTHORIZED);
+        }
+
         if (party.isClosed()) {
             throw new ApiException(PARTY_ALREADY_CLOSED);
         }

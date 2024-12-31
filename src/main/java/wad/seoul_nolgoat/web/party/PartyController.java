@@ -54,8 +54,8 @@ public class PartyController {
     }
 
     @PostMapping("/{partyId}")
-    public ResponseEntity<Void> closeById(@PathVariable Long partyId) {
-        partyService.closeById(partyId);
+    public ResponseEntity<Void> closeById(@AuthenticationPrincipal OAuth2User loginUser, @PathVariable Long partyId) {
+        partyService.closeById(loginUser.getName(), partyId);
 
         return ResponseEntity
                 .ok()
