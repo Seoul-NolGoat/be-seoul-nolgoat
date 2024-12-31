@@ -13,6 +13,7 @@ import wad.seoul_nolgoat.util.mapper.PartyMapper;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
@@ -57,6 +58,14 @@ public class PartyService {
     public void joinParty(String loginId, Long partyId) {
         Party party = partyRepository.findByIdWithLock(partyId)
                 .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+
+        // 파티 마감 날짜 확인
+        LocalDateTime deadline = party.getDeadline();
+        LocalDateTime now = LocalDateTime.now();
+        if (deadline.isBefore(now) || deadline.isEqual(now)) {
+            party.close();
+            throw new ApiException(PARTY_ALREADY_CLOSED);
+        }
 
         // 파티 삭제 여부 확인
         if (party.isDeleted()) {
