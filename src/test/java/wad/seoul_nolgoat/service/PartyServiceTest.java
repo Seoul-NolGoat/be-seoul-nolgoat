@@ -270,7 +270,7 @@ public class PartyServiceTest {
         // when // then
         assertThatThrownBy(() -> partyService.banParticipantFromParty(loginId, partyId, 2L))
                 .isInstanceOf(ApiException.class)
-                .hasMessage(PARTY_NOT_HOST.getMessage());
+                .hasMessage(PARTY_KICK_NOT_AUTHORIZED.getMessage());
     }
 
     @DisplayName("추방 대상인 유저가 파티의 참여자가 아니라면, 예외가 발생합니다.")
