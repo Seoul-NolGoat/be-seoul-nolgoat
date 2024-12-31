@@ -186,6 +186,19 @@ public class PartyServiceTest {
         assertThat(partyRepository.findById(partyId).get().isClosed()).isTrue();
     }
 
+    @DisplayName("파티 생성자가 아닌 유저가 파티를 마감하려 하면, 예외가 발생합니다.")
+    @Test
+    void throw_exception_when_trying_to_close_party_by_non_host() {
+        // given
+        String loginId = "user2";
+        Long partyId = 3L;
+
+        // when // then
+        assertThatThrownBy(() -> partyService.closeById(loginId, partyId))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(PARTY_CLOSE_NOT_AUTHORIZED.getMessage());
+    }
+
     @DisplayName("이미 마감된 파티를 마감하려 하면, 예외가 발생합니다.")
     @Test
     void throw_exception_when_trying_to_close_already_closed_party() {
