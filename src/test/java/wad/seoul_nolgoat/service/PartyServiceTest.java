@@ -71,11 +71,12 @@ public class PartyServiceTest {
 
         Long partyId = 1L;
         String loginIdPrefix = "user";
+        LocalDateTime currentTime = LocalDateTime.parse("2024-09-10T00:00:00");
         for (int i = 2; i <= threadCount + 1; i++) {
             String loginId = loginIdPrefix + i;
             executorService.submit(() -> {
                 try {
-                    partyService.joinParty(loginId, partyId);
+                    partyService.joinParty(loginId, partyId, currentTime);
                 } catch (ApiException e) {
                     System.out.println(e.getErrorCode().getMessage());
                 } finally {
@@ -95,9 +96,10 @@ public class PartyServiceTest {
         // given
         String loginId = "user2";
         Long partyId = 5L;
+        LocalDateTime currentTime = LocalDateTime.parse("2024-09-10T00:00:00");
 
         // when // then
-        assertThatThrownBy(() -> partyService.joinParty(loginId, partyId))
+        assertThatThrownBy(() -> partyService.joinParty(loginId, partyId, currentTime))
                 .isInstanceOf(ApiException.class)
                 .hasMessage(PARTY_ALREADY_DELETED.getMessage());
     }
@@ -108,9 +110,10 @@ public class PartyServiceTest {
         // given
         String loginId = "user2";
         Long partyId = 4L;
+        LocalDateTime currentTime = LocalDateTime.parse("2024-09-10T00:00:00");
 
         // when // then
-        assertThatThrownBy(() -> partyService.joinParty(loginId, partyId))
+        assertThatThrownBy(() -> partyService.joinParty(loginId, partyId, currentTime))
                 .isInstanceOf(ApiException.class)
                 .hasMessage(PARTY_ALREADY_CLOSED.getMessage());
     }
@@ -121,9 +124,10 @@ public class PartyServiceTest {
         // given
         String loginId = "user1";
         Long partyId = 1L;
+        LocalDateTime currentTime = LocalDateTime.parse("2024-09-10T00:00:00");
 
         // when // then
-        assertThatThrownBy(() -> partyService.joinParty(loginId, partyId))
+        assertThatThrownBy(() -> partyService.joinParty(loginId, partyId, currentTime))
                 .isInstanceOf(ApiException.class)
                 .hasMessage(PARTY_CREATOR_CANNOT_JOIN.getMessage());
     }
@@ -134,11 +138,12 @@ public class PartyServiceTest {
         // given
         String loginIdB = "user2";
         Long partyId = 1L;
+        LocalDateTime currentTime = LocalDateTime.parse("2024-09-10T00:00:00");
 
-        partyService.joinParty(loginIdB, partyId);
+        partyService.joinParty(loginIdB, partyId, currentTime);
 
         // when // then
-        assertThatThrownBy(() -> partyService.joinParty(loginIdB, partyId))
+        assertThatThrownBy(() -> partyService.joinParty(loginIdB, partyId, currentTime))
                 .isInstanceOf(ApiException.class)
                 .hasMessage(PARTY_ALREADY_JOINED.getMessage());
     }
@@ -152,13 +157,14 @@ public class PartyServiceTest {
         String loginIdD = "user4";
         String loginIdE = "user5";
         Long partyId = 3L;
+        LocalDateTime currentTime = LocalDateTime.parse("2024-09-10T00:00:00");
 
-        partyService.joinParty(loginIdA, partyId);
-        partyService.joinParty(loginIdB, partyId);
-        partyService.joinParty(loginIdD, partyId);
+        partyService.joinParty(loginIdA, partyId, currentTime);
+        partyService.joinParty(loginIdB, partyId, currentTime);
+        partyService.joinParty(loginIdD, partyId, currentTime);
 
         // when // then
-        assertThatThrownBy(() -> partyService.joinParty(loginIdE, partyId))
+        assertThatThrownBy(() -> partyService.joinParty(loginIdE, partyId, currentTime))
                 .isInstanceOf(ApiException.class)
                 .hasMessage(PARTY_CAPACITY_EXCEEDED.getMessage());
     }
@@ -170,10 +176,11 @@ public class PartyServiceTest {
     @Test
     void close_party() {
         // given
+        String loginId = "user1";
         Long partyId = 1L;
 
         // when
-        partyService.closeById(partyId);
+        partyService.closeById(loginId, partyId);
 
         // then
         assertThat(partyRepository.findById(partyId).get().isClosed()).isTrue();
@@ -183,10 +190,11 @@ public class PartyServiceTest {
     @Test
     void throw_exception_when_trying_to_close_already_closed_party() {
         // given
+        String loginId = "user1";
         Long partyId = 4L;
 
         // when // then
-        assertThatThrownBy(() -> partyService.closeById(partyId))
+        assertThatThrownBy(() -> partyService.closeById(loginId, partyId))
                 .isInstanceOf(ApiException.class)
                 .hasMessage(PARTY_ALREADY_CLOSED.getMessage());
     }
@@ -224,8 +232,9 @@ public class PartyServiceTest {
         String hostLoginId = "user1";
         String participantLoginId = "user2";
         Long partyId = 1L;
+        LocalDateTime currentTime = LocalDateTime.parse("2024-09-10T00:00:00");
 
-        partyService.joinParty(participantLoginId, partyId);
+        partyService.joinParty(participantLoginId, partyId, currentTime);
 
         // when
         partyService.banParticipantFromParty(hostLoginId, partyId, 2L);
@@ -241,8 +250,9 @@ public class PartyServiceTest {
         String loginId = "user3";
         String participantLoginId = "user2";
         Long partyId = 1L;
+        LocalDateTime currentTime = LocalDateTime.parse("2024-09-10T00:00:00");
 
-        partyService.joinParty(participantLoginId, partyId);
+        partyService.joinParty(participantLoginId, partyId, currentTime);
 
         // when // then
         assertThatThrownBy(() -> partyService.banParticipantFromParty(loginId, partyId, 2L))
