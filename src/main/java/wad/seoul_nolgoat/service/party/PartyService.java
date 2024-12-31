@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import wad.seoul_nolgoat.domain.party.Party;
-import wad.seoul_nolgoat.domain.party.PartyRepository;
-import wad.seoul_nolgoat.domain.party.PartyUser;
-import wad.seoul_nolgoat.domain.party.PartyUserRepository;
+import wad.seoul_nolgoat.domain.party.*;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApiException;
@@ -37,6 +34,8 @@ public class PartyService {
             PartySaveDto partySaveDto,
             MultipartFile image
     ) {
+        validateAdministrativeDistrict(partySaveDto.getAdministrativeDistrict());
+
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
@@ -75,7 +74,7 @@ public class PartyService {
         Long userId = user.getId();
 
         // 파티 생성자는 본인의 파티에 참여 신청 불가능
-        if (party.getHost().getId() == userId) {
+        if (party.getHost().getId().equals(userId)) {
             throw new ApiException(PARTY_CREATOR_CANNOT_JOIN);
         }
 
@@ -159,4 +158,13 @@ public class PartyService {
     }
 
     // 파티 리스트 조회
+
+    // 유효한 지역인지 검증
+    private void validateAdministrativeDistrict(String administrativeDistrict) {
+        try {
+            AdministrativeDistrict.valueOf(administrativeDistrict);
+        } catch (IllegalArgumentException e) {
+            throw new ApiException(INVALID_ADMINISTRATIVE_DISTRICT);
+        }
+    }
 }
