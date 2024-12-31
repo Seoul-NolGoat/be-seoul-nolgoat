@@ -45,8 +45,9 @@ public enum ErrorCode {
     PARTY_ALREADY_CLOSED(HttpStatus.BAD_REQUEST, "PARTY005", "이미 마감된 파티입니다."),
     PARTY_ALREADY_DELETED(HttpStatus.BAD_REQUEST, "PARTY006", "이미 삭제된 파티입니다."),
     PARTY_NOT_HOST(HttpStatus.FORBIDDEN, "PARTY007", "파티 생성자만 참여자를 추방할 수 있습니다."),
-    PARTY_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "PARTY008", "해당 파티에 참여하지 않은 유저입니다."),
-    INVALID_ADMINISTRATIVE_DISTRICT(HttpStatus.BAD_REQUEST, "PARTY009", "유효하지 않은 행정구역입니다."),
+    PARTY_CLOSE_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "PARTY008", "파티 생성자만 파티를 마감할 수 있습니다."),
+    PARTY_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "PARTY009", "해당 파티에 참여하지 않은 유저입니다."),
+    INVALID_ADMINISTRATIVE_DISTRICT(HttpStatus.BAD_REQUEST, "PARTY010", "유효하지 않은 행정구역입니다."),
 
     // 건의 관련
     INQUIRY_NOT_FOUND(HttpStatus.NOT_FOUND, "INQUIRY001", "존재하지 않는 건의 사항입니다."),
