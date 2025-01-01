@@ -2,6 +2,7 @@ package wad.seoul_nolgoat.web.party;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -10,7 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.party.PartyService;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
+import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
+import wad.seoul_nolgoat.web.party.response.PartyListDto;
 
 import java.net.URI;
 import java.time.LocalDateTime;
@@ -93,5 +96,11 @@ public class PartyController {
     public ResponseEntity<PartyDetailsDto> showPartyByPartyId(@PathVariable Long partyId) {
         return ResponseEntity
                 .ok(partyService.findByPartyId(partyId, LocalDateTime.now()));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<PartyListDto>> showPartiesByCondition(PartySearchConditionDto partySearchConditionDto) {
+        return ResponseEntity
+                .ok(partyService.findPartiesWithConditionAndPagination(partySearchConditionDto));
     }
 }

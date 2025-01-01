@@ -1,6 +1,7 @@
 package wad.seoul_nolgoat.service.party;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,7 +12,9 @@ import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.service.s3.S3Service;
 import wad.seoul_nolgoat.util.mapper.PartyMapper;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
+import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
+import wad.seoul_nolgoat.web.party.response.PartyListDto;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -190,6 +193,9 @@ public class PartyService {
     }
 
     // 파티 리스트 조회
+    public Page<PartyListDto> findPartiesWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto) {
+        return partyRepository.findAllWithConditionAndPagination(partySearchConditionDto);
+    }
 
     // 유효한 지역인지 검증
     private void validateAdministrativeDistrict(String administrativeDistrict) {
