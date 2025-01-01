@@ -365,4 +365,35 @@ public class PartyServiceTest {
                         0
                 );
     }
+
+    @DisplayName("파티 단건 조회 시, 마감일이 지났으면, 파티의 isClosed 상태를 true로 변경합니다.")
+    @Test
+    void update_party_to_closed_when_finding_party_after_deadline() {
+        // given
+        Long partyId = 1L;
+        LocalDateTime currentTime = LocalDateTime.of(2025, 1, 1, 0, 0, 0);
+
+        // when // then
+        assertThat(partyService.findByPartyId(partyId, currentTime))
+                .extracting(
+                        "id",
+                        "title",
+                        "content",
+                        "imageUrl",
+                        "maxCapacity",
+                        "deadline",
+                        "isClosed",
+                        "currentCount"
+                )
+                .containsExactly(
+                        1L,
+                        "PartyA",
+                        "Party Content A",
+                        null,
+                        6,
+                        LocalDateTime.of(2024, 12, 31, 23, 59, 59),
+                        true,
+                        0
+                );
+    }
 }
