@@ -207,8 +207,8 @@ public class PartyService {
     }
 
     // 내가 참여한 파티 목록 조회
-    public void findJoinedPartiesByLoginId(String loginId, Pageable pageable) {
-
+    public Page<PartyListDto> findJoinedPartiesByLoginId(String loginId, Pageable pageable) {
+        return partyRepository.findJoinedPartiesByLoginId(loginId, pageable);
     }
 
     // 유효한 지역인지 검증

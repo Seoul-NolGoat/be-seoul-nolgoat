@@ -113,7 +113,8 @@ public class PartyController {
     }
 
     @GetMapping("/me/joined")
-    public void showMyJoinedParties(@AuthenticationPrincipal OAuth2User loginUser, Pageable pageable) {
-
+    public ResponseEntity<Page<PartyListDto>> showMyJoinedParties(@AuthenticationPrincipal OAuth2User loginUser, Pageable pageable) {
+        return ResponseEntity
+                .ok(partyService.findJoinedPartiesByLoginId(loginUser.getName(), pageable));
     }
 }
