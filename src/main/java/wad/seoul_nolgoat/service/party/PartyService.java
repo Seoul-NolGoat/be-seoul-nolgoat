@@ -166,12 +166,16 @@ public class PartyService {
     }
 
     // 파티 단건 조회
-    public PartyDetailsDto findByPartyId(Long partyId) {
+    public PartyDetailsDto findByPartyId(Long partyId, LocalDateTime currentTime) {
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
 
         if (party.isDeleted()) {
             throw new ApiException(PARTY_ALREADY_DELETED);
+        }
+
+        if (party.getDeadline().isBefore(currentTime)) {
+            party.close();
         }
 
         int currentCount = partyUserRepository.countByPartyId(partyId);
