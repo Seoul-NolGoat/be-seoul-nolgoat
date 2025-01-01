@@ -26,7 +26,7 @@ public class PartyListDto {
             LocalDateTime deadline,
             boolean isClosed,
             AdministrativeDistrict district,
-            int currentCount,
+            Long currentCount,
             Long hostId,
             String hostNickname,
             String hostProfileImage
@@ -37,7 +37,7 @@ public class PartyListDto {
         this.deadline = deadline;
         this.isClosed = isClosed;
         this.district = district.getDisplayName();
-        this.currentCount = currentCount;
+        this.currentCount = currentCount.intValue();
         this.hostId = hostId;
         this.hostNickname = hostNickname;
         this.hostProfileImage = hostProfileImage;
