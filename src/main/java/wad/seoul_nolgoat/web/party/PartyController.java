@@ -68,8 +68,8 @@ public class PartyController {
     }
 
     @DeleteMapping("/{partyId}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long partyId) {
-        partyService.deleteById(partyId);
+    public ResponseEntity<Void> deleteById(@AuthenticationPrincipal OAuth2User loginUser, @PathVariable Long partyId) {
+        partyService.deleteById(loginUser.getName(), partyId);
 
         return ResponseEntity
                 .noContent()
