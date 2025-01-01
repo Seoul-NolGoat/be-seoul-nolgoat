@@ -92,6 +92,6 @@ public class PartyController {
     @GetMapping("/{partyId}")
     public ResponseEntity<PartyDetailsDto> showPartyByPartyId(@PathVariable Long partyId) {
         return ResponseEntity
-                .ok(partyService.findByPartyId(partyId));
+                .ok(partyService.findByPartyId(partyId, LocalDateTime.now()));
     }
 }

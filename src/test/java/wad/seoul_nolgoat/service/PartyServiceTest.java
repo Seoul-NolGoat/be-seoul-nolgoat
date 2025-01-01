@@ -340,9 +340,10 @@ public class PartyServiceTest {
     void find_party_details() {
         // given
         Long partyId = 1L;
+        LocalDateTime currentTime = LocalDateTime.of(2024, 9, 10, 0, 0, 0);
 
         // when // then
-        assertThat(partyService.findByPartyId(partyId))
+        assertThat(partyService.findByPartyId(partyId, currentTime))
                 .extracting(
                         "id",
                         "title",
