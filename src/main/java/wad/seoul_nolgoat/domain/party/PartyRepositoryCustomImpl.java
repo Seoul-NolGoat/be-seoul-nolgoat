@@ -66,13 +66,16 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
     }
 
     private BooleanExpression buildSearchCondition(String status, AdministrativeDistrict district) {
+        if (status == null) {
+            return party.administrativeDistrict.eq(district);
+        }
         if (status.equals("closed")) {
             return party.isClosed.isTrue().and(party.administrativeDistrict.eq(district));
         }
         if (status.equals("opened")) {
             return party.isClosed.isFalse().and(party.administrativeDistrict.eq(district));
         }
-        return party.administrativeDistrict.eq(district);
+        return null;
     }
 
     private OrderSpecifier<?> getOrderSpecifier(String sortField) {
