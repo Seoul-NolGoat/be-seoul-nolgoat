@@ -251,23 +251,38 @@ public class PartyServiceTest {
     @Test
     void delete_party() {
         // given
+        String loginId = "user1";
         Long partyId = 1L;
 
         // when
-        partyService.deleteById(partyId);
+        partyService.deleteById(loginId, partyId);
 
         // then
         assertThat(partyRepository.findById(partyId).get().isDeleted()).isTrue();
+    }
+
+    @DisplayName("파티 생성자가 아닌 유저가 파티를 삭제하려 하면, 예외가 발생합니다.")
+    @Test
+    void throw_exception_when_trying_to_delete_party_by_non_host() {
+        // given
+        String loginId = "user1";
+        Long partyId = 5L;
+
+        // when // then
+        assertThatThrownBy(() -> partyService.deleteById(loginId, partyId))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(PARTY_DELETE_NOT_AUTHORIZED.getMessage());
     }
 
     @DisplayName("이미 삭제된 파티를 삭제하려 하면, 예외가 발생합니다.")
     @Test
     void throw_exception_when_trying_to_delete_already_deleted_party() {
         // given
+        String loginId = "user4";
         Long partyId = 5L;
 
         // when // then
-        assertThatThrownBy(() -> partyService.deleteById(partyId))
+        assertThatThrownBy(() -> partyService.deleteById(loginId, partyId))
                 .isInstanceOf(ApiException.class)
                 .hasMessage(PARTY_ALREADY_DELETED.getMessage());
     }
