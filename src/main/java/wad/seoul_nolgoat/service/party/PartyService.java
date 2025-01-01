@@ -129,9 +129,14 @@ public class PartyService {
 
     // 파티 삭제
     @Transactional
-    public void deleteById(Long partyId) {
+    public void deleteById(String loginId, Long partyId) {
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+
+        if (!party.getHost().getLoginId().equals(loginId)) {
+            throw new ApiException(PARTY_DELETE_NOT_AUTHORIZED);
+        }
+
         if (party.isDeleted()) {
             throw new ApiException(PARTY_ALREADY_DELETED);
         }
