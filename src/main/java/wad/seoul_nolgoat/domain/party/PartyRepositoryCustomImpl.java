@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
+import wad.seoul_nolgoat.web.party.response.HostedPartyListDto;
 import wad.seoul_nolgoat.web.party.response.PartyListDto;
 
 import java.util.List;
@@ -51,6 +52,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                         )
                 )
                 .from(party)
+                .join(party.host)
                 .where(buildSearchCondition(status, AdministrativeDistrict.valueOf(district)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -63,6 +65,44 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                 .where(buildSearchCondition(status, AdministrativeDistrict.valueOf(district)));
 
         return PageableExecutionUtils.getPage(parties, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public Page<HostedPartyListDto> findHostedPartiesByLoginId(String loginId, Pageable pageable) {
+        List<HostedPartyListDto> parties = jpaQueryFactory
+                .select(
+                        Projections.constructor(
+                                HostedPartyListDto.class,
+                                party.id,
+                                party.title,
+                                party.maxCapacity,
+                                party.deadline,
+                                party.isClosed,
+                                party.administrativeDistrict,
+                                JPAExpressions
+                                        .select(partyUser.count())
+                                        .from(partyUser)
+                                        .where(partyUser.party.id.eq(party.id))
+                        )
+                )
+                .from(party)
+                .where(party.host.loginId.eq(loginId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(party.createdDate.desc())
+                .fetch();
+
+        JPAQuery<Long> countQuery = jpaQueryFactory
+                .select(party.count()) // select count(party.id)
+                .from(party)
+                .where(party.host.loginId.eq(loginId));
+
+        return PageableExecutionUtils.getPage(parties, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public Page<PartyListDto> findJoinedPartiesByLoginId(String loginId, Pageable pageable) {
+        return null;
     }
 
     private BooleanExpression buildSearchCondition(String status, AdministrativeDistrict district) {
