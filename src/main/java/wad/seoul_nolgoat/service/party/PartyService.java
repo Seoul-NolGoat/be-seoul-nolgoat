@@ -2,6 +2,7 @@ package wad.seoul_nolgoat.service.party;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,7 @@ import wad.seoul_nolgoat.service.s3.S3Service;
 import wad.seoul_nolgoat.util.mapper.PartyMapper;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
 import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
+import wad.seoul_nolgoat.web.party.response.HostedPartyListDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
 import wad.seoul_nolgoat.web.party.response.PartyListDto;
 
@@ -192,11 +194,21 @@ public class PartyService {
         return PartyMapper.toPartyDetailsDto(party, currentCount);
     }
 
-    // 파티 리스트 조회
+    // 파티 목록 조회
     public Page<PartyListDto> findPartiesWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto) {
         validateAdministrativeDistrict(partySearchConditionDto.getDistrict());
-        
+
         return partyRepository.findAllWithConditionAndPagination(partySearchConditionDto);
+    }
+
+    // 내가 만든 파티 목록 조회
+    public Page<HostedPartyListDto> findHostedPartiesByLoginId(String loginId, Pageable pageable) {
+        return partyRepository.findHostedPartiesByLoginId(loginId, pageable);
+    }
+
+    // 내가 참여한 파티 목록 조회
+    public void findJoinedPartiesByLoginId(String loginId, Pageable pageable) {
+
     }
 
     // 유효한 지역인지 검증
