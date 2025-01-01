@@ -194,6 +194,8 @@ public class PartyService {
 
     // 파티 리스트 조회
     public Page<PartyListDto> findPartiesWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto) {
+        validateAdministrativeDistrict(partySearchConditionDto.getDistrict());
+        
         return partyRepository.findAllWithConditionAndPagination(partySearchConditionDto);
     }
 
