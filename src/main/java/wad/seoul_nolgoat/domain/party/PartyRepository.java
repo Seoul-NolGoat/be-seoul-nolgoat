@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface PartyRepository extends JpaRepository<Party, Long> {
+public interface PartyRepository extends JpaRepository<Party, Long>, PartyRepositoryCustom {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT p FROM Party p WHERE p.id = :id")
