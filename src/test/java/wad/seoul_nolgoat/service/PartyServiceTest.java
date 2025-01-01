@@ -63,6 +63,24 @@ public class PartyServiceTest {
                 .containsExactly(title, content, maxCapacity, deadline, AdministrativeDistrict.GANGNAM_GU);
     }
 
+    @DisplayName("파티 생성 시, 잘못된 행정구역을 사용하면, 예외가 발생홥니다.")
+    @Test
+    void throw_exception_when_creating_party_with_invalid_district() {
+        // given
+        String loginId = "user1";
+        String title = "돈까스 드실 분~";
+        String content = "맛있는 돈까스";
+        int maxCapacity = 4;
+        LocalDateTime deadline = LocalDateTime.of(2024, 11, 11, 12, 0);
+        String administrativeDistrict = "GANGNAM_GO";
+        PartySaveDto partySaveDto = new PartySaveDto(title, content, maxCapacity, deadline, administrativeDistrict);
+
+        // when // then
+        assertThatThrownBy(() -> partyService.createParty(loginId, partySaveDto, null))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(INVALID_ADMINISTRATIVE_DISTRICT.getMessage());
+    }
+
     @DisplayName("동시에 여러 유저가 파티에 가입 신청을 해도, 최대 인원을 초과하지 않습니다.")
     @Test
     void prevent_exceeding_max_capacity_with_concurrent_requests() throws InterruptedException {
