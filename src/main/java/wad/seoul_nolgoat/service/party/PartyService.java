@@ -140,6 +140,12 @@ public class PartyService {
         if (party.isDeleted()) {
             throw new ApiException(PARTY_ALREADY_DELETED);
         }
+
+        // s3 이미지 파일 삭제
+        if (party.hasImageUrl()) {
+            s3Service.deleteFile(party.getImageUrl());
+        }
+
         party.delete();
     }
 
