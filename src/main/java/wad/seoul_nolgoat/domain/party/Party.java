@@ -59,4 +59,8 @@ public class Party extends BaseTimeEntity {
     public void delete() {
         isDeleted = true;
     }
+
+    public boolean hasImageUrl() {
+        return this.imageUrl != null && !this.imageUrl.isEmpty();
+    }
 }
