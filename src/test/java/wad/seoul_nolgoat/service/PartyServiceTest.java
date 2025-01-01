@@ -110,6 +110,20 @@ public class PartyServiceTest {
         assertThat(partyUserRepository.countByPartyId(1L)).isEqualTo(5);
     }
 
+    @DisplayName("마감 시간이 지난 파티에 참여 신청을 하면, 예외가 발생합니다.")
+    @Test
+    void throw_exception_when_joining_party_after_deadline() {
+        // given
+        String loginId = "user2";
+        Long partyId = 3L;
+        LocalDateTime currentTime = LocalDateTime.of(2025, 1, 1, 0, 0, 0);
+
+        // when // then
+        assertThatThrownBy(() -> partyService.joinParty(loginId, partyId, currentTime))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(PARTY_ALREADY_CLOSED.getMessage());
+    }
+
     @DisplayName("이미 삭제된 파티에 참여 신청을 하면, 예외가 발생합니다.")
     @Test
     void apply_join_request_when_party_is_already_deleted_then_throw_exception() {
