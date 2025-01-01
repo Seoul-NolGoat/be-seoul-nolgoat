@@ -3,6 +3,7 @@ package wad.seoul_nolgoat.web.party;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -12,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.party.PartyService;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
 import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
+import wad.seoul_nolgoat.web.party.response.HostedPartyListDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
 import wad.seoul_nolgoat.web.party.response.PartyListDto;
 
@@ -102,5 +104,16 @@ public class PartyController {
     public ResponseEntity<Page<PartyListDto>> showPartiesByCondition(PartySearchConditionDto partySearchConditionDto) {
         return ResponseEntity
                 .ok(partyService.findPartiesWithConditionAndPagination(partySearchConditionDto));
+    }
+
+    @GetMapping("/me/created")
+    public ResponseEntity<Page<HostedPartyListDto>> showMyHostedParties(@AuthenticationPrincipal OAuth2User loginUser, Pageable pageable) {
+        return ResponseEntity
+                .ok(partyService.findHostedPartiesByLoginId(loginUser.getName(), pageable));
+    }
+
+    @GetMapping("/me/joined")
+    public void showMyJoinedParties(@AuthenticationPrincipal OAuth2User loginUser, Pageable pageable) {
+
     }
 }
