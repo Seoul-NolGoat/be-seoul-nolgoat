@@ -37,7 +37,7 @@ public class PartyListDto {
         this.deadline = deadline;
         this.isClosed = isClosed;
         this.district = district.getDisplayName();
-        this.currentCount = currentCount.intValue();
+        this.currentCount = currentCount.intValue() + 1;
         this.hostId = hostId;
         this.hostNickname = hostNickname;
         this.hostProfileImage = hostProfileImage;
