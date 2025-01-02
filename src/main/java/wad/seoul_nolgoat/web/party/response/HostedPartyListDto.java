@@ -23,7 +23,7 @@ public class HostedPartyListDto {
             LocalDateTime deadline,
             boolean isClosed,
             AdministrativeDistrict district,
-            Long currentCount
+            int currentCount
     ) {
         this.partyId = partyId;
         this.title = title;
@@ -31,6 +31,6 @@ public class HostedPartyListDto {
         this.deadline = deadline;
         this.isClosed = isClosed;
         this.district = district.getDisplayName();
-        this.currentCount = currentCount.intValue() + 1;
+        this.currentCount = currentCount;
     }
 }

@@ -3,7 +3,6 @@ package wad.seoul_nolgoat.domain.party;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -41,10 +40,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                                 party.deadline,
                                 party.isClosed,
                                 party.administrativeDistrict,
-                                JPAExpressions
-                                        .select(partyUser.count())
-                                        .from(partyUser)
-                                        .where(partyUser.party.id.eq(partyId)),
+                                party.currentCount,
                                 party.host.id,
                                 party.host.nickname,
                                 party.host.profileImage,
@@ -85,10 +81,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                                 party.deadline,
                                 party.isClosed,
                                 party.administrativeDistrict,
-                                JPAExpressions
-                                        .select(partyUser.count())
-                                        .from(partyUser)
-                                        .where(partyUser.party.id.eq(party.id)),
+                                party.currentCount,
                                 party.host.id,
                                 party.host.nickname,
                                 party.host.profileImage
@@ -129,10 +122,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                                 party.deadline,
                                 party.isClosed,
                                 party.administrativeDistrict,
-                                JPAExpressions
-                                        .select(partyUser.count())
-                                        .from(partyUser)
-                                        .where(partyUser.party.id.eq(party.id))
+                                party.currentCount
                         )
                 )
                 .from(party)
@@ -168,10 +158,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                                 party.deadline,
                                 party.isClosed,
                                 party.administrativeDistrict,
-                                JPAExpressions
-                                        .select(partyUser.count())
-                                        .from(partyUser)
-                                        .where(partyUser.party.id.eq(party.id)),
+                                party.currentCount,
                                 party.host.id,
                                 party.host.nickname,
                                 party.host.profileImage
