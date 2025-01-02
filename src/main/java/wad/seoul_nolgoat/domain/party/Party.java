@@ -6,13 +6,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import wad.seoul_nolgoat.domain.BaseTimeEntity;
 import wad.seoul_nolgoat.domain.user.User;
+import wad.seoul_nolgoat.exception.ApiException;
 
 import java.time.LocalDateTime;
+
+import static wad.seoul_nolgoat.exception.ErrorCode.PARTY_CAPACITY_EXCEEDED;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Party extends BaseTimeEntity {
+
+    @Version
+    Long version;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +28,7 @@ public class Party extends BaseTimeEntity {
     private String content;
     private String imageUrl;
     private int maxCapacity;
+    private int currentCount = 1;
     private LocalDateTime deadline;
     private boolean isClosed;
     private boolean isDeleted;
@@ -62,5 +69,16 @@ public class Party extends BaseTimeEntity {
 
     public boolean hasImageUrl() {
         return this.imageUrl != null && !this.imageUrl.isEmpty();
+    }
+
+    public void addParticipant() {
+        if (currentCount >= maxCapacity) {
+            throw new ApiException(PARTY_CAPACITY_EXCEEDED);
+        }
+        currentCount++;
+    }
+
+    public void removeParticipant() {
+        currentCount--;
     }
 }
