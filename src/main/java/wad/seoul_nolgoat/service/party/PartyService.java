@@ -65,7 +65,7 @@ public class PartyService {
             Long partyId,
             LocalDateTime currentTime
     ) {
-        Party party = partyRepository.findByIdWithLock(partyId)
+        Party party = partyRepository.findByIdWithFetchJoin(partyId)
                 .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
 
         // 파티 마감 날짜 확인
@@ -100,11 +100,8 @@ public class PartyService {
             throw new ApiException(PARTY_ALREADY_JOINED);
         }
 
-        int maxCapacity = party.getMaxCapacity();
-        int currentCount = partyUserRepository.countByPartyId(partyId);
-        if (currentCount >= maxCapacity - 1) { // 전체 인원수에서 파티 생성자는 제외
-            throw new ApiException(PARTY_CAPACITY_EXCEEDED);
-        }
+        // 인원 초과 여부 검증 및 참여자 수 증가
+        party.addParticipant();
 
         PartyUser partyUser = new PartyUser(party, user);
         partyUserRepository.save(partyUser);
@@ -119,7 +116,7 @@ public class PartyService {
     // 파티 마감
     @Transactional
     public void closeById(String loginId, Long partyId) {
-        Party party = partyRepository.findById(partyId)
+        Party party = partyRepository.findByIdWithFetchJoin(partyId)
                 .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
 
         if (!party.getHost().getLoginId().equals(loginId)) {
@@ -135,7 +132,7 @@ public class PartyService {
     // 파티 삭제
     @Transactional
     public void deleteById(String loginId, Long partyId) {
-        Party party = partyRepository.findById(partyId)
+        Party party = partyRepository.findByIdWithFetchJoin(partyId)
                 .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
 
         if (!party.getHost().getLoginId().equals(loginId)) {
@@ -161,7 +158,7 @@ public class PartyService {
             Long partyId,
             Long userId
     ) {
-        Party party = partyRepository.findByIdWithLock(partyId)
+        Party party = partyRepository.findByIdWithFetchJoin(partyId)
                 .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
 
         // 파티 생성자인지 검증
@@ -174,6 +171,9 @@ public class PartyService {
                 .orElseThrow(() -> new ApiException(PARTY_USER_NOT_FOUND));
 
         partyUserRepository.delete(partyUser);
+
+        // 참여자 수 감소
+        party.removeParticipant();
     }
 
     // 파티 단건 조회
