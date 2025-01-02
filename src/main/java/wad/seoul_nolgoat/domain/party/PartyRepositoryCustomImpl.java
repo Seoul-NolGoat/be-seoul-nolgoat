@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
 import wad.seoul_nolgoat.web.party.response.HostedPartyListDto;
+import wad.seoul_nolgoat.web.party.response.ParticipantDto;
+import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
 import wad.seoul_nolgoat.web.party.response.PartyListDto;
 
 import java.util.List;
@@ -24,6 +26,47 @@ import static wad.seoul_nolgoat.domain.party.QPartyUser.partyUser;
 public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    @Override
+    public PartyDetailsDto findPartyDetailsById(Long partyId) {
+        return jpaQueryFactory
+                .select(
+                        Projections.constructor(
+                                PartyDetailsDto.class,
+                                party.id,
+                                party.title,
+                                party.content,
+                                party.imageUrl,
+                                party.maxCapacity,
+                                party.deadline,
+                                party.isClosed,
+                                party.administrativeDistrict,
+                                JPAExpressions
+                                        .select(partyUser.count())
+                                        .from(partyUser)
+                                        .where(partyUser.party.id.eq(partyId)),
+                                party.host.id,
+                                party.host.nickname,
+                                party.host.profileImage,
+                                Projections.list(
+                                        Projections.constructor(
+                                                ParticipantDto.class,
+                                                partyUser.participant.id,
+                                                partyUser.participant.nickname,
+                                                partyUser.participant.profileImage
+                                        )
+                                )
+                        )
+                )
+                .from(party)
+                .join(party.host)
+                .leftJoin(partyUser).on(partyUser.party.eq(party))
+                .where(
+                        party.id.eq(partyId),
+                        party.isDeleted.isFalse()
+                )
+                .fetchOne();
+    }
 
     @Override
     public Page<PartyListDto> findAllWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto) {

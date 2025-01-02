@@ -4,9 +4,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
 import wad.seoul_nolgoat.web.party.response.HostedPartyListDto;
+import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
 import wad.seoul_nolgoat.web.party.response.PartyListDto;
 
 public interface PartyRepositoryCustom {
+
+    PartyDetailsDto findPartyDetailsById(Long partyId);
 
     Page<PartyListDto> findAllWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto);
 
