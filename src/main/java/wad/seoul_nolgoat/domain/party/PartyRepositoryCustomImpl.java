@@ -96,7 +96,10 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                 )
                 .from(party)
                 .join(party.host)
-                .where(buildSearchCondition(status, AdministrativeDistrict.valueOf(district)))
+                .where(
+                        buildSearchCondition(status, AdministrativeDistrict.valueOf(district)),
+                        party.isDeleted.isFalse()
+                )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(getOrderSpecifier(sortField))
@@ -106,7 +109,10 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                 .select(party.count()) // select count(party.id)
                 .from(party)
                 .join(party.host)
-                .where(buildSearchCondition(status, AdministrativeDistrict.valueOf(district)));
+                .where(
+                        buildSearchCondition(status, AdministrativeDistrict.valueOf(district)),
+                        party.isDeleted.isFalse()
+                );
 
         return PageableExecutionUtils.getPage(parties, pageable, countQuery::fetchOne);
     }
@@ -130,7 +136,10 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                         )
                 )
                 .from(party)
-                .where(party.host.loginId.eq(loginId))
+                .where(
+                        party.host.loginId.eq(loginId),
+                        party.isDeleted.isFalse()
+                )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(party.createdDate.desc())
@@ -139,7 +148,10 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
         JPAQuery<Long> countQuery = jpaQueryFactory
                 .select(party.count()) // select count(party.id)
                 .from(party)
-                .where(party.host.loginId.eq(loginId));
+                .where(
+                        party.host.loginId.eq(loginId),
+                        party.isDeleted.isFalse()
+                );
 
         return PageableExecutionUtils.getPage(parties, pageable, countQuery::fetchOne);
     }
@@ -168,7 +180,10 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                 .from(party)
                 .join(party.host)
                 .join(partyUser).on(partyUser.party.eq(party))
-                .where(partyUser.participant.loginId.eq(loginId))
+                .where(
+                        partyUser.participant.loginId.eq(loginId),
+                        party.isDeleted.isFalse()
+                )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(party.createdDate.desc())
@@ -179,7 +194,10 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                 .from(party)
                 .join(party.host)
                 .join(partyUser).on(partyUser.party.eq(party))
-                .where(partyUser.participant.loginId.eq(loginId));
+                .where(
+                        partyUser.participant.loginId.eq(loginId),
+                        party.isDeleted.isFalse()
+                );
 
         return PageableExecutionUtils.getPage(parties, pageable, countQuery::fetchOne);
     }
