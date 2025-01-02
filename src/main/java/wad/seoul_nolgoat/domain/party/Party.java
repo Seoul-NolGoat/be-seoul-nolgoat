@@ -18,7 +18,7 @@ import static wad.seoul_nolgoat.exception.ErrorCode.PARTY_CAPACITY_EXCEEDED;
 public class Party extends BaseTimeEntity {
 
     @Version
-    Long version;
+    private Long version;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
