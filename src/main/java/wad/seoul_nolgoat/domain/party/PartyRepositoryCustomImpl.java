@@ -56,7 +56,8 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                 )
                 .from(party)
                 .join(party.host)
-                .leftJoin(partyUser).on(partyUser.party.eq(party))
+                .leftJoin(partyUser).on(partyUser.party.eq(party)) // inner 조인을 하면 partyUser가 없을 경우, 결과가 null이 됨
+                .leftJoin(partyUser.participant) // inner 조인을 하면 참여자가 없을 경우, 결과가 null이 됨
                 .where(
                         party.id.eq(partyId),
                         party.isDeleted.isFalse()
@@ -167,6 +168,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                 .from(party)
                 .join(party.host)
                 .join(partyUser).on(partyUser.party.eq(party))
+                .join(partyUser.participant)
                 .where(
                         partyUser.participant.loginId.eq(loginId),
                         party.isDeleted.isFalse()
@@ -181,6 +183,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                 .from(party)
                 .join(party.host)
                 .join(partyUser).on(partyUser.party.eq(party))
+                .join(partyUser.participant)
                 .where(
                         partyUser.participant.loginId.eq(loginId),
                         party.isDeleted.isFalse()
