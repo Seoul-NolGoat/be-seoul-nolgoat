@@ -178,7 +178,7 @@ public class PartyService {
 
     // 파티 단건 조회
     @Transactional
-    public PartyDetailsDto findByPartyId(Long partyId, LocalDateTime currentTime) {
+    public PartyDetailsDto findPartyDetailsById(Long partyId, LocalDateTime currentTime) {
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
 
