@@ -3,6 +3,7 @@ package wad.seoul_nolgoat.service.party;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,46 +66,58 @@ public class PartyService {
             Long partyId,
             LocalDateTime currentTime
     ) {
-        Party party = partyRepository.findByIdWithFetchJoin(partyId)
-                .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
-
-        // 파티 마감 날짜 확인
-        LocalDateTime deadline = party.getDeadline();
-        if (deadline.isBefore(currentTime) || deadline.isEqual(currentTime)) {
-            party.close();
-            throw new ApiException(PARTY_ALREADY_CLOSED);
-        }
-
-        // 파티 삭제 여부 확인
-        if (party.isDeleted()) {
-            throw new ApiException(PARTY_ALREADY_DELETED);
-        }
-
-        // 파티 마감 여부 확인
-        if (party.isClosed()) {
-            throw new ApiException(PARTY_ALREADY_CLOSED);
-        }
-
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
         Long userId = user.getId();
-
-        // 파티 생성자는 본인의 파티에 참여 신청 불가능
-        if (party.getHost().getId().equals(userId)) {
-            throw new ApiException(PARTY_CREATOR_CANNOT_JOIN);
-        }
 
         // 이미 파티에 참여중인 유저는 중복 신청 불가능
         if (partyUserRepository.existsByPartyIdAndParticipantId(partyId, userId)) {
             throw new ApiException(PARTY_ALREADY_JOINED);
         }
 
-        // 인원 초과 여부 검증 및 참여자 수 증가
-        party.addParticipant();
+        while (true) {
+            try {
+                Party party = partyRepository.findByIdWithFetchJoin(partyId)
+                        .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
 
-        PartyUser partyUser = new PartyUser(party, user);
-        partyUserRepository.save(partyUser);
+                // 파티 마감 날짜 확인
+                LocalDateTime deadline = party.getDeadline();
+                if (deadline.isBefore(currentTime) || deadline.isEqual(currentTime)) {
+                    party.close();
+                    throw new ApiException(PARTY_ALREADY_CLOSED);
+                }
+
+                // 파티 삭제 여부 확인
+                if (party.isDeleted()) {
+                    throw new ApiException(PARTY_ALREADY_DELETED);
+                }
+
+                // 파티 마감 여부 확인
+                if (party.isClosed()) {
+                    throw new ApiException(PARTY_ALREADY_CLOSED);
+                }
+
+                // 파티 생성자는 본인의 파티에 참여 신청 불가능
+                if (party.getHost().getId().equals(userId)) {
+                    throw new ApiException(PARTY_CREATOR_CANNOT_JOIN);
+                }
+
+                PartyUser partyUser = new PartyUser(party, user);
+                partyUserRepository.save(partyUser);
+
+                // 인원 초과 여부 검증 및 참여자 수 증가
+                party.addParticipant();
+
+                break;
+            } catch (ObjectOptimisticLockingFailureException e) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException Ie) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
     }
 
     // 파티 수정
