@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
-import wad.seoul_nolgoat.web.store.dto.response.StoreForBookmarkDto;
+import wad.seoul_nolgoat.web.bookmark.dto.response.StoreForBookmarkDto;
 
 import java.util.List;
 
