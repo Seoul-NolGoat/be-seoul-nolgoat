@@ -1,6 +1,8 @@
 package wad.seoul_nolgoat.service.review;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +19,6 @@ import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewUpdateDto;
 import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
 
-import java.util.List;
 import java.util.Optional;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
@@ -65,12 +66,8 @@ public class ReviewService {
         ).getId();
     }
 
-    public List<ReviewDetailsForUserDto> findByUserId(Long userId) {
-        List<Review> reviews = reviewRepository.findByUserId(userId);
-
-        return reviews.stream()
-                .map(ReviewMapper::toReviewDetailsForUserDto)
-                .toList();
+    public Page<ReviewDetailsForUserDto> findByUserId(String loginId, Pageable pageable) {
+        return reviewRepository.findReviewDetailsByLoginId(loginId, pageable);
     }
 
     @Transactional
