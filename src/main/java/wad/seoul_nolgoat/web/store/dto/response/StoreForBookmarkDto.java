@@ -9,6 +9,7 @@ import wad.seoul_nolgoat.domain.store.StoreType;
 public class StoreForBookmarkDto {
 
     private final Long id;
+    private final Long storeId;
     private final StoreType storeType;
     private final String name;
     private final String lotAddress;
