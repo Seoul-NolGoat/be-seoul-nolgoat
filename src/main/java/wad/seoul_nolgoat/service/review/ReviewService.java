@@ -66,7 +66,7 @@ public class ReviewService {
         ).getId();
     }
 
-    public Page<ReviewDetailsForUserDto> findByUserId(String loginId, Pageable pageable) {
+    public Page<ReviewDetailsForUserDto> findReviewDetailsByLoginId(String loginId, Pageable pageable) {
         return reviewRepository.findReviewDetailsByLoginId(loginId, pageable);
     }
 
