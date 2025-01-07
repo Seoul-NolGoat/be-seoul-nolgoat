@@ -1,6 +1,8 @@
 package wad.seoul_nolgoat.service.bookmark;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.bookmark.Bookmark;
@@ -10,10 +12,7 @@ import wad.seoul_nolgoat.domain.store.StoreRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApiException;
-import wad.seoul_nolgoat.util.mapper.StoreMapper;
 import wad.seoul_nolgoat.web.store.dto.response.StoreForBookmarkDto;
-
-import java.util.List;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
@@ -59,12 +58,8 @@ public class BookmarkService {
         bookmarkRepository.delete(bookmark);
     }
 
-    public List<StoreForBookmarkDto> findBookmarkedStoresByUserId(Long userId) {
-        List<Bookmark> bookmarks = bookmarkRepository.findByUserId(userId);
-
-        return bookmarks.stream()
-                .map(bookmark -> StoreMapper.toStoreForBookmarkDto(bookmark.getStore()))
-                .toList();
+    public Page<StoreForBookmarkDto> findBookmarkedStoresByLoginId(String loginId, Pageable pageable) {
+        return bookmarkRepository.findBookmarkedStoresByLoginId(loginId, pageable);
     }
 
     public boolean checkIfBookmarked(Long userId, Long storeId) {
