@@ -2,8 +2,11 @@ package wad.seoul_nolgoat.web.user;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -12,15 +15,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.bookmark.BookmarkService;
 import wad.seoul_nolgoat.service.review.ReviewService;
 import wad.seoul_nolgoat.service.user.UserService;
+import wad.seoul_nolgoat.web.bookmark.dto.response.StoreForBookmarkDto;
 import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
-import wad.seoul_nolgoat.web.store.dto.response.StoreForBookmarkDto;
 import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
 import wad.seoul_nolgoat.web.user.dto.request.UserUpdateDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserProfileDto;
 
 import java.net.URI;
-import java.util.List;
 
+@Tag(name = "유저")
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
 @RestController
@@ -67,17 +70,23 @@ public class UserController {
                 .build();
     }
 
-    @Operation(summary = "유저 ID를 통한 즐겨찾기 가게 목록 조회")
-    @GetMapping("/{userId}/bookmarks")
-    public ResponseEntity<List<StoreForBookmarkDto>> showBookmarkedStoresByUserId(@PathVariable Long userId) {
+    @Operation(summary = "내가 등록한 즐겨찾기 가게 목록 조회")
+    @GetMapping("/me/bookmarks")
+    public ResponseEntity<Page<StoreForBookmarkDto>> showMyBookmarkedStores(
+            @AuthenticationPrincipal OAuth2User loginUser,
+            Pageable pageable
+    ) {
         return ResponseEntity
-                .ok(bookmarkService.findBookmarkedStoresByUserId(userId));
+                .ok(bookmarkService.findBookmarkedStoresByLoginId(loginUser.getName(), pageable));
     }
 
-    @Operation(summary = "유저 ID를 통한 리뷰 목록 조회")
-    @GetMapping("/{userId}/reviews")
-    public ResponseEntity<List<ReviewDetailsForUserDto>> showReviewsByUserId(@PathVariable Long userId) {
+    @Operation(summary = "내가 작성한 리뷰 목록 조회")
+    @GetMapping("/me/reviews")
+    public ResponseEntity<Page<ReviewDetailsForUserDto>> showMyReviews(
+            @AuthenticationPrincipal OAuth2User loginUser,
+            Pageable pageable
+    ) {
         return ResponseEntity
-                .ok(reviewService.findByUserId(userId));
+                .ok(reviewService.findReviewDetailsByLoginId(loginUser.getName(), pageable));
     }
 }
