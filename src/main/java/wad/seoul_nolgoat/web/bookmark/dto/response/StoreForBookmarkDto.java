@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.web.store.dto.response;
+package wad.seoul_nolgoat.web.bookmark.dto.response;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
