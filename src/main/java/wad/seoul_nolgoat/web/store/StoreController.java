@@ -25,6 +25,7 @@ public class StoreController {
                 .ok(storeService.findStoreWithReviewsByStoreId(storeId));
     }
 
+    @Operation(summary = "가게 검색")
     @GetMapping("/search")
     public Page<StoreListDto> searchStores(
             @RequestParam String searchInput,
