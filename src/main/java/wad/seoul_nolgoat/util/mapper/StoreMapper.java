@@ -6,6 +6,7 @@ import wad.seoul_nolgoat.service.search.dto.StoreForDistanceSortDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForGradeSortDto;
 import wad.seoul_nolgoat.web.store.dto.response.StoreDetailsDto;
 import wad.seoul_nolgoat.web.store.dto.response.StoreForCombinationDto;
+import wad.seoul_nolgoat.web.store.dto.response.StoreListDto;
 
 import java.util.List;
 import java.util.Objects;
@@ -51,6 +52,18 @@ public class StoreMapper {
                 storeForGradeSortDto.getCoordinate(),
                 storeForGradeSortDto.getKakaoAverageGrade(),
                 storeForGradeSortDto.getNolgoatAverageGrade()
+        );
+    }
+
+    public static StoreListDto toStoreListDto(Store store) {
+        return new StoreListDto(
+                store.getId(),
+                store.getName(),
+                store.getCategory(),
+                store.getPhoneNumber(),
+                store.getRoadAddress(),
+                store.getKakaoAverageGrade(),
+                store.getNolgoatAverageGrade()
         );
     }
 }
