@@ -1,12 +1,13 @@
 package wad.seoul_nolgoat.domain.user;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import wad.seoul_nolgoat.domain.BaseTimeEntity;
-
-import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,15 +18,11 @@ public class User extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private LoginType loginType;
-
     private String loginId;
     private String password;
     private String nickname;
     private String profileImage;
-    private String gender;
-    private LocalDate birthDate;
+    private String email;
     private boolean isDeleted;
 
     public User(
@@ -33,15 +30,13 @@ public class User extends BaseTimeEntity {
             String password,
             String nickname,
             String profileImage,
-            String gender,
-            LocalDate birthDate
+            String email
     ) {
         this.loginId = loginId;
         this.password = password;
         this.nickname = nickname;
         this.profileImage = profileImage;
-        this.gender = gender;
-        this.birthDate = birthDate;
+        this.email = email;
         this.isDeleted = false;
     }
 
