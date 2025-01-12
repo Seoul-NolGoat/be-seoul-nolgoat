@@ -11,6 +11,8 @@ public class AuthUrlManager {
                 new AntPathRequestMatcher("/api/auths/user/delete"),
 
                 new AntPathRequestMatcher("/api/users/me"),
+                new AntPathRequestMatcher("/api/users/me/bookmarks"),
+                new AntPathRequestMatcher("/api/users/me/reviews"),
 
                 new AntPathRequestMatcher("/api/stores/**"),
 
