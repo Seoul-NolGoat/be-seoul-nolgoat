@@ -41,12 +41,13 @@ public class User extends BaseTimeEntity {
     }
 
     public void update(
-            String password,
             String nickname,
-            String profileImage) {
-        this.password = password;
+            String profileImage,
+            String email
+    ) {
         this.nickname = nickname;
         this.profileImage = profileImage;
+        this.email = email;
     }
 
     public void delete() {
