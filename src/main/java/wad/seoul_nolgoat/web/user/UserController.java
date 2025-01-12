@@ -18,7 +18,6 @@ import wad.seoul_nolgoat.service.user.UserService;
 import wad.seoul_nolgoat.web.bookmark.dto.response.StoreForBookmarkDto;
 import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
 import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
-import wad.seoul_nolgoat.web.user.dto.request.UserUpdateDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserProfileDto;
 
 import java.net.URI;
@@ -55,19 +54,6 @@ public class UserController {
         String loginId = loginUser.getName();
         return ResponseEntity
                 .ok(userService.getLoginUserDetails(loginId));
-    }
-
-    @Hidden
-    @PutMapping("/{userId}")
-    public ResponseEntity<Void> update(
-            @PathVariable Long userId,
-            @Valid @RequestBody UserUpdateDto userUpdateDto
-    ) {
-        userService.update(userId, userUpdateDto);
-
-        return ResponseEntity
-                .noContent()
-                .build();
     }
 
     @Operation(summary = "내가 등록한 즐겨찾기 가게 목록 조회")

@@ -12,7 +12,6 @@ import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.util.mapper.UserMapper;
 import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
-import wad.seoul_nolgoat.web.user.dto.request.UserUpdateDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserProfileDto;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
@@ -37,17 +36,6 @@ public class UserService {
     }
 
     @Transactional
-    public void update(Long userId, UserUpdateDto userUpdateDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        user.update(
-                userUpdateDto.getPassword(),
-                userUpdateDto.getNickname(),
-                userUpdateDto.getProfileImage()
-        );
-    }
-
-    @Transactional
     public void deleteUserByLoginId(String loginId) {
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
@@ -59,6 +47,7 @@ public class UserService {
     public OAuth2User syncOAuth2User(String uniqueProviderId, OAuth2Response oAuth2Response) {
         String nickname = oAuth2Response.getNickname();
         String profileImage = oAuth2Response.getProfileImage();
+        String email = oAuth2Response.getEmail();
 
         User user = userRepository.findByLoginId(uniqueProviderId)
                 .orElse(null);
@@ -70,8 +59,7 @@ public class UserService {
                             null,
                             nickname,
                             profileImage,
-                            null,
-                            null
+                            email
                     )
             );
             OAuth2UserDto oAuth2UserDto = new OAuth2UserDto(uniqueProviderId);
@@ -83,9 +71,9 @@ public class UserService {
             user.reactivate();
         }
         user.update(
-                null,
                 nickname,
-                profileImage
+                profileImage,
+                email
         );
 
         OAuth2UserDto oAuth2UserDto = new OAuth2UserDto(uniqueProviderId);
