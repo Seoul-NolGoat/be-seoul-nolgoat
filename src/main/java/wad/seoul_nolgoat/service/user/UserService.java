@@ -11,7 +11,6 @@ import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApiException;
 import wad.seoul_nolgoat.util.mapper.UserMapper;
-import wad.seoul_nolgoat.web.user.dto.request.UserSaveDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserProfileDto;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
@@ -22,11 +21,6 @@ import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
 public class UserService {
 
     private final UserRepository userRepository;
-
-    @Transactional
-    public Long save(UserSaveDto userSaveDto) {
-        return userRepository.save(UserMapper.toEntity(userSaveDto)).getId();
-    }
 
     public UserProfileDto getLoginUserDetails(String loginId) {
         User user = userRepository.findByLoginId(loginId)
