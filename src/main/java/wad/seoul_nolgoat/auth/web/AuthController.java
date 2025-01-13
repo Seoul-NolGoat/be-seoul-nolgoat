@@ -66,7 +66,7 @@ public class AuthController {
     }
 
     @Operation(summary = "회원 탈퇴")
-    @DeleteMapping("/user/delete")
+    @DeleteMapping("/withdrawal")
     public ResponseEntity<Void> deleteUserByLoginId(
             @AuthenticationPrincipal OAuth2User loginUser,
             @RequestHeader(AUTHORIZATION_HEADER) String authorizationHeader,
