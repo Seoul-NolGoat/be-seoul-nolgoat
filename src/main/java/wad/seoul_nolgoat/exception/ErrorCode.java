@@ -78,7 +78,8 @@ public enum ErrorCode {
     INVALID_FILE_URL_FORMAT(HttpStatus.BAD_REQUEST, "FILE002", "잘못된 파일 URL 형식입니다."),
 
     // 메일 관련
-    MAIL_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "MAIL001", "메일 발송에 실패했습니다.");
+    MAIL_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "MAIL001", "메일 발송에 실패했습니다."),
+    MAIL_SENDER_ENCODING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "MAIL002", "메일 발신자 정보 인코딩 중 오류가 발생했습니다");
 
     private final HttpStatus httpStatus;
     private final String code;
