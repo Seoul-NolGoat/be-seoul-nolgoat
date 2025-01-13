@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import wad.seoul_nolgoat.auth.service.AuthService;
+import wad.seoul_nolgoat.auth.web.dto.request.WithdrawalCodeDto;
 
 import static wad.seoul_nolgoat.auth.service.AuthService.*;
 
@@ -65,9 +66,19 @@ public class AuthController {
                 .build();
     }
 
+    @Operation(summary = "회원 탈퇴를 위한 인증 번호 검증")
+    @PostMapping("/withdrawal/verification")
+    public ResponseEntity<Boolean> verifyWithdrawalCode(
+            @AuthenticationPrincipal OAuth2User loginUser,
+            @RequestBody WithdrawalCodeDto withdrawalCodeDto
+    ) {
+        return ResponseEntity
+                .ok(authService.verifyWithdrawalCode(loginUser.getName(), withdrawalCodeDto.getInputCode()));
+    }
+
     @Operation(summary = "회원 탈퇴")
     @DeleteMapping("/withdrawal")
-    public ResponseEntity<Void> deleteUserByLoginId(
+    public ResponseEntity<Void> withdraw(
             @AuthenticationPrincipal OAuth2User loginUser,
             @RequestHeader(AUTHORIZATION_HEADER) String authorizationHeader,
             @RequestHeader(CSRF_PROTECTION_UUID_HEADER) String csrfProtectionUuid,

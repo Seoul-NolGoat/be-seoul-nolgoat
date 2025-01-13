@@ -38,6 +38,7 @@ public class AuthService {
     private final RedisTokenService redisTokenService;
     private final SocialClientService socialClientService;
     private final UserService userService;
+    private final RedisWithdrawalCodeService redisWithdrawalCodeService;
 
     @Value("${spring.csrf.protection.uuid}")
     private String csrfProtectionUuid;
@@ -219,5 +220,16 @@ public class AuthService {
 
         // 유저의 isDeleted를 true로 변경
         userService.deleteUserByLoginId(loginId);
+    }
+
+    public boolean verifyWithdrawalCode(String loginId, String inputCode) {
+        String storedCode = redisWithdrawalCodeService.getCode(loginId);
+
+        // 인증 번호 만료
+        if (storedCode == null) {
+            throw new ApiException(WITHDRAWAL_CODE_EXPIRED);
+        }
+
+        return inputCode.equals(storedCode);
     }
 }
