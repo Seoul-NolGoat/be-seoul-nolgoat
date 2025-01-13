@@ -8,6 +8,7 @@ public class AuthUrlManager {
     public static RequestMatcher[] getUserRequestMatchers() {
         return new RequestMatcher[]{
                 new AntPathRequestMatcher("/api/auths/logout"),
+                new AntPathRequestMatcher("/api/auths/withdrawal/verification"),
                 new AntPathRequestMatcher("/api/auths/withdrawal"),
 
                 new AntPathRequestMatcher("/api/users/me"),
@@ -28,7 +29,9 @@ public class AuthUrlManager {
 
                 new AntPathRequestMatcher("/api/notices", "POST"),
                 new AntPathRequestMatcher("/api/notices/{noticeId}", "PUT"),
-                new AntPathRequestMatcher("/api/notices/{noticeId}", "DELETE")
+                new AntPathRequestMatcher("/api/notices/{noticeId}", "DELETE"),
+
+                new AntPathRequestMatcher("/api/mail/withdrawal/verification")
         };
     }
 }
