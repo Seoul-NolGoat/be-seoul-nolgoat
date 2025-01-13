@@ -1,6 +1,7 @@
 package wad.seoul_nolgoat.service.mail;
 
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
@@ -14,10 +15,10 @@ import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApiException;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
-import static wad.seoul_nolgoat.exception.ErrorCode.MAIL_SEND_FAILED;
-import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
+import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -44,6 +45,7 @@ public class MailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setFrom(new InternetAddress("llyyoo93@gmail.com", "NolGoat", "UTF-8"));
             helper.setTo(email);
             helper.setSubject("NolGoat 회원 탈퇴 인증 번호 안내");
             helper.setText(text, true);
@@ -54,6 +56,8 @@ public class MailService {
             mailSender.send(message);
         } catch (MessagingException e) {
             throw new ApiException(MAIL_SEND_FAILED);
+        } catch (UnsupportedEncodingException e) {
+            throw new ApiException(MAIL_SENDER_ENCODING_FAILED);
         }
     }
 
