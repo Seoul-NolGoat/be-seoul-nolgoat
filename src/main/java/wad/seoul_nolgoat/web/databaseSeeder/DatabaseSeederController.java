@@ -20,30 +20,40 @@ public class DatabaseSeederController {
     @GetMapping("/restaurant")
     public ResponseEntity<Void> seedRestaurantInitialData() {
         databaseSeederService.seedInitialStoreData(StoreType.RESTAURANT);
-        return ResponseEntity.ok().build();
+        return ResponseEntity
+                .ok()
+                .build();
     }
 
     @GetMapping("/cafe")
     public ResponseEntity<Void> seedCafeInitialData() {
         databaseSeederService.seedInitialStoreData(StoreType.CAFE);
-        return ResponseEntity.ok().build();
+        return ResponseEntity
+                .ok()
+                .build();
     }
 
     @GetMapping("/pcroom")
     public ResponseEntity<Void> seedPcroomInitialData() {
         databaseSeederService.seedInitialStoreData(StoreType.PCROOM);
-        return ResponseEntity.ok().build();
+        return ResponseEntity
+                .ok()
+                .build();
     }
 
     @GetMapping("/karaoke")
     public ResponseEntity<Void> seedKaraokeInitialData() {
         databaseSeederService.seedInitialStoreData(StoreType.KARAOKE);
-        return ResponseEntity.ok().build();
+        return ResponseEntity
+                .ok()
+                .build();
     }
 
     @GetMapping("/billiard")
     public ResponseEntity<Void> seedBilliardInitialData() {
         databaseSeederService.seedInitialStoreData(StoreType.BILLIARD);
-        return ResponseEntity.ok().build();
+        return ResponseEntity
+                .ok()
+                .build();
     }
 }
