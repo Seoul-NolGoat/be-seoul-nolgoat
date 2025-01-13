@@ -74,7 +74,10 @@ public enum ErrorCode {
 
     // 파일 관련
     FILE_READ_FAILED(HttpStatus.BAD_REQUEST, "FILE001", "파일을 읽는 데 실패했습니다."),
-    INVALID_FILE_URL_FORMAT(HttpStatus.BAD_REQUEST, "FILE002", "잘못된 파일 URL 형식입니다.");
+    INVALID_FILE_URL_FORMAT(HttpStatus.BAD_REQUEST, "FILE002", "잘못된 파일 URL 형식입니다."),
+
+    // 메일 관련
+    MAIL_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "MAIL001", "메일 발송에 실패했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
