@@ -12,3 +12,4 @@ spring:
       - s3-config.yml
       - multipart-config.yml
       - app-urls.yml
+      - mail-config.yml

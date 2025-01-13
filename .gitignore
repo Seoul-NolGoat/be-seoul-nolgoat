@@ -8,6 +8,7 @@
 /src/main/resources/s3-config.yml
 /src/main/resources/multipart-config.yml
 /src/main/resources/app-urls.yml
+/src/main/resources/mail-config.yml
 
 ### build ###
 .gradle
