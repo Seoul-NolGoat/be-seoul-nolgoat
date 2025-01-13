@@ -28,7 +28,7 @@ public class MailService {
     private final JavaMailSender mailSender;
     private final RedisWithdrawalCodeService redisWithdrawalCodeService;
 
-    public void sendEmailWithdrawalVerificationCode(String loginId) {
+    public void sendEmailWithdrawalCode(String loginId) {
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 

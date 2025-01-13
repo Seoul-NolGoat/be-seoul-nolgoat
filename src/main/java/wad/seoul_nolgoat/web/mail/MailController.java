@@ -21,8 +21,8 @@ public class MailController {
 
     @Operation(summary = "회원 탈퇴를 위한 인증 번호 메일 발송")
     @PostMapping("/withdrawal/verification")
-    public ResponseEntity<Void> sendEmailWithdrawalVerificationCode(@AuthenticationPrincipal OAuth2User loginUser) {
-        mailService.sendEmailWithdrawalVerificationCode(loginUser.getName());
+    public ResponseEntity<Void> sendEmailWithdrawalCode(@AuthenticationPrincipal OAuth2User loginUser) {
+        mailService.sendEmailWithdrawalCode(loginUser.getName());
 
         return ResponseEntity
                 .ok()
