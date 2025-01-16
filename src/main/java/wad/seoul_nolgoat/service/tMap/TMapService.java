@@ -136,11 +136,11 @@ public class TMapService {
         } catch (HttpClientErrorException.TooManyRequests e) {
             String body = e.getResponseBodyAsString();
             if (body.contains("QUOTA_EXCEEDED")) {
-                throw new TMapException(API_QUOTA_EXCEEDED);
+                throw new TMapException(API_QUOTA_EXCEEDED, e);
             }
-            throw new TMapException(API_RATE_LIMIT_EXCEEDED);
+            throw new TMapException(API_RATE_LIMIT_EXCEEDED, e);
         } catch (Exception e) {
-            throw new TMapException(TMAP_API_CALL_FAILED);
+            throw new TMapException(TMAP_API_CALL_FAILED, e);
         }
     }
 
