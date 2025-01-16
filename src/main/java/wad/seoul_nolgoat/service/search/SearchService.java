@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import wad.seoul_nolgoat.domain.store.StoreCategory;
 import wad.seoul_nolgoat.domain.store.StoreType;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.exception.TMapException;
 import wad.seoul_nolgoat.service.search.dto.SortConditionDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForPossibleCategoriesDto;
@@ -65,7 +65,7 @@ public class SearchService {
         if (criteria.equals(NOLGOAT_GRADE_CRITERIA)) {
             return getCombinationsByNolgoatGrade(searchConditionDto);
         }
-        throw new ApiException(INVALID_SEARCH_CRITERIA);
+        throw new ApplicationException(INVALID_SEARCH_CRITERIA);
     }
 
     public List<String> searchPossibleCategories(PossibleCategoriesConditionDto possibleCategoriesConditionDto) {
@@ -168,7 +168,7 @@ public class SearchService {
                     Math.min(STORE_COMBINATION_SEARCH_LIMIT, combinationDtos.size())
             );
         }
-        throw new ApiException(INVALID_GATHERING_ROUND);
+        throw new ApplicationException(INVALID_GATHERING_ROUND);
     }
 
     private List<CombinationDto> getCombinationsByKakaoGrade(SearchConditionDto searchConditionDto) {
@@ -261,7 +261,7 @@ public class SearchService {
                     startCoordinate
             );
         }
-        throw new ApiException(INVALID_GATHERING_ROUND);
+        throw new ApplicationException(INVALID_GATHERING_ROUND);
     }
 
     private List<CombinationDto> getCombinationsByNolgoatGrade(SearchConditionDto searchConditionDto) {
@@ -354,7 +354,7 @@ public class SearchService {
                     startCoordinate
             );
         }
-        throw new ApiException(INVALID_GATHERING_ROUND);
+        throw new ApplicationException(INVALID_GATHERING_ROUND);
     }
 
     private List<CombinationDto> fetchWalkRouteInfoForCombinationDto(
@@ -398,7 +398,7 @@ public class SearchService {
 
                             return combination;
                         }
-                        throw new ApiException(INVALID_GATHERING_ROUND);
+                        throw new ApplicationException(INVALID_GATHERING_ROUND);
                     } catch (TMapException e) {
                         log.error("TMap Error : {}", e.getMessage());
                         int totalDistance = DistanceCalculator.calculateTotalDistanceForGradeWithFallback(

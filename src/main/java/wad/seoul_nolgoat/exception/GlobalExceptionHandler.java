@@ -17,8 +17,8 @@ import static wad.seoul_nolgoat.exception.ErrorCode.*;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ApiException.class)
-    public ResponseEntity<ErrorResponse> handleApiException(ApiException e) {
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<ErrorResponse> handleApplicationException(ApplicationException e) {
         ErrorCode errorCode = e.getErrorCode();
 
         return ResponseEntity

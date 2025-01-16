@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -45,7 +45,7 @@ public class S3Service {
             );
             imageUrl = s3Resource.getURL().toString();
         } catch (IOException e) {
-            throw new ApiException(FILE_READ_FAILED, e);
+            throw new ApplicationException(FILE_READ_FAILED, e);
         }
 
         return imageUrl;
@@ -60,7 +60,7 @@ public class S3Service {
 
             s3Template.deleteObject(bucket, decodedKey);
         } catch (MalformedURLException e) {
-            throw new ApiException(INVALID_FILE_URL_FORMAT, e);
+            throw new ApplicationException(INVALID_FILE_URL_FORMAT, e);
         }
     }
 

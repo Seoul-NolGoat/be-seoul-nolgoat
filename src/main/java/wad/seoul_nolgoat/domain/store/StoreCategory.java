@@ -1,6 +1,6 @@
 package wad.seoul_nolgoat.domain.store;
 
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -107,7 +107,7 @@ public enum StoreCategory {
         try {
             return StoreCategory.valueOf(category.toUpperCase()).getCategoryNames();
         } catch (IllegalArgumentException e) {
-            throw new ApiException(CATEGORY_NOT_FOUND, e);
+            throw new ApplicationException(CATEGORY_NOT_FOUND, e);
         }
     }
 

@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.service.notice.NoticeService;
 import wad.seoul_nolgoat.web.notice.dto.request.NoticeUpdateDto;
 import wad.seoul_nolgoat.web.notice.dto.response.NoticeListDto;
@@ -62,7 +62,7 @@ public class NoticeServiceTest {
 
         // when // then
         assertThatThrownBy(() -> noticeService.update(loginId, noticeId, updateDto))
-                .isInstanceOf(ApiException.class)
+                .isInstanceOf(ApplicationException.class)
                 .hasMessage(NOTICE_WRITER_MISMATCH.getMessage());
     }
 
@@ -75,7 +75,7 @@ public class NoticeServiceTest {
 
         // when // then
         assertThatThrownBy(() -> noticeService.delete(loginId, noticeId))
-                .isInstanceOf(ApiException.class)
+                .isInstanceOf(ApplicationException.class)
                 .hasMessage(NOTICE_WRITER_MISMATCH.getMessage());
     }
 }

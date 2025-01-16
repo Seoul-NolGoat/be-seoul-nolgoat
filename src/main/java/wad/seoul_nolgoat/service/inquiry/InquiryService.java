@@ -9,7 +9,7 @@ import wad.seoul_nolgoat.domain.inquiry.Inquiry;
 import wad.seoul_nolgoat.domain.inquiry.InquiryRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.util.mapper.InquiryMapper;
 import wad.seoul_nolgoat.web.inquiry.dto.request.InquirySaveDto;
 import wad.seoul_nolgoat.web.inquiry.dto.request.InquiryUpdateDto;
@@ -29,14 +29,14 @@ public class InquiryService {
     @Transactional
     public Long save(String loginId, InquirySaveDto inquirySaveDto) {
         User user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
 
         return inquiryRepository.save(InquiryMapper.toEntity(user, inquirySaveDto)).getId();
     }
 
     public InquiryDetailsDto findByInquiryId(Long inquiryId) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
-                .orElseThrow(() -> new ApiException(INQUIRY_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(INQUIRY_NOT_FOUND));
 
         return InquiryMapper.toInquiryDetailsDto(inquiry);
     }
@@ -52,11 +52,11 @@ public class InquiryService {
             InquiryUpdateDto inquiryUpdateDto
     ) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
-                .orElseThrow(() -> new ApiException(INQUIRY_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(INQUIRY_NOT_FOUND));
 
         // 건의 작성자가 맞는지 검증
         if (!loginId.equals(inquiry.getUser().getLoginId())) {
-            throw new ApiException(INQUIRY_WRITER_MISMATCH);
+            throw new ApplicationException(INQUIRY_WRITER_MISMATCH);
         }
 
         inquiry.update(
@@ -69,11 +69,11 @@ public class InquiryService {
     @Transactional
     public void delete(String loginId, Long inquiryId) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
-                .orElseThrow(() -> new ApiException(INQUIRY_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(INQUIRY_NOT_FOUND));
 
         // 건의 작성자가 맞는지 검증
         if (!loginId.equals(inquiry.getUser().getLoginId())) {
-            throw new ApiException(INQUIRY_WRITER_MISMATCH);
+            throw new ApplicationException(INQUIRY_WRITER_MISMATCH);
         }
 
         inquiryRepository.delete(inquiry);
