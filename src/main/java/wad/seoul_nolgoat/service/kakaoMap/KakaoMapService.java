@@ -187,7 +187,7 @@ public class KakaoMapService {
 
             return Optional.empty();
         } catch (Exception e) {
-            throw new ApiException(ADDRESS_CONVERSION_FAILED);
+            throw new ApiException(ADDRESS_CONVERSION_FAILED, e);
         }
     }
 

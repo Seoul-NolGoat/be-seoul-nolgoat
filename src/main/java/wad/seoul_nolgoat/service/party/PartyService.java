@@ -224,7 +224,7 @@ public class PartyService {
         try {
             AdministrativeDistrict.valueOf(administrativeDistrict);
         } catch (IllegalArgumentException e) {
-            throw new ApiException(INVALID_ADMINISTRATIVE_DISTRICT);
+            throw new ApiException(INVALID_ADMINISTRATIVE_DISTRICT, e);
         }
     }
 }

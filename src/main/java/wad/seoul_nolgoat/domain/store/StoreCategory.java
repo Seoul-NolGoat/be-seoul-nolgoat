@@ -107,7 +107,7 @@ public enum StoreCategory {
         try {
             return StoreCategory.valueOf(category.toUpperCase()).getCategoryNames();
         } catch (IllegalArgumentException e) {
-            throw new ApiException(CATEGORY_NOT_FOUND);
+            throw new ApiException(CATEGORY_NOT_FOUND, e);
         }
     }
 

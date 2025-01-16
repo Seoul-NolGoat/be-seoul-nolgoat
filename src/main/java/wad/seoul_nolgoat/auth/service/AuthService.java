@@ -109,9 +109,9 @@ public class AuthService {
             }
         } catch (ExpiredJwtException e) {
             deleteRefreshTokenCookie(response);
-            throw new ApiException(TOKEN_EXPIRED);
+            throw new ApiException(TOKEN_EXPIRED, e);
         } catch (JwtException e) { // ExpiredJwtException을 제외한 나머지 JwtException 처리
-            throw new ApiException(INVALID_TOKEN_FORMAT);
+            throw new ApiException(INVALID_TOKEN_FORMAT, e);
         }
     }
 
