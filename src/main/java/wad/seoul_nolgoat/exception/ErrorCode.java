@@ -63,12 +63,14 @@ public enum ErrorCode {
     INVALID_SEARCH_CRITERIA(HttpStatus.BAD_REQUEST, "SEARCH001", "유효하지 않은 검색 기준입니다."),
     INVALID_GATHERING_ROUND(HttpStatus.BAD_REQUEST, "SEARCH002", "유효하지 않은 회식 차수입니다."),
 
-    // 지도 관련
-    TMAP_API_CALL_FAILED(HttpStatus.BAD_REQUEST, "MAP001", "TMap API 호출에 실패했습니다."),
-    ADDRESS_CONVERSION_FAILED(HttpStatus.BAD_REQUEST, "MAP002", "주소로 변환할 수 없습니다."),
-    WALKING_DISTANCE_CALCULATION_FAILED(HttpStatus.BAD_REQUEST, "MAP003", "도보 거리를 계산할 수 없습니다."),
-    API_RATE_LIMIT_EXCEEDED(HttpStatus.TOO_MANY_REQUESTS, "MAP004", "TMap API 초당 호출 건수를 초과했습니다."),
-    API_QUOTA_EXCEEDED(HttpStatus.TOO_MANY_REQUESTS, "MAP005", "TMap API 사용 할당량(SLA)을 초과했습니다."),
+    // KakaoMap 관련
+    ADDRESS_CONVERSION_FAILED(HttpStatus.BAD_REQUEST, "KAKAOMAP001", "주소로 변환할 수 없습니다."),
+
+    // TMap 관련
+    TMAP_API_CALL_FAILED(HttpStatus.BAD_REQUEST, "TMAP001", "TMap API 호출에 실패했습니다."),
+    API_RATE_LIMIT_EXCEEDED(HttpStatus.TOO_MANY_REQUESTS, "TMAP002", "TMap API 초당 호출 건수를 초과했습니다."),
+    API_QUOTA_EXCEEDED(HttpStatus.TOO_MANY_REQUESTS, "TMAP003", "TMap API 사용 할당량(SLA)을 초과했습니다."),
+    WALKING_DISTANCE_CALCULATION_FAILED(HttpStatus.BAD_REQUEST, "TMAP004", "도보 거리를 계산할 수 없습니다."),
 
     // 유효성 검사 관련
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "VALIDATION001", "입력값이 유효하지 않습니다."),
