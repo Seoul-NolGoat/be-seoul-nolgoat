@@ -26,6 +26,15 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(errorCode));
     }
 
+    @ExceptionHandler(TMapException.class)
+    public ResponseEntity<ErrorResponse> handleTMapException(TMapException e) {
+        ErrorCode errorCode = e.getErrorCode();
+
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(new ErrorResponse(errorCode));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
         Map<String, String> errors = new HashMap<>();
