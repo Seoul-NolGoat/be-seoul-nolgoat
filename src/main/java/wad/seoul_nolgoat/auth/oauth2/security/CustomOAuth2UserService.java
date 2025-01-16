@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.auth.oauth2.dto.GoogleResponse;
 import wad.seoul_nolgoat.auth.oauth2.dto.KakaoResponse;
 import wad.seoul_nolgoat.auth.service.AuthService;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.UNSUPPORTED_PROVIDER;
 
@@ -39,6 +39,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return authService.processOAuth2User(new GoogleResponse(oAuth2User.getAttributes()));
         }
         log.error("Unsupported OAuth2 provider: {}", registrationId);
-        throw new ApiException(UNSUPPORTED_PROVIDER);
+        throw new ApplicationException(UNSUPPORTED_PROVIDER);
     }
 }

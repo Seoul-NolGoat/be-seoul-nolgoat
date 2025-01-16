@@ -9,7 +9,7 @@ import wad.seoul_nolgoat.domain.notice.Notice;
 import wad.seoul_nolgoat.domain.notice.NoticeRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.util.mapper.NoticeMapper;
 import wad.seoul_nolgoat.web.notice.dto.request.NoticeSaveDto;
 import wad.seoul_nolgoat.web.notice.dto.request.NoticeUpdateDto;
@@ -29,14 +29,14 @@ public class NoticeService {
     @Transactional
     public Long save(String loginId, NoticeSaveDto noticeSaveDto) {
         User user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
 
         return noticeRepository.save(NoticeMapper.toEntity(user, noticeSaveDto)).getId();
     }
 
     public NoticeDetailsDto findByNoticeId(Long noticeId) {
         Notice notice = noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new ApiException(NOTICE_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(NOTICE_NOT_FOUND));
 
         return NoticeMapper.toNoticeDetailsDto(notice);
     }
@@ -52,11 +52,11 @@ public class NoticeService {
             NoticeUpdateDto noticeUpdateDto
     ) {
         Notice notice = noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new ApiException(NOTICE_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(NOTICE_NOT_FOUND));
 
         // 공지 작성자가 맞는지 검증
         if (!loginId.equals(notice.getUser().getLoginId())) {
-            throw new ApiException(NOTICE_WRITER_MISMATCH);
+            throw new ApplicationException(NOTICE_WRITER_MISMATCH);
         }
 
         notice.update(
@@ -68,11 +68,11 @@ public class NoticeService {
     @Transactional
     public void delete(String loginId, Long noticeId) {
         Notice notice = noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new ApiException(NOTICE_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(NOTICE_NOT_FOUND));
 
         // 공지 작성자가 맞는지 검증
         if (!loginId.equals(notice.getUser().getLoginId())) {
-            throw new ApiException(NOTICE_WRITER_MISMATCH);
+            throw new ApplicationException(NOTICE_WRITER_MISMATCH);
         }
 
         noticeRepository.delete(notice);
@@ -81,7 +81,7 @@ public class NoticeService {
     @Transactional
     public void increaseViews(Long noticeId) {
         Notice notice = noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new ApiException(NOTICE_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(NOTICE_NOT_FOUND));
         notice.increaseViews();
     }
 }

@@ -9,7 +9,7 @@ import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2UserDto;
 import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2UserImpl;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.util.mapper.UserMapper;
 import wad.seoul_nolgoat.web.user.dto.response.UserProfileDto;
 
@@ -24,7 +24,7 @@ public class UserService {
 
     public UserProfileDto getLoginUserDetails(String loginId) {
         User user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
 
         return UserMapper.toUserProfileDto(user);
     }
@@ -32,7 +32,7 @@ public class UserService {
     @Transactional
     public void deleteUserByLoginId(String loginId) {
         User user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
         user.delete();
     }
 

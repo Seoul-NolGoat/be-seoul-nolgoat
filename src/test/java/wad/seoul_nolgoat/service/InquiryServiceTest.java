@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.service.inquiry.InquiryService;
 import wad.seoul_nolgoat.web.inquiry.dto.request.InquiryUpdateDto;
 import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryListDto;
@@ -62,7 +62,7 @@ public class InquiryServiceTest {
 
         // when // then
         assertThatThrownBy(() -> inquiryService.update(loginId, inquiryId, updateDto))
-                .isInstanceOf(ApiException.class)
+                .isInstanceOf(ApplicationException.class)
                 .hasMessage(INQUIRY_WRITER_MISMATCH.getMessage());
     }
 
@@ -75,7 +75,7 @@ public class InquiryServiceTest {
 
         // when // then
         assertThatThrownBy(() -> inquiryService.delete(loginId, inquiryId))
-                .isInstanceOf(ApiException.class)
+                .isInstanceOf(ApplicationException.class)
                 .hasMessage(INQUIRY_WRITER_MISMATCH.getMessage());
     }
 }

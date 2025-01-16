@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import wad.seoul_nolgoat.domain.party.*;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.service.s3.S3Service;
 import wad.seoul_nolgoat.util.mapper.PartyMapper;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
@@ -44,7 +44,7 @@ public class PartyService {
         validateAdministrativeDistrict(partySaveDto.getAdministrativeDistrict());
 
         User user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
 
         Optional<String> imageUrl = Optional.ofNullable(image)
                 .filter(file -> !file.isEmpty())
@@ -67,40 +67,40 @@ public class PartyService {
             LocalDateTime currentTime
     ) {
         User user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
 
         Long userId = user.getId();
 
         // 이미 파티에 참여중인 유저는 중복 신청 불가능
         if (partyUserRepository.existsByPartyIdAndParticipantId(partyId, userId)) {
-            throw new ApiException(PARTY_ALREADY_JOINED);
+            throw new ApplicationException(PARTY_ALREADY_JOINED);
         }
 
         while (true) {
             try {
                 Party party = partyRepository.findByIdWithFetchJoin(partyId)
-                        .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+                        .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
 
                 // 파티 마감 날짜 확인
                 LocalDateTime deadline = party.getDeadline();
                 if (deadline.isBefore(currentTime) || deadline.isEqual(currentTime)) {
                     party.close();
-                    throw new ApiException(PARTY_ALREADY_CLOSED);
+                    throw new ApplicationException(PARTY_ALREADY_CLOSED);
                 }
 
                 // 파티 삭제 여부 확인
                 if (party.isDeleted()) {
-                    throw new ApiException(PARTY_ALREADY_DELETED);
+                    throw new ApplicationException(PARTY_ALREADY_DELETED);
                 }
 
                 // 파티 마감 여부 확인
                 if (party.isClosed()) {
-                    throw new ApiException(PARTY_ALREADY_CLOSED);
+                    throw new ApplicationException(PARTY_ALREADY_CLOSED);
                 }
 
                 // 파티 생성자는 본인의 파티에 참여 신청 불가능
                 if (party.getHost().getId().equals(userId)) {
-                    throw new ApiException(PARTY_CREATOR_CANNOT_JOIN);
+                    throw new ApplicationException(PARTY_CREATOR_CANNOT_JOIN);
                 }
 
                 PartyUser partyUser = new PartyUser(party, user);
@@ -130,14 +130,14 @@ public class PartyService {
     @Transactional
     public void closeById(String loginId, Long partyId) {
         Party party = partyRepository.findByIdWithFetchJoin(partyId)
-                .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
 
         if (!party.getHost().getLoginId().equals(loginId)) {
-            throw new ApiException(PARTY_CLOSE_NOT_AUTHORIZED);
+            throw new ApplicationException(PARTY_CLOSE_NOT_AUTHORIZED);
         }
 
         if (party.isClosed()) {
-            throw new ApiException(PARTY_ALREADY_CLOSED);
+            throw new ApplicationException(PARTY_ALREADY_CLOSED);
         }
         party.close();
     }
@@ -146,14 +146,14 @@ public class PartyService {
     @Transactional
     public void deleteById(String loginId, Long partyId) {
         Party party = partyRepository.findByIdWithFetchJoin(partyId)
-                .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
 
         if (!party.getHost().getLoginId().equals(loginId)) {
-            throw new ApiException(PARTY_DELETE_NOT_AUTHORIZED);
+            throw new ApplicationException(PARTY_DELETE_NOT_AUTHORIZED);
         }
 
         if (party.isDeleted()) {
-            throw new ApiException(PARTY_ALREADY_DELETED);
+            throw new ApplicationException(PARTY_ALREADY_DELETED);
         }
 
         // s3 이미지 파일 삭제
@@ -172,16 +172,16 @@ public class PartyService {
             Long userId
     ) {
         Party party = partyRepository.findByIdWithFetchJoin(partyId)
-                .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
 
         // 파티 생성자인지 검증
         if (!party.getHost().getLoginId().equals(loginId)) {
-            throw new ApiException(PARTY_KICK_NOT_AUTHORIZED);
+            throw new ApplicationException(PARTY_KICK_NOT_AUTHORIZED);
         }
 
         // 밴 대상이 참여자가 맞는지 검증
         PartyUser partyUser = partyUserRepository.findByPartyIdAndParticipantId(partyId, userId)
-                .orElseThrow(() -> new ApiException(PARTY_USER_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(PARTY_USER_NOT_FOUND));
 
         partyUserRepository.delete(partyUser);
 
@@ -193,7 +193,7 @@ public class PartyService {
     @Transactional
     public PartyDetailsDto findPartyDetailsById(Long partyId, LocalDateTime currentTime) {
         Party party = partyRepository.findById(partyId)
-                .orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
 
         if (party.getDeadline().isBefore(currentTime)) {
             party.close();
@@ -224,7 +224,7 @@ public class PartyService {
         try {
             AdministrativeDistrict.valueOf(administrativeDistrict);
         } catch (IllegalArgumentException e) {
-            throw new ApiException(INVALID_ADMINISTRATIVE_DISTRICT, e);
+            throw new ApplicationException(INVALID_ADMINISTRATIVE_DISTRICT, e);
         }
     }
 }

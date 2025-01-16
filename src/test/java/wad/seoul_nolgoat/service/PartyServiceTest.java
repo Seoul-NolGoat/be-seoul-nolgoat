@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.party.AdministrativeDistrict;
 import wad.seoul_nolgoat.domain.party.PartyRepository;
 import wad.seoul_nolgoat.domain.party.PartyUserRepository;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.service.party.PartyService;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
@@ -79,7 +79,7 @@ public class PartyServiceTest {
 
         // when // then
         assertThatThrownBy(() -> partyService.createParty(loginId, partySaveDto, null))
-                .isInstanceOf(ApiException.class)
+                .isInstanceOf(ApplicationException.class)
                 .hasMessage(INVALID_ADMINISTRATIVE_DISTRICT.getMessage());
     }
 
@@ -100,7 +100,7 @@ public class PartyServiceTest {
             executorService.submit(() -> {
                 try {
                     partyService.joinParty(loginId, partyId, currentTime);
-                } catch (ApiException e) {
+                } catch (ApplicationException e) {
                     System.out.println(e.getErrorCode().getMessage());
                 } finally {
                     latch.countDown();
@@ -123,7 +123,7 @@ public class PartyServiceTest {
 
         // when // then
         assertThatThrownBy(() -> partyService.joinParty(loginId, partyId, currentTime))
-                .isInstanceOf(ApiException.class)
+                .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_ALREADY_CLOSED.getMessage());
     }
 
@@ -137,7 +137,7 @@ public class PartyServiceTest {
 
         // when // then
         assertThatThrownBy(() -> partyService.joinParty(loginId, partyId, currentTime))
-                .isInstanceOf(ApiException.class)
+                .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_ALREADY_DELETED.getMessage());
     }
 
@@ -151,7 +151,7 @@ public class PartyServiceTest {
 
         // when // then
         assertThatThrownBy(() -> partyService.joinParty(loginId, partyId, currentTime))
-                .isInstanceOf(ApiException.class)
+                .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_ALREADY_CLOSED.getMessage());
     }
 
@@ -165,7 +165,7 @@ public class PartyServiceTest {
 
         // when // then
         assertThatThrownBy(() -> partyService.joinParty(loginId, partyId, currentTime))
-                .isInstanceOf(ApiException.class)
+                .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_CREATOR_CANNOT_JOIN.getMessage());
     }
 
@@ -181,7 +181,7 @@ public class PartyServiceTest {
 
         // when // then
         assertThatThrownBy(() -> partyService.joinParty(loginIdB, partyId, currentTime))
-                .isInstanceOf(ApiException.class)
+                .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_ALREADY_JOINED.getMessage());
     }
 
@@ -202,7 +202,7 @@ public class PartyServiceTest {
 
         // when // then
         assertThatThrownBy(() -> partyService.joinParty(loginIdE, partyId, currentTime))
-                .isInstanceOf(ApiException.class)
+                .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_CAPACITY_EXCEEDED.getMessage());
     }
 
@@ -232,7 +232,7 @@ public class PartyServiceTest {
 
         // when // then
         assertThatThrownBy(() -> partyService.closeById(loginId, partyId))
-                .isInstanceOf(ApiException.class)
+                .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_CLOSE_NOT_AUTHORIZED.getMessage());
     }
 
@@ -245,7 +245,7 @@ public class PartyServiceTest {
 
         // when // then
         assertThatThrownBy(() -> partyService.closeById(loginId, partyId))
-                .isInstanceOf(ApiException.class)
+                .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_ALREADY_CLOSED.getMessage());
     }
 
@@ -273,7 +273,7 @@ public class PartyServiceTest {
 
         // when // then
         assertThatThrownBy(() -> partyService.deleteById(loginId, partyId))
-                .isInstanceOf(ApiException.class)
+                .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_DELETE_NOT_AUTHORIZED.getMessage());
     }
 
@@ -286,7 +286,7 @@ public class PartyServiceTest {
 
         // when // then
         assertThatThrownBy(() -> partyService.deleteById(loginId, partyId))
-                .isInstanceOf(ApiException.class)
+                .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_ALREADY_DELETED.getMessage());
     }
 
@@ -321,7 +321,7 @@ public class PartyServiceTest {
 
         // when // then
         assertThatThrownBy(() -> partyService.banParticipantFromParty(loginId, partyId, 2L))
-                .isInstanceOf(ApiException.class)
+                .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_KICK_NOT_AUTHORIZED.getMessage());
     }
 
@@ -334,7 +334,7 @@ public class PartyServiceTest {
 
         // when // then
         assertThatThrownBy(() -> partyService.banParticipantFromParty(hostLoginId, partyId, 2L))
-                .isInstanceOf(ApiException.class)
+                .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_USER_NOT_FOUND.getMessage());
     }
 

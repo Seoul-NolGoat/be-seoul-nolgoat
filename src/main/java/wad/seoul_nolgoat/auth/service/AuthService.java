@@ -12,7 +12,7 @@ import wad.seoul_nolgoat.auth.jwt.JwtProvider;
 import wad.seoul_nolgoat.auth.oauth2.client.SocialClientService;
 import wad.seoul_nolgoat.auth.oauth2.client.TokenResponse;
 import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2Response;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.service.user.UserService;
 
 import java.util.Objects;
@@ -95,36 +95,36 @@ public class AuthService {
 
             // 캐시에 해당 Refresh 토큰이 존재하는지 확인
             if (!Objects.equals(redisTokenService.getToken(key), refreshToken)) {
-                throw new ApiException(REFRESH_TOKEN_NOT_FOUND);
+                throw new ApplicationException(REFRESH_TOKEN_NOT_FOUND);
             }
 
             // 토큰 발급자가 올바른지 확인
             if (jwtProvider.isTokenNotIssuedByDomain(refreshToken)) {
-                throw new ApiException(INVALID_TOKEN_ISSUER);
+                throw new ApplicationException(INVALID_TOKEN_ISSUER);
             }
 
             // 토큰 타입이 Refresh인지 확인
             if (!jwtProvider.getType(refreshToken).equals(CLAIM_TYPE_REFRESH)) {
-                throw new ApiException(INVALID_TOKEN_TYPE);
+                throw new ApplicationException(INVALID_TOKEN_TYPE);
             }
         } catch (ExpiredJwtException e) {
             deleteRefreshTokenCookie(response);
-            throw new ApiException(TOKEN_EXPIRED, e);
+            throw new ApplicationException(TOKEN_EXPIRED, e);
         } catch (JwtException e) { // ExpiredJwtException을 제외한 나머지 JwtException 처리
-            throw new ApiException(INVALID_TOKEN_FORMAT, e);
+            throw new ApplicationException(INVALID_TOKEN_FORMAT, e);
         }
     }
 
     public void verifyCsrfProtectionUuid(String csrfProtectionUuid) {
         if (!this.csrfProtectionUuid.equals(csrfProtectionUuid)) {
-            throw new ApiException(INVALID_CSRF_PROTECTION_UUID);
+            throw new ApplicationException(INVALID_CSRF_PROTECTION_UUID);
         }
     }
 
     // 인증 헤더 검증
     public void verifyAuthorizationHeader(String authorizationHeader) {
         if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER_PREFIX)) {
-            throw new ApiException(INVALID_AUTHORIZATION_HEADER);
+            throw new ApplicationException(INVALID_AUTHORIZATION_HEADER);
         }
     }
 
@@ -134,17 +134,17 @@ public class AuthService {
 
         // Access 토큰 블랙리스트 여부 확인
         if (Objects.equals(redisTokenService.getToken(key), accessToken)) {
-            throw new ApiException(ACCESS_TOKEN_BLACKLISTED);
+            throw new ApplicationException(ACCESS_TOKEN_BLACKLISTED);
         }
 
         // 토큰 발급자가 올바른지 확인
         if (jwtProvider.isTokenNotIssuedByDomain(accessToken)) {
-            throw new ApiException(INVALID_TOKEN_ISSUER);
+            throw new ApplicationException(INVALID_TOKEN_ISSUER);
         }
 
         // 토큰 타입이 Access인지 확인
         if (!jwtProvider.getType(accessToken).equals(CLAIM_TYPE_ACCESS)) {
-            throw new ApiException(INVALID_TOKEN_TYPE);
+            throw new ApplicationException(INVALID_TOKEN_TYPE);
         }
     }
 
@@ -227,7 +227,7 @@ public class AuthService {
 
         // 인증 번호 만료
         if (storedCode == null) {
-            throw new ApiException(WITHDRAWAL_CODE_EXPIRED);
+            throw new ApplicationException(WITHDRAWAL_CODE_EXPIRED);
         }
 
         return inputCode.equals(storedCode);

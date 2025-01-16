@@ -12,7 +12,7 @@ import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.store.StoreRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.service.s3.S3Service;
 import wad.seoul_nolgoat.util.mapper.ReviewMapper;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
@@ -41,13 +41,13 @@ public class ReviewService {
             ReviewSaveDto reviewSaveDto
     ) {
         User user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
 
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new ApiException(STORE_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(STORE_NOT_FOUND));
 
         if (reviewRepository.existsByUserIdAndStoreId(user.getId(), storeId)) {
-            throw new ApiException(DUPLICATE_REVIEW);
+            throw new ApplicationException(DUPLICATE_REVIEW);
         }
 
         Optional<String> imageUrl = Optional.ofNullable(image)
@@ -73,7 +73,7 @@ public class ReviewService {
     @Transactional
     public void update(Long reviewId, ReviewUpdateDto reviewUpdateDto) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ApiException(REVIEW_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(REVIEW_NOT_FOUND));
 
         int previousNolgoatGrade = review.getGrade();
         int currentNolgoatGrade = reviewUpdateDto.getGrade();
@@ -91,10 +91,10 @@ public class ReviewService {
     @Transactional
     public void delete(String loginId, Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ApiException(REVIEW_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(REVIEW_NOT_FOUND));
 
         if (!loginId.equals(review.getUser().getLoginId())) {
-            throw new ApiException(REVIEW_WRITER_MISMATCH);
+            throw new ApplicationException(REVIEW_WRITER_MISMATCH);
         }
 
         Store store = review.getStore();

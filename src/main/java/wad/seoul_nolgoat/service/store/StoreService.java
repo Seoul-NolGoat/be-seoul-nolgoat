@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.store.StoreRepository;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.service.store.dto.StoreUpdateDto;
 import wad.seoul_nolgoat.util.mapper.StoreMapper;
 import wad.seoul_nolgoat.web.store.dto.response.StoreDetailsDto;
@@ -25,13 +25,13 @@ public class StoreService {
 
     public StoreDetailsDto findStoreWithReviewsByStoreId(Long storeId) {
         return storeRepository.findStoreWithReviewsByStoreId(storeId)
-                .orElseThrow(() -> new ApiException(STORE_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(STORE_NOT_FOUND));
     }
 
     @Transactional
     public void update(StoreUpdateDto storeUpdateDto) {
         Store store = storeRepository.findById(storeUpdateDto.getId())
-                .orElseThrow(() -> new ApiException(STORE_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(STORE_NOT_FOUND));
         store.update(
                 storeUpdateDto.getName(),
                 storeUpdateDto.getCategory(),

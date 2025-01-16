@@ -11,7 +11,7 @@ import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.domain.store.StoreRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.web.bookmark.dto.response.StoreForBookmarkDto;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
@@ -28,9 +28,9 @@ public class BookmarkService {
     @Transactional
     public Long save(String loginId, Long storeId) {
         User user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new ApiException(STORE_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(STORE_NOT_FOUND));
 
         return bookmarkRepository.save(
                 new Bookmark(
@@ -47,12 +47,12 @@ public class BookmarkService {
             Long storeId
     ) {
         Bookmark bookmark = bookmarkRepository.findByUserIdAndStoreId(userId, storeId)
-                .orElseThrow(() -> new ApiException(BOOKMARK_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(BOOKMARK_NOT_FOUND));
 
         User user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
         if (!user.getId().equals(userId)) {
-            throw new ApiException(BOOKMARK_REGISTRANT_MISMATCH);
+            throw new ApplicationException(BOOKMARK_REGISTRANT_MISMATCH);
         }
 
         bookmarkRepository.delete(bookmark);

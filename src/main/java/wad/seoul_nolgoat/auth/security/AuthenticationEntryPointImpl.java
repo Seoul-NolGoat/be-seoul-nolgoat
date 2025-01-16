@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.exception.dto.response.ErrorResponse;
 
 import java.io.IOException;
@@ -41,10 +41,10 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
             response.getWriter().write(objectMapper.writeValueAsString(new ErrorResponse(INVALID_TOKEN_FORMAT)));
             return;
         }
-        if (exception instanceof ApiException) {
+        if (exception instanceof ApplicationException) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write(objectMapper.writeValueAsString(new ErrorResponse(((ApiException) exception).getErrorCode())));
+            response.getWriter().write(objectMapper.writeValueAsString(new ErrorResponse(((ApplicationException) exception).getErrorCode())));
         }
     }
 }

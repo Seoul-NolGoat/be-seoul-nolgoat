@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import wad.seoul_nolgoat.domain.BaseTimeEntity;
 import wad.seoul_nolgoat.domain.user.User;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 
 import java.time.LocalDateTime;
 
@@ -73,7 +73,7 @@ public class Party extends BaseTimeEntity {
 
     public void addParticipant() {
         if (currentCount >= maxCapacity) {
-            throw new ApiException(PARTY_CAPACITY_EXCEEDED);
+            throw new ApplicationException(PARTY_CAPACITY_EXCEEDED);
         }
         currentCount++;
     }

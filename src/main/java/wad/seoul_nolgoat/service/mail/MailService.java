@@ -13,7 +13,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import wad.seoul_nolgoat.auth.service.RedisWithdrawalCodeService;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
@@ -31,7 +31,7 @@ public class MailService {
 
     public void sendEmailWithdrawalCode(String loginId) {
         User user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
 
         String email = user.getEmail();
         String nickname = user.getNickname();
@@ -55,9 +55,9 @@ public class MailService {
 
             mailSender.send(message);
         } catch (MessagingException e) {
-            throw new ApiException(MAIL_SEND_FAILED, e);
+            throw new ApplicationException(MAIL_SEND_FAILED, e);
         } catch (UnsupportedEncodingException e) {
-            throw new ApiException(MAIL_SENDER_ENCODING_FAILED, e);
+            throw new ApplicationException(MAIL_SENDER_ENCODING_FAILED, e);
         }
     }
 

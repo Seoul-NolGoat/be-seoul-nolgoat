@@ -14,7 +14,7 @@ import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2UserDto;
 import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2UserImpl;
 import wad.seoul_nolgoat.auth.service.AuthService;
 import wad.seoul_nolgoat.auth.util.AuthUrlManager;
-import wad.seoul_nolgoat.exception.ApiException;
+import wad.seoul_nolgoat.exception.ApplicationException;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -37,7 +37,7 @@ public class AuthFilter extends OncePerRequestFilter {
             authService.verifyAuthorizationHeader(authorizationHeader);
             accessToken = authorizationHeader.split(" ")[1];
             authService.verifyAccessToken(accessToken);
-        } catch (JwtException | ApiException e) {
+        } catch (JwtException | ApplicationException e) {
             request.setAttribute("exception", e);
             filterChain.doFilter(request, response);
             return;
