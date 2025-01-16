@@ -45,7 +45,7 @@ public class S3Service {
             );
             imageUrl = s3Resource.getURL().toString();
         } catch (IOException e) {
-            throw new ApiException(FILE_READ_FAILED);
+            throw new ApiException(FILE_READ_FAILED, e);
         }
 
         return imageUrl;
@@ -60,7 +60,7 @@ public class S3Service {
 
             s3Template.deleteObject(bucket, decodedKey);
         } catch (MalformedURLException e) {
-            throw new ApiException(INVALID_FILE_URL_FORMAT);
+            throw new ApiException(INVALID_FILE_URL_FORMAT, e);
         }
     }
 

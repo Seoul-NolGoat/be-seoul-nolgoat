@@ -55,9 +55,9 @@ public class MailService {
 
             mailSender.send(message);
         } catch (MessagingException e) {
-            throw new ApiException(MAIL_SEND_FAILED);
+            throw new ApiException(MAIL_SEND_FAILED, e);
         } catch (UnsupportedEncodingException e) {
-            throw new ApiException(MAIL_SENDER_ENCODING_FAILED);
+            throw new ApiException(MAIL_SENDER_ENCODING_FAILED, e);
         }
     }
 
