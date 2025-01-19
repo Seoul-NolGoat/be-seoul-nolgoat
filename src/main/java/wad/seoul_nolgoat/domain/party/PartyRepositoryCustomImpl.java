@@ -35,9 +35,8 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                                 party.id,
                                 party.title,
                                 party.content,
-                                party.imageUrl,
                                 party.maxCapacity,
-                                party.deadline,
+                                party.meetingDate,
                                 party.isClosed,
                                 party.administrativeDistrict,
                                 party.currentCount,
@@ -79,7 +78,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                                 party.id,
                                 party.title,
                                 party.maxCapacity,
-                                party.deadline,
+                                party.meetingDate,
                                 party.isClosed,
                                 party.administrativeDistrict,
                                 party.currentCount,
@@ -120,7 +119,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                                 party.id,
                                 party.title,
                                 party.maxCapacity,
-                                party.deadline,
+                                party.meetingDate,
                                 party.isClosed,
                                 party.administrativeDistrict,
                                 party.currentCount
@@ -156,7 +155,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                                 party.id,
                                 party.title,
                                 party.maxCapacity,
-                                party.deadline,
+                                party.meetingDate,
                                 party.isClosed,
                                 party.administrativeDistrict,
                                 party.currentCount,
@@ -207,7 +206,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
 
     private OrderSpecifier<?> getOrderSpecifier(String sortField) {
         if (sortField.equals("deadline")) {
-            return party.deadline.desc();
+            return party.meetingDate.desc();
         }
         return party.createdDate.desc();
     }

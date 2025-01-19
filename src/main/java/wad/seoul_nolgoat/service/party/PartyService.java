@@ -6,12 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import wad.seoul_nolgoat.domain.party.*;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApplicationException;
-import wad.seoul_nolgoat.service.s3.S3Service;
 import wad.seoul_nolgoat.util.mapper.PartyMapper;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
 import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
@@ -20,7 +18,6 @@ import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
 import wad.seoul_nolgoat.web.party.response.PartyListDto;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
@@ -31,32 +28,21 @@ public class PartyService {
 
     private final PartyRepository partyRepository;
     private final UserRepository userRepository;
-    private final S3Service s3Service;
     private final PartyUserRepository partyUserRepository;
 
     // 파티 생성
     @Transactional
     public Long createParty(
             String loginId,
-            PartySaveDto partySaveDto,
-            MultipartFile image
+            PartySaveDto partySaveDto
     ) {
         validateAdministrativeDistrict(partySaveDto.getAdministrativeDistrict());
 
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
 
-        Optional<String> imageUrl = Optional.ofNullable(image)
-                .filter(file -> !file.isEmpty())
-                .map(s3Service::saveFile);
-
-        return partyRepository.save(
-                PartyMapper.toEntity(
-                        partySaveDto,
-                        user,
-                        imageUrl.orElse(null)
-                )
-        ).getId();
+        return partyRepository.save(PartyMapper.toEntity(partySaveDto, user))
+                .getId();
     }
 
     // 파티 참여
@@ -82,7 +68,7 @@ public class PartyService {
                         .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
 
                 // 파티 마감 날짜 확인
-                LocalDateTime deadline = party.getDeadline();
+                LocalDateTime deadline = party.getMeetingDate();
                 if (deadline.isBefore(currentTime) || deadline.isEqual(currentTime)) {
                     party.close();
                     throw new ApplicationException(PARTY_ALREADY_CLOSED);
@@ -107,7 +93,7 @@ public class PartyService {
                 partyUserRepository.save(partyUser);
 
                 // 인원 초과 여부 검증 및 참여자 수 증가
-                party.addParticipant();
+                party.incrementParticipantCount();
 
                 break;
             } catch (ObjectOptimisticLockingFailureException e) {
@@ -156,11 +142,6 @@ public class PartyService {
             throw new ApplicationException(PARTY_ALREADY_DELETED);
         }
 
-        // s3 이미지 파일 삭제
-        if (party.hasImageUrl()) {
-            s3Service.deleteFile(party.getImageUrl());
-        }
-
         party.delete();
     }
 
@@ -186,7 +167,7 @@ public class PartyService {
         partyUserRepository.delete(partyUser);
 
         // 참여자 수 감소
-        party.removeParticipant();
+        party.decrementParticipantCount();
     }
 
     // 파티 단건 조회
@@ -195,7 +176,7 @@ public class PartyService {
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
 
-        if (party.getDeadline().isBefore(currentTime)) {
+        if (party.getMeetingDate().isBefore(currentTime)) {
             party.close();
         }
 

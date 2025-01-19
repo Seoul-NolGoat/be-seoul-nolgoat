@@ -57,7 +57,7 @@ public class PartyServiceTest {
         PartySaveDto partySaveDto = new PartySaveDto(title, content, maxCapacity, deadline, administrativeDistrict);
 
         // when
-        Long partyId = partyService.createParty(loginId, partySaveDto, null);
+        Long partyId = partyService.createParty(loginId, partySaveDto);
 
         // then
         assertThat(partyRepository.findById(partyId).get())
@@ -78,7 +78,7 @@ public class PartyServiceTest {
         PartySaveDto partySaveDto = new PartySaveDto(title, content, maxCapacity, deadline, administrativeDistrict);
 
         // when // then
-        assertThatThrownBy(() -> partyService.createParty(loginId, partySaveDto, null))
+        assertThatThrownBy(() -> partyService.createParty(loginId, partySaveDto))
                 .isInstanceOf(ApplicationException.class)
                 .hasMessage(INVALID_ADMINISTRATIVE_DISTRICT.getMessage());
     }

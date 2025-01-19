@@ -31,16 +31,16 @@ VALUES ('user1', 'password1', 'UserA', null, 'user1@nolgoat.site', false),
        ('user30', 'password30', 'UserDD', null, 'user30@nolgoat.site', false),
        ('user31', 'password31', 'UserEE', null, 'user31@nolgoat.site', false);
 
-INSERT INTO party (version, title, content, image_url, max_capacity, current_count, deadline, administrative_district,
+INSERT INTO party (version, title, content, max_capacity, current_count, meetingDate, administrative_district,
                    is_closed,
                    is_deleted,
                    host_id)
-VALUES (0, 'PartyA', 'Party Content A', null, 6, 1, '2024-12-31T23:59:59', 'GANGNAM_GU', false, false, 1),
-       (0, 'PartyB', 'Party Content B', null, 6, 1, '2024-12-31T23:59:59', 'GANGNAM_GU', false, false, 1),
-       (0, 'PartyC', 'Party Content C', null, 4, 1, '2024-11-30T12:00:00', 'MAPO_GU', false, false, 3),
-       (0, 'PartyD', 'Party Content D', null, 4, 1, '2024-11-11T11:11:11', 'GANGNAM_GU', true, false, 1),
-       (0, 'PartyE', 'Party Content E', null, 4, 1, '2024-12-12T12:12:12', 'SEOCHO_GU', true, true, 4),
-       (0, 'PartyF', 'Party Content F', null, 5, 1, '2024-11-15T18:00:00', 'SEOCHO_GU', false, false, 2);
+VALUES (0, 'PartyA', 'Party Content A', 6, 1, '2024-12-31T23:59:59', 'GANGNAM_GU', false, false, 1),
+       (0, 'PartyB', 'Party Content B', 6, 1, '2024-12-31T23:59:59', 'GANGNAM_GU', false, false, 1),
+       (0, 'PartyC', 'Party Content C', 4, 1, '2024-11-30T12:00:00', 'MAPO_GU', false, false, 3),
+       (0, 'PartyD', 'Party Content D', 4, 1, '2024-11-11T11:11:11', 'GANGNAM_GU', true, false, 1),
+       (0, 'PartyE', 'Party Content E', 4, 1, '2024-12-12T12:12:12', 'SEOCHO_GU', true, true, 4),
+       (0, 'PartyF', 'Party Content F', 5, 1, '2024-11-15T18:00:00', 'SEOCHO_GU', false, false, 2);
 
 INSERT INTO inquiry (user_id, title, content, is_public, created_date, last_modified_date)
 VALUES (1, 'InquiryA', 'ContentA', true, '2024-12-01T10:00:00', '2024-12-01T10:10:00'),
