@@ -6,6 +6,7 @@ import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_TOKEN_FORMAT;
 import static wad.seoul_nolgoat.exception.ErrorCode.TOKEN_EXPIRED;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
@@ -27,6 +29,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         Object exception = request.getAttribute("exception");
+        log.info("Authentication exception occurred", (Exception) exception);
         if (exception instanceof ExpiredJwtException) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json;charset=UTF-8");
