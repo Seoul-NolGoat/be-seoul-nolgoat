@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -20,6 +21,7 @@ import java.util.Random;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class MailService {
@@ -54,6 +56,7 @@ public class MailService {
             helper.addInline("logo-icon", new ClassPathResource("static/images/logo-icon.png"));
 
             mailSender.send(message);
+            log.info("Email sent successfully [RECIPIENT:{}]", email);
         } catch (MessagingException e) {
             throw new ApplicationException(MAIL_SEND_FAILED, e);
         } catch (UnsupportedEncodingException e) {
