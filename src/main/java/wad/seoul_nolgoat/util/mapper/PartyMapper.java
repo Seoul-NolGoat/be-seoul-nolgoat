@@ -11,7 +11,7 @@ public class PartyMapper {
                 partySaveDto.getTitle(),
                 partySaveDto.getContent(),
                 partySaveDto.getMaxCapacity(),
-                partySaveDto.getDeadline(),
+                partySaveDto.getMeetingDate(),
                 partySaveDto.getAdministrativeDistrict(),
                 user
         );

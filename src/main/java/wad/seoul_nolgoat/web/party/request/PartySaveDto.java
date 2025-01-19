@@ -23,8 +23,8 @@ public class PartySaveDto {
     private final int maxCapacity;
 
     @NotNull
-    @Future(message = "마감시간은 현재 시간 이후여야 합니다.")
-    private final LocalDateTime deadline;
+    @Future(message = "모임일은 현재 시간 이후여야 합니다.")
+    private final LocalDateTime meetingDate;
 
     @NotBlank
     private final String administrativeDistrict;
