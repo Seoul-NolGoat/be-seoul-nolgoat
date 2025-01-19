@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.party.*;
 import wad.seoul_nolgoat.domain.user.User;
@@ -47,11 +48,7 @@ public class PartyService {
 
     // 파티 참여
     @Transactional
-    public void joinParty(
-            String loginId,
-            Long partyId,
-            LocalDateTime currentTime
-    ) {
+    public void joinParty(String loginId, Long partyId) {
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
 
@@ -64,36 +61,7 @@ public class PartyService {
 
         while (true) {
             try {
-                Party party = partyRepository.findByIdWithFetchJoin(partyId)
-                        .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
-
-                // 파티 마감 날짜 확인
-                LocalDateTime deadline = party.getMeetingDate();
-                if (deadline.isBefore(currentTime) || deadline.isEqual(currentTime)) {
-                    party.close();
-                    throw new ApplicationException(PARTY_ALREADY_CLOSED);
-                }
-
-                // 파티 삭제 여부 확인
-                if (party.isDeleted()) {
-                    throw new ApplicationException(PARTY_ALREADY_DELETED);
-                }
-
-                // 파티 마감 여부 확인
-                if (party.isClosed()) {
-                    throw new ApplicationException(PARTY_ALREADY_CLOSED);
-                }
-
-                // 파티 생성자는 본인의 파티에 참여 신청 불가능
-                if (party.getHost().getId().equals(userId)) {
-                    throw new ApplicationException(PARTY_CREATOR_CANNOT_JOIN);
-                }
-
-                PartyUser partyUser = new PartyUser(party, user);
-                partyUserRepository.save(partyUser);
-
-                // 인원 초과 여부 검증 및 참여자 수 증가
-                party.incrementParticipantCount();
+                doJoinParty(userId, partyId);
 
                 break;
             } catch (ObjectOptimisticLockingFailureException e) {
@@ -104,6 +72,35 @@ public class PartyService {
                 }
             }
         }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    void doJoinParty(Long userId, Long partyId) {
+        Party party = partyRepository.findByIdWithFetchJoin(partyId)
+                .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
+
+        // 파티 삭제 여부 확인
+        if (party.isDeleted()) {
+            throw new ApplicationException(PARTY_ALREADY_DELETED);
+        }
+
+        // 파티 마감 여부 확인
+        if (party.isClosed()) {
+            throw new ApplicationException(PARTY_ALREADY_CLOSED);
+        }
+
+        // 파티 생성자는 본인의 파티에 참여 신청 불가능
+        if (party.getHost().getId().equals(userId)) {
+            throw new ApplicationException(PARTY_CREATOR_CANNOT_JOIN);
+        }
+
+        // 인원 초과 여부 검증 및 참여자 수 증가
+        party.incrementParticipantCount();
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+        PartyUser partyUser = new PartyUser(party, user);
+        partyUserRepository.save(partyUser);
     }
 
     // 파티 수정
