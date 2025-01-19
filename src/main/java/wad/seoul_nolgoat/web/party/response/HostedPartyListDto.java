@@ -15,6 +15,7 @@ public class HostedPartyListDto {
     private final boolean isClosed;
     private final String district;
     private final int currentCount;
+    private final LocalDateTime createdDate;
 
     public HostedPartyListDto(
             Long partyId,
@@ -23,7 +24,8 @@ public class HostedPartyListDto {
             LocalDateTime meetingDate,
             boolean isClosed,
             AdministrativeDistrict district,
-            int currentCount
+            int currentCount,
+            LocalDateTime createdDate
     ) {
         this.partyId = partyId;
         this.title = title;
@@ -32,5 +34,6 @@ public class HostedPartyListDto {
         this.isClosed = isClosed;
         this.district = district.getDisplayName();
         this.currentCount = currentCount;
+        this.createdDate = createdDate;
     }
 }

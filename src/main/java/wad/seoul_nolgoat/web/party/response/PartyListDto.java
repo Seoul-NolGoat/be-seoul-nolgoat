@@ -15,6 +15,7 @@ public class PartyListDto {
     private final boolean isClosed;
     private final String district;
     private final int currentCount;
+    private final LocalDateTime createdDate;
     private final Long hostId;
     private final String hostNickname;
     private final String hostProfileImage;
@@ -27,6 +28,7 @@ public class PartyListDto {
             boolean isClosed,
             AdministrativeDistrict district,
             int currentCount,
+            LocalDateTime createdDate,
             Long hostId,
             String hostNickname,
             String hostProfileImage
@@ -38,6 +40,7 @@ public class PartyListDto {
         this.isClosed = isClosed;
         this.district = district.getDisplayName();
         this.currentCount = currentCount;
+        this.createdDate = createdDate;
         this.hostId = hostId;
         this.hostNickname = hostNickname;
         this.hostProfileImage = hostProfileImage;
