@@ -400,7 +400,7 @@ public class SearchService {
                         }
                         throw new ApplicationException(INVALID_GATHERING_ROUND);
                     } catch (TMapException e) {
-                        log.error("TMap Error : {}", e.getMessage());
+                        log.info("TMap exception occurred", e);
                         int totalDistance = DistanceCalculator.calculateTotalDistanceForGradeWithFallback(
                                 totalRounds,
                                 combination,

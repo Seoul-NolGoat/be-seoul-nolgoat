@@ -49,7 +49,7 @@ public class SortService {
                     totalRounds
             );
         } catch (TMapException e) {
-            log.error("TMap Error : {}", e.getMessage());
+            log.info("TMap exception occurred", e);
             return groupAndShuffleByDistance(combinationsUnderBaseDistance);
         }
 
