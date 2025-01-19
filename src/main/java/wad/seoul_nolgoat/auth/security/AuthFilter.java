@@ -57,7 +57,7 @@ public class AuthFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
         return Arrays.stream(AuthUrlManager.getUserRequestMatchers())
                 .noneMatch(matcher -> matcher.matches(request));
     }
