@@ -1,5 +1,6 @@
 package wad.seoul_nolgoat.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,11 +15,13 @@ import java.util.Map;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ErrorResponse> handleApplicationException(ApplicationException e) {
+        log.info("Application exception occurred", e);
         ErrorCode errorCode = e.getErrorCode();
 
         return ResponseEntity
@@ -28,6 +31,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TMapException.class)
     public ResponseEntity<ErrorResponse> handleTMapException(TMapException e) {
+        log.info("TMap exception occurred", e);
         ErrorCode errorCode = e.getErrorCode();
 
         return ResponseEntity
@@ -37,6 +41,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
+        log.info("Validation exception occurred", e);
         Map<String, String> errors = new HashMap<>();
         for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
             errors.put(fieldError.getField(), fieldError.getDefaultMessage());
@@ -50,6 +55,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MissingRequestCookieException.class)
     public ResponseEntity<ErrorResponse> handleMissingRequestCookieException(MissingRequestCookieException e) {
+        log.info("MissingRequestCookie exception occurred", e);
         ErrorCode errorCode = MISSING_COOKIE;
 
         return ResponseEntity
@@ -59,6 +65,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MissingRequestHeaderException.class)
     public ResponseEntity<ErrorResponse> handleMissingRequestHeaderException(MissingRequestHeaderException e) {
+        log.info("MissingRequestHeader exception occurred", e);
         ErrorCode errorCode = MISSING_HEADER;
 
         return ResponseEntity
