@@ -1,7 +1,6 @@
 package wad.seoul_nolgoat.auth.oauth2.security;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -15,7 +14,6 @@ import wad.seoul_nolgoat.exception.ApplicationException;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.UNSUPPORTED_PROVIDER;
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -38,7 +36,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (registrationId.equals(GOOGLE)) {
             return authService.processOAuth2User(new GoogleResponse(oAuth2User.getAttributes()));
         }
-        log.error("Unsupported OAuth2 provider: {}", registrationId);
         throw new ApplicationException(UNSUPPORTED_PROVIDER);
     }
 }
