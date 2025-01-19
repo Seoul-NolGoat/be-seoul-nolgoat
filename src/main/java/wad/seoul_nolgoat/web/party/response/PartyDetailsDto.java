@@ -12,9 +12,8 @@ public class PartyDetailsDto {
     private final Long id;
     private final String title;
     private final String content;
-    private final String imageUrl;
     private final int maxCapacity;
-    private final LocalDateTime deadline;
+    private final LocalDateTime meetingDate;
     private final boolean isClosed;
     private final String district;
     private final int currentCount;
@@ -27,9 +26,8 @@ public class PartyDetailsDto {
             Long id,
             String title,
             String content,
-            String imageUrl,
             int maxCapacity,
-            LocalDateTime deadline,
+            LocalDateTime meetingDate,
             boolean isClosed,
             AdministrativeDistrict district,
             int currentCount,
@@ -41,9 +39,8 @@ public class PartyDetailsDto {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.imageUrl = imageUrl;
         this.maxCapacity = maxCapacity;
-        this.deadline = deadline;
+        this.meetingDate = meetingDate;
         this.isClosed = isClosed;
         this.district = district.getDisplayName();
         this.currentCount = currentCount;

@@ -18,8 +18,6 @@ import wad.seoul_nolgoat.web.party.response.HostedPartyListDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
 import wad.seoul_nolgoat.web.party.response.PartyListDto;
 
-import java.time.LocalDateTime;
-
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
@@ -169,12 +167,9 @@ public class PartyService {
 
     // 파티 단건 조회
     @Transactional
-    public PartyDetailsDto findPartyDetailsById(Long partyId, LocalDateTime currentTime) {
-        Party party = partyRepository.findById(partyId)
-                .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
-
-        if (party.getMeetingDate().isBefore(currentTime)) {
-            party.close();
+    public PartyDetailsDto findPartyDetailsById(Long partyId) {
+        if (!partyRepository.existsById(partyId)) {
+            throw new ApplicationException(PARTY_NOT_FOUND);
         }
 
         return partyRepository.findPartyDetailsById(partyId);
