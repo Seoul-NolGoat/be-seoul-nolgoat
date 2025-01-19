@@ -39,7 +39,7 @@ public class SocialClientService {
 
     public void unlinkKakao(String accessToken) {
         UnlinkResponse response = kakaoApiClient.unlink(accessToken);
-        log.info("Kakao Unlink 회원번호 : {}", response.getId());
+        log.info("kakao_{} unlink successfully", response);
     }
 
     public TokenResponse reissueGoogleToken(String refreshToken) {
@@ -53,6 +53,6 @@ public class SocialClientService {
 
     public void unlinkGoogle(String accessToken) {
         googleClient.unlink(accessToken);
-        log.info("Google Unlink");
+        log.info("google unlink successfully");
     }
 }
