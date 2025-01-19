@@ -26,10 +26,9 @@ public class Party extends BaseTimeEntity {
 
     private String title;
     private String content;
-    private String imageUrl;
     private int maxCapacity;
     private int currentCount = 1;
-    private LocalDateTime deadline;
+    private LocalDateTime meetingDate;
     private boolean isClosed;
     private boolean isDeleted;
 
@@ -42,17 +41,15 @@ public class Party extends BaseTimeEntity {
     public Party(
             String title,
             String content,
-            String imageUrl,
             int maxCapacity,
-            LocalDateTime deadline,
+            LocalDateTime meetingDate,
             String district,
             User host
     ) {
         this.title = title;
         this.content = content;
-        this.imageUrl = imageUrl;
         this.maxCapacity = maxCapacity;
-        this.deadline = deadline;
+        this.meetingDate = meetingDate;
         this.isClosed = false;
         this.isDeleted = false;
         this.administrativeDistrict = AdministrativeDistrict.valueOf(district);
@@ -67,18 +64,14 @@ public class Party extends BaseTimeEntity {
         isDeleted = true;
     }
 
-    public boolean hasImageUrl() {
-        return this.imageUrl != null && !this.imageUrl.isEmpty();
-    }
-
-    public void addParticipant() {
+    public void incrementParticipantCount() {
         if (currentCount >= maxCapacity) {
             throw new ApplicationException(PARTY_CAPACITY_EXCEEDED);
         }
         currentCount++;
     }
 
-    public void removeParticipant() {
+    public void decrementParticipantCount() {
         currentCount--;
     }
 }
