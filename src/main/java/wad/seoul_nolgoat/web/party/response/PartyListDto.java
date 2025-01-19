@@ -11,7 +11,7 @@ public class PartyListDto {
     private final Long partyId;
     private final String title;
     private final int maxCapacity;
-    private final LocalDateTime deadline;
+    private final LocalDateTime meetingDate;
     private final boolean isClosed;
     private final String district;
     private final int currentCount;
@@ -23,7 +23,7 @@ public class PartyListDto {
             Long partyId,
             String title,
             int maxCapacity,
-            LocalDateTime deadline,
+            LocalDateTime meetingDate,
             boolean isClosed,
             AdministrativeDistrict district,
             int currentCount,
@@ -34,7 +34,7 @@ public class PartyListDto {
         this.partyId = partyId;
         this.title = title;
         this.maxCapacity = maxCapacity;
-        this.deadline = deadline;
+        this.meetingDate = meetingDate;
         this.isClosed = isClosed;
         this.district = district.getDisplayName();
         this.currentCount = currentCount;
