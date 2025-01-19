@@ -7,7 +7,7 @@ import lombok.Getter;
 @Builder
 public class PartySearchConditionDto {
 
-    private String status; // opened or closed or null
+    private String status; // 마감 여부 (opened or closed)
     private String district; // 구역
 
     @Builder.Default
@@ -17,5 +17,5 @@ public class PartySearchConditionDto {
     private int size = 10;
 
     @Builder.Default
-    private String sortField = "createdDate"; // 정렬 대상
+    private String sortField = "createdDate"; // 정렬 대상 (createdDate or meetingDate)
 }
