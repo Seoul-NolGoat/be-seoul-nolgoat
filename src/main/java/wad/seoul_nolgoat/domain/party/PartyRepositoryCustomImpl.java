@@ -40,6 +40,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                                 party.isClosed,
                                 party.administrativeDistrict,
                                 party.currentCount,
+                                party.createdDate,
                                 party.host.id,
                                 party.host.nickname,
                                 party.host.profileImage,
@@ -82,6 +83,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                                 party.isClosed,
                                 party.administrativeDistrict,
                                 party.currentCount,
+                                party.createdDate,
                                 party.host.id,
                                 party.host.nickname,
                                 party.host.profileImage
@@ -122,7 +124,8 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                                 party.meetingDate,
                                 party.isClosed,
                                 party.administrativeDistrict,
-                                party.currentCount
+                                party.currentCount,
+                                party.createdDate
                         )
                 )
                 .from(party)
@@ -159,6 +162,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                                 party.isClosed,
                                 party.administrativeDistrict,
                                 party.currentCount,
+                                party.createdDate,
                                 party.host.id,
                                 party.host.nickname,
                                 party.host.profileImage
