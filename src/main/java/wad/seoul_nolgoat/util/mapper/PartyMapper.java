@@ -6,15 +6,10 @@ import wad.seoul_nolgoat.web.party.request.PartySaveDto;
 
 public class PartyMapper {
 
-    public static Party toEntity(
-            PartySaveDto partySaveDto,
-            User user,
-            String imageUrl
-    ) {
+    public static Party toEntity(PartySaveDto partySaveDto, User user) {
         return new Party(
                 partySaveDto.getTitle(),
                 partySaveDto.getContent(),
-                imageUrl,
                 partySaveDto.getMaxCapacity(),
                 partySaveDto.getDeadline(),
                 partySaveDto.getAdministrativeDistrict(),
