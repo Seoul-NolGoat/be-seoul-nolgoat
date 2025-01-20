@@ -68,8 +68,8 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
     @Override
     public Page<PartyListDto> findAllWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto) {
         Pageable pageable = PageRequest.of(partySearchConditionDto.getPage(), partySearchConditionDto.getSize());
-        String status = partySearchConditionDto.getStatus();
-        String district = partySearchConditionDto.getDistrict();
+        PartyStatus status = PartyStatus.fromString(partySearchConditionDto.getStatus());
+        AdministrativeDistrict district = AdministrativeDistrict.fromString(partySearchConditionDto.getDistrict());
         String sortField = partySearchConditionDto.getSortField();
 
         List<PartyListDto> parties = jpaQueryFactory
@@ -92,7 +92,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                 .from(party)
                 .join(party.host)
                 .where(
-                        buildSearchCondition(status, AdministrativeDistrict.valueOf(district)),
+                        buildSearchCondition(status, district),
                         party.isDeleted.isFalse()
                 )
                 .offset(pageable.getOffset())
@@ -105,7 +105,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                 .from(party)
                 .join(party.host)
                 .where(
-                        buildSearchCondition(status, AdministrativeDistrict.valueOf(district)),
+                        buildSearchCondition(status, district),
                         party.isDeleted.isFalse()
                 );
 
@@ -195,21 +195,42 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
         return PageableExecutionUtils.getPage(parties, pageable, countQuery::fetchOne);
     }
 
-    private BooleanExpression buildSearchCondition(String status, AdministrativeDistrict district) {
-        if (status == null) {
-            return party.administrativeDistrict.eq(district);
+    private BooleanExpression buildSearchCondition(PartyStatus status, AdministrativeDistrict district) {
+        BooleanExpression statusCondition = createStatusCondition(status);
+        BooleanExpression districtCondition = createDistrictCondition(district);
+
+        if (statusCondition == null && districtCondition == null) {
+            return null;
         }
-        if (status.equals("closed")) {
-            return party.isClosed.isTrue().and(party.administrativeDistrict.eq(district));
+        if (statusCondition == null) {
+            return districtCondition;
         }
-        if (status.equals("opened")) {
-            return party.isClosed.isFalse().and(party.administrativeDistrict.eq(district));
+        if (districtCondition == null) {
+            return statusCondition;
+        }
+
+        return statusCondition.and(districtCondition);
+    }
+
+    private BooleanExpression createStatusCondition(PartyStatus status) {
+        if (status.equals(PartyStatus.OPENED)) {
+            return party.isClosed.isFalse();
+        }
+        if (status.equals(PartyStatus.CLOSED)) {
+            return party.isClosed.isTrue();
         }
         return null;
     }
 
+    private BooleanExpression createDistrictCondition(AdministrativeDistrict district) {
+        if (district == null) {
+            return null;
+        }
+        return party.administrativeDistrict.eq(district);
+    }
+
     private OrderSpecifier<?> getOrderSpecifier(String sortField) {
-        if (sortField.equals("deadline")) {
+        if (sortField.equals("meetingDate")) {
             return party.meetingDate.desc();
         }
         return party.createdDate.desc();
