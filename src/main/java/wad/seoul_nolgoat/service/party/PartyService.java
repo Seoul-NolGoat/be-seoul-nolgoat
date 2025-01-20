@@ -105,7 +105,7 @@ public class PartyService {
 
     // 파티 마감
     @Transactional
-    public void closeById(String loginId, Long partyId) {
+    public void close(String loginId, Long partyId) {
         Party party = partyRepository.findByIdWithFetchJoin(partyId)
                 .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
 
@@ -121,7 +121,7 @@ public class PartyService {
 
     // 파티 수정
     @Transactional
-    public void updateParty(
+    public void update(
             PartyUpdateDto partyUpdateDto,
             String loginId,
             Long partyId
@@ -146,7 +146,7 @@ public class PartyService {
 
     // 파티 삭제
     @Transactional
-    public void deleteById(String loginId, Long partyId) {
+    public void delete(String loginId, Long partyId) {
         Party party = partyRepository.findByIdWithFetchJoin(partyId)
                 .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
 
