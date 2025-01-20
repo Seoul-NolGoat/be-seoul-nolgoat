@@ -14,6 +14,7 @@ import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.util.mapper.PartyMapper;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
 import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
+import wad.seoul_nolgoat.web.party.request.PartyUpdateDto;
 import wad.seoul_nolgoat.web.party.response.HostedPartyListDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
 import wad.seoul_nolgoat.web.party.response.PartyListDto;
@@ -101,12 +102,6 @@ public class PartyService {
         partyUserRepository.save(partyUser);
     }
 
-    // 파티 수정
-    @Transactional
-    public void updateParty() {
-
-    }
-
     // 파티 마감
     @Transactional
     public void closeById(String loginId, Long partyId) {
@@ -121,6 +116,31 @@ public class PartyService {
             throw new ApplicationException(PARTY_ALREADY_CLOSED);
         }
         party.close();
+    }
+
+    // 파티 수정
+    @Transactional
+    public void updateParty(
+            PartyUpdateDto partyUpdateDto,
+            String loginId,
+            Long partyId
+    ) {
+        Party party = partyRepository.findByIdWithFetchJoin(partyId)
+                .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
+
+        if (!party.getHost().getLoginId().equals(loginId)) {
+            throw new ApplicationException(PARTY_UPDATE_NOT_AUTHORIZED);
+        }
+
+        if (party.isDeleted()) {
+            throw new ApplicationException(PARTY_ALREADY_DELETED);
+        }
+
+        if (partyUpdateDto.getMaxCapacity() < party.getCurrentCount()) {
+            throw new ApplicationException(INVALID_MAX_CAPACITY);
+        }
+
+        party.update(partyUpdateDto);
     }
 
     // 파티 삭제

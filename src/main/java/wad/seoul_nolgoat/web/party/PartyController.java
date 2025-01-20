@@ -2,6 +2,7 @@ package wad.seoul_nolgoat.web.party;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.party.PartyService;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
 import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
+import wad.seoul_nolgoat.web.party.request.PartyUpdateDto;
 import wad.seoul_nolgoat.web.party.response.HostedPartyListDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
 import wad.seoul_nolgoat.web.party.response.PartyListDto;
@@ -31,7 +33,7 @@ public class PartyController {
     @PostMapping
     public ResponseEntity<Void> createParty(
             @AuthenticationPrincipal OAuth2User loginUser,
-            @RequestPart("party") PartySaveDto partySaveDto,
+            @Valid @RequestBody PartySaveDto partySaveDto,
             UriComponentsBuilder uriComponentsBuilder
     ) {
         Long partyId = partyService.createParty(loginUser.getName(), partySaveDto);
@@ -64,6 +66,25 @@ public class PartyController {
                 .ok()
                 .build();
     }
+
+    @Operation(summary = "파티 수정")
+    @PatchMapping("/{partyId}")
+    public ResponseEntity<Void> updateById(
+            @AuthenticationPrincipal OAuth2User loginUser,
+            @Valid @RequestBody PartyUpdateDto partyUpdateDto,
+            @PathVariable Long partyId
+    ) {
+        partyService.updateParty(
+                partyUpdateDto,
+                loginUser.getName(),
+                partyId
+        );
+
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
+
 
     @Operation(summary = "파티 삭제")
     @DeleteMapping("/{partyId}")
