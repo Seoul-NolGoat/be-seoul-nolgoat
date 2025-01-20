@@ -13,8 +13,8 @@ import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.util.mapper.CommentMapper;
-import wad.seoul_nolgoat.web.comment.dto.CommentSaveDto;
-import wad.seoul_nolgoat.web.comment.dto.CommentUpdateDto;
+import wad.seoul_nolgoat.web.comment.dto.request.CommentSaveDto;
+import wad.seoul_nolgoat.web.comment.dto.request.CommentUpdateDto;
 import wad.seoul_nolgoat.web.comment.dto.response.WrittenCommentListDto;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
