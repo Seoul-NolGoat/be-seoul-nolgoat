@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.comment.CommentService;
 import wad.seoul_nolgoat.web.comment.dto.CommentSaveDto;
+import wad.seoul_nolgoat.web.comment.dto.CommentUpdateDto;
 
 import java.net.URI;
 
@@ -42,6 +43,24 @@ public class CommentController {
 
         return ResponseEntity
                 .created(location)
+                .build();
+    }
+
+    @Operation(summary = "댓글 수정")
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<Void> update(
+            @AuthenticationPrincipal OAuth2User loginUser,
+            @Valid @RequestBody CommentUpdateDto commentUpdateDto,
+            @PathVariable Long commentId
+    ) {
+        commentService.update(
+                loginUser.getName(),
+                commentUpdateDto,
+                commentId
+        );
+
+        return ResponseEntity
+                .noContent()
                 .build();
     }
 }
