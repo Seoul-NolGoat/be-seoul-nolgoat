@@ -7,10 +7,7 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import wad.seoul_nolgoat.domain.party.Party;
-import wad.seoul_nolgoat.domain.party.PartyRepository;
-import wad.seoul_nolgoat.domain.party.PartyUser;
-import wad.seoul_nolgoat.domain.party.PartyUserRepository;
+import wad.seoul_nolgoat.domain.party.*;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApplicationException;
@@ -141,7 +138,13 @@ public class PartyService {
             throw new ApplicationException(INVALID_MAX_CAPACITY);
         }
 
-        party.update(partyUpdateDto);
+        party.update(
+                partyUpdateDto.getTitle(),
+                partyUpdateDto.getContent(),
+                partyUpdateDto.getMaxCapacity(),
+                partyUpdateDto.getMeetingDate(),
+                AdministrativeDistrict.fromString(partyUpdateDto.getAdministrativeDistrict())
+        );
     }
 
     // 파티 삭제
