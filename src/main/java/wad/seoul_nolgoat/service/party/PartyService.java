@@ -7,7 +7,10 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import wad.seoul_nolgoat.domain.party.*;
+import wad.seoul_nolgoat.domain.party.Party;
+import wad.seoul_nolgoat.domain.party.PartyRepository;
+import wad.seoul_nolgoat.domain.party.PartyUser;
+import wad.seoul_nolgoat.domain.party.PartyUserRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApplicationException;
@@ -36,8 +39,6 @@ public class PartyService {
             String loginId,
             PartySaveDto partySaveDto
     ) {
-        validateAdministrativeDistrict(partySaveDto.getAdministrativeDistrict());
-
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
 
@@ -208,14 +209,5 @@ public class PartyService {
     // 내가 참여한 파티 목록 조회
     public Page<PartyListDto> findJoinedPartiesByLoginId(String loginId, Pageable pageable) {
         return partyRepository.findJoinedPartiesByLoginId(loginId, pageable);
-    }
-
-    // 유효한 지역인지 검증
-    private void validateAdministrativeDistrict(String administrativeDistrict) {
-        try {
-            AdministrativeDistrict.valueOf(administrativeDistrict);
-        } catch (IllegalArgumentException e) {
-            throw new ApplicationException(INVALID_ADMINISTRATIVE_DISTRICT, e);
-        }
     }
 }
