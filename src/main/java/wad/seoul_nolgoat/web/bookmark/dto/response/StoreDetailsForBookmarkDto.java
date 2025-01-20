@@ -6,9 +6,9 @@ import wad.seoul_nolgoat.domain.store.StoreType;
 
 @Getter
 @RequiredArgsConstructor
-public class StoreForBookmarkDto {
+public class StoreDetailsForBookmarkDto {
 
-    private final Long id;
+    private final Long bookmarkId;
     private final Long storeId;
     private final StoreType storeType;
     private final String name;

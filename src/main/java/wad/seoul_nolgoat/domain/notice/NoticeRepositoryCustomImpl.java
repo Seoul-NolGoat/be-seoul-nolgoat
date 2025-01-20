@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
-import wad.seoul_nolgoat.web.notice.dto.response.NoticeListDto;
+import wad.seoul_nolgoat.web.notice.dto.response.NoticeDetailsForListDto;
 
 import java.util.List;
 
@@ -19,11 +19,11 @@ public class NoticeRepositoryCustomImpl implements NoticeRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<NoticeListDto> findAllWithPagination(Pageable pageable) {
-        List<NoticeListDto> notices = jpaQueryFactory
+    public Page<NoticeDetailsForListDto> findAllWithPagination(Pageable pageable) {
+        List<NoticeDetailsForListDto> notices = jpaQueryFactory
                 .select(
                         Projections.constructor(
-                                NoticeListDto.class,
+                                NoticeDetailsForListDto.class,
                                 notice.id,
                                 notice.title,
                                 notice.views,

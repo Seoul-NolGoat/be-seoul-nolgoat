@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
-import wad.seoul_nolgoat.web.bookmark.dto.response.StoreForBookmarkDto;
+import wad.seoul_nolgoat.web.bookmark.dto.response.StoreDetailsForBookmarkDto;
 
 import java.util.List;
 
@@ -19,11 +19,11 @@ public class BookmarkRepositoryCustomImpl implements BookmarkRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<StoreForBookmarkDto> findBookmarkedStoresByLoginId(String loginId, Pageable pageable) {
-        List<StoreForBookmarkDto> bookmarks = jpaQueryFactory
+    public Page<StoreDetailsForBookmarkDto> findBookmarkedStoresByLoginId(String loginId, Pageable pageable) {
+        List<StoreDetailsForBookmarkDto> bookmarks = jpaQueryFactory
                 .select(
                         Projections.constructor(
-                                StoreForBookmarkDto.class,
+                                StoreDetailsForBookmarkDto.class,
                                 bookmark.id,
                                 bookmark.store.id,
                                 bookmark.store.storeType,

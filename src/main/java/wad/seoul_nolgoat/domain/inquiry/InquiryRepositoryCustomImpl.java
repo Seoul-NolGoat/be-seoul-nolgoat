@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
-import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryListDto;
+import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryDetailsForListDto;
 
 import java.util.List;
 
@@ -19,12 +19,12 @@ public class InquiryRepositoryCustomImpl implements InquiryRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<InquiryListDto> findAllWithPagination(Pageable pageable) {
+    public Page<InquiryDetailsForListDto> findAllWithPagination(Pageable pageable) {
 
-        List<InquiryListDto> inquiries = jpaQueryFactory
+        List<InquiryDetailsForListDto> inquiries = jpaQueryFactory
                 .select(
                         Projections.constructor(
-                                InquiryListDto.class,
+                                InquiryDetailsForListDto.class,
                                 inquiry.id,
                                 inquiry.title,
                                 inquiry.isPublic,

@@ -15,8 +15,8 @@ import wad.seoul_nolgoat.service.bookmark.BookmarkService;
 import wad.seoul_nolgoat.service.comment.CommentService;
 import wad.seoul_nolgoat.service.review.ReviewService;
 import wad.seoul_nolgoat.service.user.UserService;
-import wad.seoul_nolgoat.web.bookmark.dto.response.StoreForBookmarkDto;
-import wad.seoul_nolgoat.web.comment.dto.response.WrittenCommentListDto;
+import wad.seoul_nolgoat.web.bookmark.dto.response.StoreDetailsForBookmarkDto;
+import wad.seoul_nolgoat.web.comment.dto.response.CommentDetailsForUserDto;
 import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserProfileDto;
 
@@ -41,7 +41,7 @@ public class UserController {
 
     @Operation(summary = "내가 등록한 즐겨찾기 가게 목록 조회")
     @GetMapping("/me/bookmarks")
-    public ResponseEntity<Page<StoreForBookmarkDto>> showMyBookmarkedStores(
+    public ResponseEntity<Page<StoreDetailsForBookmarkDto>> showMyBookmarkedStores(
             @AuthenticationPrincipal OAuth2User loginUser,
             Pageable pageable
     ) {
@@ -61,7 +61,7 @@ public class UserController {
 
     @Operation(summary = "내가 작성한 댓글 목록 조회")
     @GetMapping("/me/comments")
-    public ResponseEntity<Page<WrittenCommentListDto>> showMyComments(
+    public ResponseEntity<Page<CommentDetailsForUserDto>> showMyComments(
             @AuthenticationPrincipal OAuth2User loginUser,
             Pageable pageable
     ) {

@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
-import wad.seoul_nolgoat.web.comment.dto.response.WrittenCommentListDto;
+import wad.seoul_nolgoat.web.comment.dto.response.CommentDetailsForUserDto;
 
 import java.util.List;
 
@@ -19,11 +19,11 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<WrittenCommentListDto> findCommentsByLoginId(String loginId, Pageable pageable) {
-        List<WrittenCommentListDto> comments = jpaQueryFactory
+    public Page<CommentDetailsForUserDto> findCommentsByLoginId(String loginId, Pageable pageable) {
+        List<CommentDetailsForUserDto> comments = jpaQueryFactory
                 .select(
                         Projections.constructor(
-                                WrittenCommentListDto.class,
+                                CommentDetailsForUserDto.class,
                                 comment.id,
                                 comment.content,
                                 comment.createdDate,

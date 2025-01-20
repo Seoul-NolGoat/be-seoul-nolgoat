@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wad.seoul_nolgoat.service.store.StoreService;
 import wad.seoul_nolgoat.web.store.dto.response.StoreDetailsDto;
-import wad.seoul_nolgoat.web.store.dto.response.StoreListDto;
+import wad.seoul_nolgoat.web.store.dto.response.StoreDetailsForListDto;
 
 @Tag(name = "가게")
 @RequiredArgsConstructor
@@ -27,7 +27,7 @@ public class StoreController {
 
     @Operation(summary = "가게 검색")
     @GetMapping("/search")
-    public Page<StoreListDto> searchStores(
+    public Page<StoreDetailsForListDto> searchStores(
             @RequestParam String searchInput,
             @RequestParam int page,
             @RequestParam int size

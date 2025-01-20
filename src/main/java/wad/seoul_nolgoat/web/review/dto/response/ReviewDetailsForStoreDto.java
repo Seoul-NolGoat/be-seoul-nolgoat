@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReviewDetailsForStoreDto {
 
-    private final Long id;
+    private final Long reviewId;
     private final int grade;
     private final String content;
     private final String imageUrl;

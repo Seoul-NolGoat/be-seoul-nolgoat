@@ -7,13 +7,10 @@ import java.time.LocalDateTime;
 
 @Getter
 @RequiredArgsConstructor
-public class CommentListForPartyDto {
+public class CommentDetailsForUserDto {
 
-    private final Long id;
+    private final Long commentId;
     private final String content;
     private final LocalDateTime createdDate;
     private final Long partyId;
-    private final Long writerId;
-    private final String writerNickname;
-    private final String writerProfileImage;
 }

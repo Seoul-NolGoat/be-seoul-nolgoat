@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class NoticeListDto {
+public class NoticeDetailsForListDto {
 
-    private Long id;
+    private Long noticeId;
     private String title;
     private int views;
     private Long userId;
@@ -19,8 +19,8 @@ public class NoticeListDto {
     private String userProfileImage;
     private String createDate;
 
-    public NoticeListDto(
-            Long id,
+    public NoticeDetailsForListDto(
+            Long noticeId,
             String title,
             int views,
             Long userId,
@@ -28,7 +28,7 @@ public class NoticeListDto {
             String userProfileImage,
             LocalDateTime createDate
     ) {
-        this.id = id;
+        this.noticeId = noticeId;
         this.title = title;
         this.views = views;
         this.userId = userId;

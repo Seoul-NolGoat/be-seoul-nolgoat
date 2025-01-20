@@ -5,8 +5,8 @@ import wad.seoul_nolgoat.domain.store.Store;
 import wad.seoul_nolgoat.service.search.dto.StoreForDistanceSortDto;
 import wad.seoul_nolgoat.service.search.dto.StoreForGradeSortDto;
 import wad.seoul_nolgoat.web.store.dto.response.StoreDetailsDto;
-import wad.seoul_nolgoat.web.store.dto.response.StoreForCombinationDto;
-import wad.seoul_nolgoat.web.store.dto.response.StoreListDto;
+import wad.seoul_nolgoat.web.store.dto.response.StoreDetailsForCombinationDto;
+import wad.seoul_nolgoat.web.store.dto.response.StoreDetailsForListDto;
 
 import java.util.List;
 import java.util.Objects;
@@ -35,8 +35,8 @@ public class StoreMapper {
         );
     }
 
-    public static StoreForCombinationDto toStoreForCombinationDto(StoreForDistanceSortDto storeForDistanceSortDto) {
-        return new StoreForCombinationDto(
+    public static StoreDetailsForCombinationDto toStoreForCombinationDto(StoreForDistanceSortDto storeForDistanceSortDto) {
+        return new StoreDetailsForCombinationDto(
                 storeForDistanceSortDto.getId(),
                 storeForDistanceSortDto.getName(),
                 storeForDistanceSortDto.getCoordinate(),
@@ -45,8 +45,8 @@ public class StoreMapper {
         );
     }
 
-    public static StoreForCombinationDto toStoreForCombinationDto(StoreForGradeSortDto storeForGradeSortDto) {
-        return new StoreForCombinationDto(
+    public static StoreDetailsForCombinationDto toStoreForCombinationDto(StoreForGradeSortDto storeForGradeSortDto) {
+        return new StoreDetailsForCombinationDto(
                 storeForGradeSortDto.getId(),
                 storeForGradeSortDto.getName(),
                 storeForGradeSortDto.getCoordinate(),
@@ -55,8 +55,8 @@ public class StoreMapper {
         );
     }
 
-    public static StoreListDto toStoreListDto(Store store) {
-        return new StoreListDto(
+    public static StoreDetailsForListDto toStoreListDto(Store store) {
+        return new StoreDetailsForListDto(
                 store.getId(),
                 store.getName(),
                 store.getCategory(),

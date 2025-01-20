@@ -12,7 +12,7 @@ import wad.seoul_nolgoat.domain.store.StoreRepository;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApplicationException;
-import wad.seoul_nolgoat.web.bookmark.dto.response.StoreForBookmarkDto;
+import wad.seoul_nolgoat.web.bookmark.dto.response.StoreDetailsForBookmarkDto;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
@@ -58,7 +58,7 @@ public class BookmarkService {
         bookmarkRepository.delete(bookmark);
     }
 
-    public Page<StoreForBookmarkDto> findBookmarkedStoresByLoginId(String loginId, Pageable pageable) {
+    public Page<StoreDetailsForBookmarkDto> findBookmarkedStoresByLoginId(String loginId, Pageable pageable) {
         return bookmarkRepository.findBookmarkedStoresByLoginId(loginId, pageable);
     }
 

@@ -14,7 +14,7 @@ import wad.seoul_nolgoat.util.mapper.NoticeMapper;
 import wad.seoul_nolgoat.web.notice.dto.request.NoticeSaveDto;
 import wad.seoul_nolgoat.web.notice.dto.request.NoticeUpdateDto;
 import wad.seoul_nolgoat.web.notice.dto.response.NoticeDetailsDto;
-import wad.seoul_nolgoat.web.notice.dto.response.NoticeListDto;
+import wad.seoul_nolgoat.web.notice.dto.response.NoticeDetailsForListDto;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
@@ -41,7 +41,7 @@ public class NoticeService {
         return NoticeMapper.toNoticeDetailsDto(notice);
     }
 
-    public Page<NoticeListDto> findNoticesWithPagination(Pageable pageable) {
+    public Page<NoticeDetailsForListDto> findNoticesWithPagination(Pageable pageable) {
         return noticeRepository.findAllWithPagination(pageable);
     }
 

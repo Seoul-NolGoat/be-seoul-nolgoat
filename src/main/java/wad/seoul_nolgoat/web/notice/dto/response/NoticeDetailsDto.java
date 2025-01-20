@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class NoticeDetailsDto {
 
-    private final Long id;
+    private final Long noticeId;
     private final String title;
     private final String content;
     private final int views;
