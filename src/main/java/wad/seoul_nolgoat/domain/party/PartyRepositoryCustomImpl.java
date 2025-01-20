@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
+import wad.seoul_nolgoat.web.comment.dto.response.CommentListForPartyDto;
 import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
 import wad.seoul_nolgoat.web.party.response.HostedPartyListDto;
 import wad.seoul_nolgoat.web.party.response.ParticipantDto;
@@ -18,6 +19,7 @@ import wad.seoul_nolgoat.web.party.response.PartyListDto;
 
 import java.util.List;
 
+import static wad.seoul_nolgoat.domain.comment.QComment.comment;
 import static wad.seoul_nolgoat.domain.party.QParty.party;
 import static wad.seoul_nolgoat.domain.party.QPartyUser.partyUser;
 
@@ -51,6 +53,18 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                                                 partyUser.participant.nickname,
                                                 partyUser.participant.profileImage
                                         )
+                                ),
+                                Projections.list(
+                                        Projections.constructor(
+                                                CommentListForPartyDto.class,
+                                                comment.id,
+                                                comment.content,
+                                                comment.createdDate,
+                                                comment.party.id,
+                                                comment.writer.id,
+                                                comment.writer.nickname,
+                                                comment.writer.profileImage
+                                        )
                                 )
                         )
                 )
@@ -58,6 +72,8 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                 .join(party.host)
                 .leftJoin(partyUser).on(partyUser.party.eq(party)) // inner 조인을 하면 partyUser가 없을 경우, 결과가 null이 됨
                 .leftJoin(partyUser.participant) // inner 조인을 하면 참여자가 없을 경우, 결과가 null이 됨
+                .leftJoin(comment).on(comment.party.eq(party))
+                .leftJoin(comment.writer)
                 .where(
                         party.id.eq(partyId),
                         party.isDeleted.isFalse()
