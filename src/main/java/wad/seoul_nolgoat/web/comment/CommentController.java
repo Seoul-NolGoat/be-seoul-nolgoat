@@ -10,8 +10,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.comment.CommentService;
-import wad.seoul_nolgoat.web.comment.dto.CommentSaveDto;
-import wad.seoul_nolgoat.web.comment.dto.CommentUpdateDto;
+import wad.seoul_nolgoat.web.comment.dto.request.CommentSaveDto;
+import wad.seoul_nolgoat.web.comment.dto.request.CommentUpdateDto;
 
 import java.net.URI;
 
