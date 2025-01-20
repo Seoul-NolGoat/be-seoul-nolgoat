@@ -2,6 +2,7 @@ package wad.seoul_nolgoat.service.comment;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.comment.Comment;
 import wad.seoul_nolgoat.domain.comment.CommentRepository;
 import wad.seoul_nolgoat.domain.party.Party;
@@ -23,6 +24,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final PartyRepository partyRepository;
 
+    @Transactional
     public Long createComment(
             String loginId,
             CommentSaveDto commentSaveDto,
@@ -38,6 +40,7 @@ public class CommentService {
                 .getId();
     }
 
+    @Transactional
     public void update(
             String loginId,
             CommentUpdateDto commentUpdateDto,
@@ -51,5 +54,17 @@ public class CommentService {
         }
 
         comment.update(commentUpdateDto.getContent());
+    }
+
+    @Transactional
+    public void delete(String loginId, Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ApplicationException(COMMENT_NOT_FOUND));
+
+        if (!comment.getWriter().getLoginId().equals(loginId)) {
+            throw new ApplicationException(COMMENT_DELETE_NOT_AUTHORIZED);
+        }
+
+        commentRepository.delete(comment);
     }
 }
