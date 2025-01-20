@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wad.seoul_nolgoat.service.bookmark.BookmarkService;
+import wad.seoul_nolgoat.service.comment.CommentService;
 import wad.seoul_nolgoat.service.review.ReviewService;
 import wad.seoul_nolgoat.service.user.UserService;
 import wad.seoul_nolgoat.web.bookmark.dto.response.StoreForBookmarkDto;
+import wad.seoul_nolgoat.web.comment.dto.response.WrittenCommentListDto;
 import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForUserDto;
 import wad.seoul_nolgoat.web.user.dto.response.UserProfileDto;
 
@@ -27,6 +29,7 @@ public class UserController {
     private final UserService userService;
     private final BookmarkService bookmarkService;
     private final ReviewService reviewService;
+    private final CommentService commentService;
 
     @Operation(summary = "로그인 사용자 정보 조회")
     @GetMapping("/me")
@@ -54,5 +57,15 @@ public class UserController {
     ) {
         return ResponseEntity
                 .ok(reviewService.findReviewDetailsByLoginId(loginUser.getName(), pageable));
+    }
+
+    @Operation(summary = "내가 작성한 댓글 목록 조회")
+    @GetMapping("/me/comments")
+    public ResponseEntity<Page<WrittenCommentListDto>> showMyComments(
+            @AuthenticationPrincipal OAuth2User loginUser,
+            Pageable pageable
+    ) {
+        return ResponseEntity
+                .ok(commentService.findCommentsByLoginId(loginUser.getName(), pageable));
     }
 }
