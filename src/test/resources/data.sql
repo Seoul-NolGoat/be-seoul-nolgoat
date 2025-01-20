@@ -31,7 +31,7 @@ VALUES ('user1', 'password1', 'UserA', null, 'user1@nolgoat.site', false),
        ('user30', 'password30', 'UserDD', null, 'user30@nolgoat.site', false),
        ('user31', 'password31', 'UserEE', null, 'user31@nolgoat.site', false);
 
-INSERT INTO party (version, title, content, max_capacity, current_count, meetingDate, administrative_district,
+INSERT INTO party (version, title, content, max_capacity, current_count, meeting_date, administrative_district,
                    is_closed,
                    is_deleted,
                    host_id)
