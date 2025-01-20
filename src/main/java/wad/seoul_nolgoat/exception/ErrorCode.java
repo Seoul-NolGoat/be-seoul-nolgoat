@@ -57,6 +57,7 @@ public enum ErrorCode {
     // 댓글 관련
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT001", "존재하지 않는 댓글입니다."),
     COMMENT_UPDATE_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "COMMENT002", "댓글 작성자만 댓글을 수정할 수 있습니다."),
+    COMMENT_DELETE_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "COMMENT003", "댓글 작성자만 댓글을 삭제할 수 있습니다."),
 
     // 건의 관련
     INQUIRY_NOT_FOUND(HttpStatus.NOT_FOUND, "INQUIRY001", "존재하지 않는 건의 사항입니다."),
