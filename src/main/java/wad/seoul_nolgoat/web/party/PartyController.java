@@ -1,6 +1,7 @@
 package wad.seoul_nolgoat.web.party;
 
-import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +18,8 @@ import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
 import wad.seoul_nolgoat.web.party.response.PartyListDto;
 
 import java.net.URI;
-import java.time.LocalDateTime;
 
-@Hidden
+@Tag(name = "파티")
 @RequiredArgsConstructor
 @RequestMapping("/api/parties")
 @RestController
@@ -27,6 +27,7 @@ public class PartyController {
 
     private final PartyService partyService;
 
+    @Operation(summary = "파티 생성")
     @PostMapping
     public ResponseEntity<Void> createParty(
             @AuthenticationPrincipal OAuth2User loginUser,
@@ -44,19 +45,17 @@ public class PartyController {
                 .build();
     }
 
+    @Operation(summary = "파티 참여")
     @PostMapping("/{partyId}/join")
     public ResponseEntity<Void> joinParty(@AuthenticationPrincipal OAuth2User loginUser, @PathVariable Long partyId) {
-        partyService.joinParty(
-                loginUser.getName(),
-                partyId,
-                LocalDateTime.now()
-        );
+        partyService.joinParty(loginUser.getName(), partyId);
 
         return ResponseEntity
                 .ok()
                 .build();
     }
 
+    @Operation(summary = "파티 마감")
     @PostMapping("/{partyId}")
     public ResponseEntity<Void> closeById(@AuthenticationPrincipal OAuth2User loginUser, @PathVariable Long partyId) {
         partyService.closeById(loginUser.getName(), partyId);
@@ -66,6 +65,7 @@ public class PartyController {
                 .build();
     }
 
+    @Operation(summary = "파티 삭제")
     @DeleteMapping("/{partyId}")
     public ResponseEntity<Void> deleteById(@AuthenticationPrincipal OAuth2User loginUser, @PathVariable Long partyId) {
         partyService.deleteById(loginUser.getName(), partyId);
@@ -75,6 +75,7 @@ public class PartyController {
                 .build();
     }
 
+    @Operation(summary = "참여자 추방")
     @DeleteMapping("/{partyId}/participants/{userId}")
     public ResponseEntity<Void> banParticipantFromParty(
             @AuthenticationPrincipal OAuth2User loginUser,
@@ -88,24 +89,28 @@ public class PartyController {
                 .build();
     }
 
+    @Operation(summary = "파티 단건 조회")
     @GetMapping("/{partyId}")
     public ResponseEntity<PartyDetailsDto> showPartyByPartyId(@PathVariable Long partyId) {
         return ResponseEntity
-                .ok(partyService.findPartyDetailsById(partyId, LocalDateTime.now()));
+                .ok(partyService.findPartyDetailsById(partyId));
     }
 
+    @Operation(summary = "파티 목록 조회")
     @GetMapping
     public ResponseEntity<Page<PartyListDto>> showPartiesByCondition(PartySearchConditionDto partySearchConditionDto) {
         return ResponseEntity
                 .ok(partyService.findPartiesWithConditionAndPagination(partySearchConditionDto));
     }
 
+    @Operation(summary = "내가 생성한 파티 목록 조회")
     @GetMapping("/me/created")
     public ResponseEntity<Page<HostedPartyListDto>> showMyHostedParties(@AuthenticationPrincipal OAuth2User loginUser, Pageable pageable) {
         return ResponseEntity
                 .ok(partyService.findHostedPartiesByLoginId(loginUser.getName(), pageable));
     }
 
+    @Operation(summary = "내가 참여한 파티 목록 조회")
     @GetMapping("/me/joined")
     public ResponseEntity<Page<PartyListDto>> showMyJoinedParties(@AuthenticationPrincipal OAuth2User loginUser, Pageable pageable) {
         return ResponseEntity
