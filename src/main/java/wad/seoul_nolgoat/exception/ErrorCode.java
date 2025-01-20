@@ -54,6 +54,10 @@ public enum ErrorCode {
     INVALID_ADMINISTRATIVE_DISTRICT(HttpStatus.BAD_REQUEST, "PARTY013", "올바르지 않은 행정구역입니다."),
     INVALID_MAX_CAPACITY(HttpStatus.BAD_REQUEST, "PARTY014", "참여 가능 인원은 현재 인원보다 적을 수 없습니다."),
 
+    // 댓글 관련
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT001", "존재하지 않는 댓글입니다."),
+    COMMENT_UPDATE_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "COMMENT002", "댓글 작성자만 댓글을 수정할 수 있습니다."),
+
     // 건의 관련
     INQUIRY_NOT_FOUND(HttpStatus.NOT_FOUND, "INQUIRY001", "존재하지 않는 건의 사항입니다."),
     INQUIRY_WRITER_MISMATCH(HttpStatus.FORBIDDEN, "INQUIRY002", "건의 사항의 작성자가 아닙니다."),
