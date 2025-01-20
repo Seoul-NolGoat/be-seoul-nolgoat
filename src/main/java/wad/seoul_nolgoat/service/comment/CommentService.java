@@ -1,6 +1,8 @@
 package wad.seoul_nolgoat.service.comment;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.comment.Comment;
@@ -13,10 +15,12 @@ import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.util.mapper.CommentMapper;
 import wad.seoul_nolgoat.web.comment.dto.CommentSaveDto;
 import wad.seoul_nolgoat.web.comment.dto.CommentUpdateDto;
+import wad.seoul_nolgoat.web.comment.dto.response.WrittenCommentListDto;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class CommentService {
 
@@ -66,5 +70,9 @@ public class CommentService {
         }
 
         commentRepository.delete(comment);
+    }
+
+    public Page<WrittenCommentListDto> findCommentsByLoginId(String loginId, Pageable pageable) {
+        return commentRepository.findCommentsByLoginId(loginId, pageable);
     }
 }
