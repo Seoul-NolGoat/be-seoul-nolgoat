@@ -198,7 +198,7 @@ public class PartyServiceTest {
         Long partyId = 2L;
 
         // when
-        partyService.closeById(loginId, partyId);
+        partyService.close(loginId, partyId);
 
         // then
         assertThat(partyRepository.findById(partyId).get().isClosed()).isTrue();
@@ -212,7 +212,7 @@ public class PartyServiceTest {
         Long partyId = 3L;
 
         // when // then
-        assertThatThrownBy(() -> partyService.closeById(loginId, partyId))
+        assertThatThrownBy(() -> partyService.close(loginId, partyId))
                 .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_CLOSE_NOT_AUTHORIZED.getMessage());
     }
@@ -225,7 +225,7 @@ public class PartyServiceTest {
         Long partyId = 4L;
 
         // when // then
-        assertThatThrownBy(() -> partyService.closeById(loginId, partyId))
+        assertThatThrownBy(() -> partyService.close(loginId, partyId))
                 .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_ALREADY_CLOSED.getMessage());
     }
@@ -239,7 +239,7 @@ public class PartyServiceTest {
         Long partyId = 1L;
 
         // when
-        partyService.deleteById(loginId, partyId);
+        partyService.delete(loginId, partyId);
 
         // then
         assertThat(partyRepository.findById(partyId).get().isDeleted()).isTrue();
@@ -253,7 +253,7 @@ public class PartyServiceTest {
         Long partyId = 5L;
 
         // when // then
-        assertThatThrownBy(() -> partyService.deleteById(loginId, partyId))
+        assertThatThrownBy(() -> partyService.delete(loginId, partyId))
                 .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_DELETE_NOT_AUTHORIZED.getMessage());
     }
@@ -266,7 +266,7 @@ public class PartyServiceTest {
         Long partyId = 5L;
 
         // when // then
-        assertThatThrownBy(() -> partyService.deleteById(loginId, partyId))
+        assertThatThrownBy(() -> partyService.delete(loginId, partyId))
                 .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_ALREADY_DELETED.getMessage());
     }

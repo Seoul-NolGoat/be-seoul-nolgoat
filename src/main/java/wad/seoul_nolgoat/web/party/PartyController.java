@@ -59,8 +59,8 @@ public class PartyController {
 
     @Operation(summary = "파티 마감")
     @PostMapping("/{partyId}")
-    public ResponseEntity<Void> closeById(@AuthenticationPrincipal OAuth2User loginUser, @PathVariable Long partyId) {
-        partyService.closeById(loginUser.getName(), partyId);
+    public ResponseEntity<Void> close(@AuthenticationPrincipal OAuth2User loginUser, @PathVariable Long partyId) {
+        partyService.close(loginUser.getName(), partyId);
 
         return ResponseEntity
                 .ok()
@@ -69,12 +69,12 @@ public class PartyController {
 
     @Operation(summary = "파티 수정")
     @PatchMapping("/{partyId}")
-    public ResponseEntity<Void> updateById(
+    public ResponseEntity<Void> update(
             @AuthenticationPrincipal OAuth2User loginUser,
             @Valid @RequestBody PartyUpdateDto partyUpdateDto,
             @PathVariable Long partyId
     ) {
-        partyService.updateParty(
+        partyService.update(
                 partyUpdateDto,
                 loginUser.getName(),
                 partyId
@@ -88,8 +88,8 @@ public class PartyController {
 
     @Operation(summary = "파티 삭제")
     @DeleteMapping("/{partyId}")
-    public ResponseEntity<Void> deleteById(@AuthenticationPrincipal OAuth2User loginUser, @PathVariable Long partyId) {
-        partyService.deleteById(loginUser.getName(), partyId);
+    public ResponseEntity<Void> delete(@AuthenticationPrincipal OAuth2User loginUser, @PathVariable Long partyId) {
+        partyService.delete(loginUser.getName(), partyId);
 
         return ResponseEntity
                 .noContent()
