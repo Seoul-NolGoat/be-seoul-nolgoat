@@ -29,4 +29,8 @@ public class Comment {
         this.party = party;
         this.content = content;
     }
+
+    public void update(String content) {
+        this.content = content;
+    }
 }
