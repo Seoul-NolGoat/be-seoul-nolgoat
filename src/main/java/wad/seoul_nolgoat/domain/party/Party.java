@@ -43,7 +43,7 @@ public class Party extends BaseTimeEntity {
             String content,
             int maxCapacity,
             LocalDateTime meetingDate,
-            String district,
+            AdministrativeDistrict administrativeDistrict,
             User host
     ) {
         this.title = title;
@@ -52,7 +52,7 @@ public class Party extends BaseTimeEntity {
         this.meetingDate = meetingDate;
         this.isClosed = false;
         this.isDeleted = false;
-        this.administrativeDistrict = AdministrativeDistrict.valueOf(district);
+        this.administrativeDistrict = administrativeDistrict;
         this.host = host;
     }
 

@@ -1,5 +1,6 @@
 package wad.seoul_nolgoat.util.mapper;
 
+import wad.seoul_nolgoat.domain.party.AdministrativeDistrict;
 import wad.seoul_nolgoat.domain.party.Party;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
@@ -12,7 +13,7 @@ public class PartyMapper {
                 partySaveDto.getContent(),
                 partySaveDto.getMaxCapacity(),
                 partySaveDto.getMeetingDate(),
-                partySaveDto.getAdministrativeDistrict(),
+                AdministrativeDistrict.fromString(partySaveDto.getAdministrativeDistrict()),
                 user
         );
     }
