@@ -47,10 +47,12 @@ public enum ErrorCode {
     PARTY_ALREADY_DELETED(HttpStatus.BAD_REQUEST, "PARTY006", "이미 삭제된 파티입니다."),
     PARTY_KICK_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "PARTY007", "파티 생성자만 참여자를 추방할 수 있습니다."),
     PARTY_CLOSE_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "PARTY008", "파티 생성자만 파티를 마감할 수 있습니다."),
-    PARTY_DELETE_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "PARTY009", "파티 생성자만 파티를 삭제할 수 있습니다."),
-    PARTY_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "PARTY010", "해당 파티에 참여하지 않은 유저입니다."),
-    INVALID_PARTY_STATUS(HttpStatus.BAD_REQUEST, "PARTY011", "올바르지 않은 파티 상태값입니다."),
-    INVALID_ADMINISTRATIVE_DISTRICT(HttpStatus.BAD_REQUEST, "PARTY012", "올바르지 않은 행정구역입니다."),
+    PARTY_UPDATE_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "PARTY009", "파티 생성자만 파티를 수정할 수 있습니다."),
+    PARTY_DELETE_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "PARTY010", "파티 생성자만 파티를 삭제할 수 있습니다."),
+    PARTY_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "PARTY011", "해당 파티에 참여하지 않은 유저입니다."),
+    INVALID_PARTY_STATUS(HttpStatus.BAD_REQUEST, "PARTY012", "올바르지 않은 파티 상태값입니다."),
+    INVALID_ADMINISTRATIVE_DISTRICT(HttpStatus.BAD_REQUEST, "PARTY013", "올바르지 않은 행정구역입니다."),
+    INVALID_MAX_CAPACITY(HttpStatus.BAD_REQUEST, "PARTY014", "참여 가능 인원은 현재 인원보다 적을 수 없습니다."),
 
     // 건의 관련
     INQUIRY_NOT_FOUND(HttpStatus.NOT_FOUND, "INQUIRY001", "존재하지 않는 건의 사항입니다."),
