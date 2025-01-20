@@ -52,17 +52,17 @@ public class PartyServiceTest {
         String title = "돈까스 드실 분~";
         String content = "맛있는 돈까스";
         int maxCapacity = 4;
-        LocalDateTime deadline = LocalDateTime.of(2024, 11, 11, 12, 0);
+        LocalDateTime meetingDate = LocalDateTime.of(2024, 11, 11, 12, 0);
         String administrativeDistrict = "GANGNAM_GU";
-        PartySaveDto partySaveDto = new PartySaveDto(title, content, maxCapacity, deadline, administrativeDistrict);
+        PartySaveDto partySaveDto = new PartySaveDto(title, content, maxCapacity, meetingDate, administrativeDistrict);
 
         // when
         Long partyId = partyService.createParty(loginId, partySaveDto);
 
         // then
         assertThat(partyRepository.findById(partyId).get())
-                .extracting("title", "content", "maxCapacity", "deadline", "administrativeDistrict", "host.loginId")
-                .containsExactly(title, content, maxCapacity, deadline, AdministrativeDistrict.GANGNAM_GU, loginId);
+                .extracting("title", "content", "maxCapacity", "meetingDate", "administrativeDistrict", "host.loginId")
+                .containsExactly(title, content, maxCapacity, meetingDate, AdministrativeDistrict.GANGNAM_GU, loginId);
     }
 
     @DisplayName("파티 생성 시, 잘못된 행정구역을 사용하면, 예외가 발생홥니다.")
@@ -73,9 +73,9 @@ public class PartyServiceTest {
         String title = "돈까스 드실 분~";
         String content = "맛있는 돈까스";
         int maxCapacity = 4;
-        LocalDateTime deadline = LocalDateTime.of(2024, 11, 11, 12, 0);
+        LocalDateTime meetingDate = LocalDateTime.of(2024, 11, 11, 12, 0);
         String administrativeDistrict = "GANGNAM_GO";
-        PartySaveDto partySaveDto = new PartySaveDto(title, content, maxCapacity, deadline, administrativeDistrict);
+        PartySaveDto partySaveDto = new PartySaveDto(title, content, maxCapacity, meetingDate, administrativeDistrict);
 
         // when // then
         assertThatThrownBy(() -> partyService.createParty(loginId, partySaveDto))
@@ -94,12 +94,12 @@ public class PartyServiceTest {
 
         Long partyId = 1L;
         String loginIdPrefix = "user";
-        LocalDateTime currentTime = LocalDateTime.of(2024, 9, 10, 0, 0, 0);
         for (int i = 2; i <= threadCount + 1; i++) {
             String loginId = loginIdPrefix + i;
             executorService.submit(() -> {
                 try {
-                    partyService.joinParty(loginId, partyId, currentTime);
+                    System.out.println("==========================================참여자 : " + loginId);
+                    partyService.joinParty(loginId, partyId);
                 } catch (ApplicationException e) {
                     System.out.println(e.getErrorCode().getMessage());
                 } finally {
@@ -113,30 +113,15 @@ public class PartyServiceTest {
         assertThat(partyRepository.findById(partyId).get().getCurrentCount()).isEqualTo(6);
     }
 
-    @DisplayName("마감 시간이 지난 파티에 참여 신청을 하면, 예외가 발생합니다.")
-    @Test
-    void throw_exception_when_joining_party_after_deadline() {
-        // given
-        String loginId = "user2";
-        Long partyId = 3L;
-        LocalDateTime currentTime = LocalDateTime.of(2025, 1, 1, 0, 0, 0);
-
-        // when // then
-        assertThatThrownBy(() -> partyService.joinParty(loginId, partyId, currentTime))
-                .isInstanceOf(ApplicationException.class)
-                .hasMessage(PARTY_ALREADY_CLOSED.getMessage());
-    }
-
     @DisplayName("이미 삭제된 파티에 참여 신청을 하면, 예외가 발생합니다.")
     @Test
     void apply_join_request_when_party_is_already_deleted_then_throw_exception() {
         // given
         String loginId = "user2";
         Long partyId = 5L;
-        LocalDateTime currentTime = LocalDateTime.of(2024, 9, 10, 0, 0, 0);
 
         // when // then
-        assertThatThrownBy(() -> partyService.joinParty(loginId, partyId, currentTime))
+        assertThatThrownBy(() -> partyService.joinParty(loginId, partyId))
                 .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_ALREADY_DELETED.getMessage());
     }
@@ -147,10 +132,9 @@ public class PartyServiceTest {
         // given
         String loginId = "user2";
         Long partyId = 4L;
-        LocalDateTime currentTime = LocalDateTime.of(2024, 9, 10, 0, 0, 0);
 
         // when // then
-        assertThatThrownBy(() -> partyService.joinParty(loginId, partyId, currentTime))
+        assertThatThrownBy(() -> partyService.joinParty(loginId, partyId))
                 .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_ALREADY_CLOSED.getMessage());
     }
@@ -161,10 +145,9 @@ public class PartyServiceTest {
         // given
         String loginId = "user1";
         Long partyId = 2L;
-        LocalDateTime currentTime = LocalDateTime.of(2024, 9, 10, 0, 0, 0);
 
         // when // then
-        assertThatThrownBy(() -> partyService.joinParty(loginId, partyId, currentTime))
+        assertThatThrownBy(() -> partyService.joinParty(loginId, partyId))
                 .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_CREATOR_CANNOT_JOIN.getMessage());
     }
@@ -175,12 +158,11 @@ public class PartyServiceTest {
         // given
         String loginIdB = "user2";
         Long partyId = 2L;
-        LocalDateTime currentTime = LocalDateTime.of(2024, 9, 10, 0, 0, 0);
 
-        partyService.joinParty(loginIdB, partyId, currentTime);
+        partyService.joinParty(loginIdB, partyId);
 
         // when // then
-        assertThatThrownBy(() -> partyService.joinParty(loginIdB, partyId, currentTime))
+        assertThatThrownBy(() -> partyService.joinParty(loginIdB, partyId))
                 .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_ALREADY_JOINED.getMessage());
     }
@@ -194,14 +176,13 @@ public class PartyServiceTest {
         String loginIdD = "user4";
         String loginIdE = "user5";
         Long partyId = 3L;
-        LocalDateTime currentTime = LocalDateTime.of(2024, 9, 10, 0, 0, 0);
 
-        partyService.joinParty(loginIdA, partyId, currentTime);
-        partyService.joinParty(loginIdB, partyId, currentTime);
-        partyService.joinParty(loginIdD, partyId, currentTime);
+        partyService.joinParty(loginIdA, partyId);
+        partyService.joinParty(loginIdB, partyId);
+        partyService.joinParty(loginIdD, partyId);
 
         // when // then
-        assertThatThrownBy(() -> partyService.joinParty(loginIdE, partyId, currentTime))
+        assertThatThrownBy(() -> partyService.joinParty(loginIdE, partyId))
                 .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_CAPACITY_EXCEEDED.getMessage());
     }
@@ -297,9 +278,8 @@ public class PartyServiceTest {
         String hostLoginId = "user1";
         String participantLoginId = "user2";
         Long partyId = 2L;
-        LocalDateTime currentTime = LocalDateTime.of(2024, 9, 10, 0, 0, 0);
 
-        partyService.joinParty(participantLoginId, partyId, currentTime);
+        partyService.joinParty(participantLoginId, partyId);
 
         // when
         partyService.banParticipantFromParty(hostLoginId, partyId, 2L);
@@ -315,9 +295,8 @@ public class PartyServiceTest {
         String loginId = "user3";
         String participantLoginId = "user2";
         Long partyId = 2L;
-        LocalDateTime currentTime = LocalDateTime.of(2024, 9, 10, 0, 0, 0);
 
-        partyService.joinParty(participantLoginId, partyId, currentTime);
+        partyService.joinParty(participantLoginId, partyId);
 
         // when // then
         assertThatThrownBy(() -> partyService.banParticipantFromParty(loginId, partyId, 2L))
@@ -338,14 +317,13 @@ public class PartyServiceTest {
                 .hasMessage(PARTY_USER_NOT_FOUND.getMessage());
     }
 
-    @DisplayName("파티 단건 조회 시, 마감일이 지났으면, 파티의 isClosed 상태를 true로 변경합니다.")
+    @DisplayName("파티 단건 조회")
     @Test
-    void update_party_to_closed_when_finding_party_after_deadline() {
+    void update_party_to_closed_when_finding_party_after_meeting_date() {
         // given
         Long partyId = 2L;
-        LocalDateTime currentTime = LocalDateTime.of(2025, 1, 1, 0, 0, 0);
 
-        PartyDetailsDto a = partyService.findPartyDetailsById(partyId, currentTime);
+        PartyDetailsDto a = partyService.findPartyDetailsById(partyId);
 
         System.out.println(a.getTitle());
 
@@ -355,9 +333,8 @@ public class PartyServiceTest {
                         "id",
                         "title",
                         "content",
-                        "imageUrl",
                         "maxCapacity",
-                        "deadline",
+                        "meetingDate",
                         "isClosed",
                         "currentCount"
                 )
@@ -365,10 +342,9 @@ public class PartyServiceTest {
                         2L,
                         "PartyB",
                         "Party Content B",
-                        null,
                         6,
                         LocalDateTime.of(2024, 12, 31, 23, 59, 59),
-                        true,
+                        false,
                         1
                 );
     }
