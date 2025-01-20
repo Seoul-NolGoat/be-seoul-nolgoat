@@ -63,4 +63,14 @@ public class CommentController {
                 .noContent()
                 .build();
     }
+
+    @Operation(summary = "댓글 삭제")
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> delete(@AuthenticationPrincipal OAuth2User loginUser, @PathVariable Long commentId) {
+        commentService.delete(loginUser.getName(), commentId);
+
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
 }
