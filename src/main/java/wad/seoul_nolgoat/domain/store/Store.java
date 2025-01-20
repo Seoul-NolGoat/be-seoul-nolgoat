@@ -115,6 +115,10 @@ public class Store extends BaseTimeEntity {
         double previousNolgoatAverageGrade = this.nolgoatAverageGrade;
         int reviewCount = reviews.size();
 
+        if (reviewCount <= 1) {
+            this.nolgoatAverageGrade = 0;
+            return;
+        }
         this.nolgoatAverageGrade = ((previousNolgoatAverageGrade * reviewCount) - nolgoatGrade) / (reviewCount - 1);
     }
 
