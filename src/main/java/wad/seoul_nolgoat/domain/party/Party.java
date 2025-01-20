@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import wad.seoul_nolgoat.domain.BaseTimeEntity;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.exception.ApplicationException;
+import wad.seoul_nolgoat.web.party.request.PartyUpdateDto;
 
 import java.time.LocalDateTime;
 
@@ -58,6 +59,14 @@ public class Party extends BaseTimeEntity {
 
     public void close() {
         isClosed = true;
+    }
+
+    public void update(PartyUpdateDto partyUpdateDto) {
+        this.title = partyUpdateDto.getTitle();
+        this.content = partyUpdateDto.getContent();
+        this.maxCapacity = partyUpdateDto.getMaxCapacity();
+        this.meetingDate = partyUpdateDto.getMeetingDate();
+        this.administrativeDistrict = AdministrativeDistrict.fromString(partyUpdateDto.getAdministrativeDistrict());
     }
 
     public void delete() {
