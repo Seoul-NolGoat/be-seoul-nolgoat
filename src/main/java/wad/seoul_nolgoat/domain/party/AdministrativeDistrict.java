@@ -1,5 +1,9 @@
 package wad.seoul_nolgoat.domain.party;
 
+import wad.seoul_nolgoat.exception.ApplicationException;
+
+import static wad.seoul_nolgoat.exception.ErrorCode.INVALID_ADMINISTRATIVE_DISTRICT;
+
 public enum AdministrativeDistrict {
 
     GANGNAM_GU("강남구"),
@@ -36,5 +40,16 @@ public enum AdministrativeDistrict {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public static AdministrativeDistrict fromString(String district) {
+        if (district == null) {
+            return null;
+        }
+        try {
+            return AdministrativeDistrict.valueOf(district);
+        } catch (IllegalArgumentException e) {
+            throw new ApplicationException(INVALID_ADMINISTRATIVE_DISTRICT);
+        }
     }
 }
