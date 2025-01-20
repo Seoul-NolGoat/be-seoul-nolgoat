@@ -12,7 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.service.notice.NoticeService;
 import wad.seoul_nolgoat.web.notice.dto.request.NoticeUpdateDto;
-import wad.seoul_nolgoat.web.notice.dto.response.NoticeListDto;
+import wad.seoul_nolgoat.web.notice.dto.response.NoticeDetailsForListDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -34,9 +34,9 @@ public class NoticeServiceTest {
         Pageable thirdPageable = PageRequest.of(2, 2, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         // when
-        Page<NoticeListDto> firstPage = noticeService.findNoticesWithPagination(firstPageable);
-        Page<NoticeListDto> secondPage = noticeService.findNoticesWithPagination(secondPageable);
-        Page<NoticeListDto> thirdPage = noticeService.findNoticesWithPagination(thirdPageable);
+        Page<NoticeDetailsForListDto> firstPage = noticeService.findNoticesWithPagination(firstPageable);
+        Page<NoticeDetailsForListDto> secondPage = noticeService.findNoticesWithPagination(secondPageable);
+        Page<NoticeDetailsForListDto> thirdPage = noticeService.findNoticesWithPagination(thirdPageable);
 
         // then
         // 전체 페이지수 검증

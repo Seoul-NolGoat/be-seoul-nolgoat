@@ -16,7 +16,7 @@ import wad.seoul_nolgoat.service.notice.NoticeService;
 import wad.seoul_nolgoat.web.notice.dto.request.NoticeSaveDto;
 import wad.seoul_nolgoat.web.notice.dto.request.NoticeUpdateDto;
 import wad.seoul_nolgoat.web.notice.dto.response.NoticeDetailsDto;
-import wad.seoul_nolgoat.web.notice.dto.response.NoticeListDto;
+import wad.seoul_nolgoat.web.notice.dto.response.NoticeDetailsForListDto;
 
 import java.net.URI;
 
@@ -54,7 +54,7 @@ public class NoticeController {
 
     @Operation(summary = "공지 사항 목록 조회(페이지네이션)")
     @GetMapping
-    public ResponseEntity<Page<NoticeListDto>> showNotices(Pageable pageable) {
+    public ResponseEntity<Page<NoticeDetailsForListDto>> showNotices(Pageable pageable) {
         return ResponseEntity
                 .ok(noticeService.findNoticesWithPagination(pageable));
     }

@@ -12,7 +12,7 @@ import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.service.store.dto.StoreUpdateDto;
 import wad.seoul_nolgoat.util.mapper.StoreMapper;
 import wad.seoul_nolgoat.web.store.dto.response.StoreDetailsDto;
-import wad.seoul_nolgoat.web.store.dto.response.StoreListDto;
+import wad.seoul_nolgoat.web.store.dto.response.StoreDetailsForListDto;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.STORE_NOT_FOUND;
 
@@ -46,7 +46,7 @@ public class StoreService {
         );
     }
 
-    public Page<StoreListDto> searchStores(String searchInput, int page, int size) {
+    public Page<StoreDetailsForListDto> searchStores(String searchInput, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         String[] keywords = searchInput.split("\\s+"); // 연속된 공백도 처리
 

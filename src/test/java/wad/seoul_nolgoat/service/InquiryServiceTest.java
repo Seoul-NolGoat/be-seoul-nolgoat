@@ -12,7 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.service.inquiry.InquiryService;
 import wad.seoul_nolgoat.web.inquiry.dto.request.InquiryUpdateDto;
-import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryListDto;
+import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryDetailsForListDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -34,9 +34,9 @@ public class InquiryServiceTest {
         Pageable thirdPageable = PageRequest.of(2, 2, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         // when
-        Page<InquiryListDto> firstPage = inquiryService.findInquiriesWithPagination(firstPageable);
-        Page<InquiryListDto> secondPage = inquiryService.findInquiriesWithPagination(secondPageable);
-        Page<InquiryListDto> thirdPage = inquiryService.findInquiriesWithPagination(thirdPageable);
+        Page<InquiryDetailsForListDto> firstPage = inquiryService.findInquiriesWithPagination(firstPageable);
+        Page<InquiryDetailsForListDto> secondPage = inquiryService.findInquiriesWithPagination(secondPageable);
+        Page<InquiryDetailsForListDto> thirdPage = inquiryService.findInquiriesWithPagination(thirdPageable);
 
         // then
         // 전체 페이지수 검증

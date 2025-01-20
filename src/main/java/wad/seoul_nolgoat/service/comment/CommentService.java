@@ -15,7 +15,7 @@ import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.util.mapper.CommentMapper;
 import wad.seoul_nolgoat.web.comment.dto.request.CommentSaveDto;
 import wad.seoul_nolgoat.web.comment.dto.request.CommentUpdateDto;
-import wad.seoul_nolgoat.web.comment.dto.response.WrittenCommentListDto;
+import wad.seoul_nolgoat.web.comment.dto.response.CommentDetailsForUserDto;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
@@ -72,7 +72,7 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
-    public Page<WrittenCommentListDto> findCommentsByLoginId(String loginId, Pageable pageable) {
+    public Page<CommentDetailsForUserDto> findCommentsByLoginId(String loginId, Pageable pageable) {
         return commentRepository.findCommentsByLoginId(loginId, pageable);
     }
 }

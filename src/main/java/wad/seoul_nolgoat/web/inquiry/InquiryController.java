@@ -15,7 +15,7 @@ import wad.seoul_nolgoat.service.inquiry.InquiryService;
 import wad.seoul_nolgoat.web.inquiry.dto.request.InquirySaveDto;
 import wad.seoul_nolgoat.web.inquiry.dto.request.InquiryUpdateDto;
 import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryDetailsDto;
-import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryListDto;
+import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryDetailsForListDto;
 
 import java.net.URI;
 
@@ -53,7 +53,7 @@ public class InquiryController {
 
     @Operation(summary = "건의 사항 목록 조회(페이지네이션)")
     @GetMapping
-    public ResponseEntity<Page<InquiryListDto>> showInquiries(Pageable pageable) {
+    public ResponseEntity<Page<InquiryDetailsForListDto>> showInquiries(Pageable pageable) {
         return ResponseEntity
                 .ok(inquiryService.findInquiriesWithPagination(pageable));
     }

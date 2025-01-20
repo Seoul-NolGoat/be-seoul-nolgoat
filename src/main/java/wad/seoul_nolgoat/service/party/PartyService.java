@@ -15,9 +15,9 @@ import wad.seoul_nolgoat.util.mapper.PartyMapper;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
 import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
 import wad.seoul_nolgoat.web.party.request.PartyUpdateDto;
-import wad.seoul_nolgoat.web.party.response.HostedPartyListDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
-import wad.seoul_nolgoat.web.party.response.PartyListDto;
+import wad.seoul_nolgoat.web.party.response.PartyDetailsForListDto;
+import wad.seoul_nolgoat.web.party.response.PartyDetailsForUserDto;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
@@ -200,17 +200,17 @@ public class PartyService {
     }
 
     // 파티 목록 조회
-    public Page<PartyListDto> findPartiesWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto) {
+    public Page<PartyDetailsForListDto> findPartiesWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto) {
         return partyRepository.findAllWithConditionAndPagination(partySearchConditionDto);
     }
 
     // 내가 만든 파티 목록 조회
-    public Page<HostedPartyListDto> findHostedPartiesByLoginId(String loginId, Pageable pageable) {
+    public Page<PartyDetailsForUserDto> findHostedPartiesByLoginId(String loginId, Pageable pageable) {
         return partyRepository.findHostedPartiesByLoginId(loginId, pageable);
     }
 
     // 내가 참여한 파티 목록 조회
-    public Page<PartyListDto> findJoinedPartiesByLoginId(String loginId, Pageable pageable) {
+    public Page<PartyDetailsForListDto> findJoinedPartiesByLoginId(String loginId, Pageable pageable) {
         return partyRepository.findJoinedPartiesByLoginId(loginId, pageable);
     }
 }

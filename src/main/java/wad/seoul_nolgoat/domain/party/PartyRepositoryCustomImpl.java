@@ -10,12 +10,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
-import wad.seoul_nolgoat.web.comment.dto.response.CommentListForPartyDto;
+import wad.seoul_nolgoat.web.comment.dto.response.CommentDetailsForPartyDto;
 import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
-import wad.seoul_nolgoat.web.party.response.HostedPartyListDto;
 import wad.seoul_nolgoat.web.party.response.ParticipantDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
-import wad.seoul_nolgoat.web.party.response.PartyListDto;
+import wad.seoul_nolgoat.web.party.response.PartyDetailsForListDto;
+import wad.seoul_nolgoat.web.party.response.PartyDetailsForUserDto;
 
 import java.util.List;
 
@@ -56,7 +56,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                                 ),
                                 Projections.list(
                                         Projections.constructor(
-                                                CommentListForPartyDto.class,
+                                                CommentDetailsForPartyDto.class,
                                                 comment.id,
                                                 comment.content,
                                                 comment.createdDate,
@@ -82,16 +82,16 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
     }
 
     @Override
-    public Page<PartyListDto> findAllWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto) {
+    public Page<PartyDetailsForListDto> findAllWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto) {
         Pageable pageable = PageRequest.of(partySearchConditionDto.getPage(), partySearchConditionDto.getSize());
         PartyStatus status = PartyStatus.fromString(partySearchConditionDto.getStatus());
         AdministrativeDistrict district = AdministrativeDistrict.fromString(partySearchConditionDto.getDistrict());
         String sortField = partySearchConditionDto.getSortField();
 
-        List<PartyListDto> parties = jpaQueryFactory
+        List<PartyDetailsForListDto> parties = jpaQueryFactory
                 .select(
                         Projections.constructor(
-                                PartyListDto.class,
+                                PartyDetailsForListDto.class,
                                 party.id,
                                 party.title,
                                 party.maxCapacity,
@@ -129,11 +129,11 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
     }
 
     @Override
-    public Page<HostedPartyListDto> findHostedPartiesByLoginId(String loginId, Pageable pageable) {
-        List<HostedPartyListDto> parties = jpaQueryFactory
+    public Page<PartyDetailsForUserDto> findHostedPartiesByLoginId(String loginId, Pageable pageable) {
+        List<PartyDetailsForUserDto> parties = jpaQueryFactory
                 .select(
                         Projections.constructor(
-                                HostedPartyListDto.class,
+                                PartyDetailsForUserDto.class,
                                 party.id,
                                 party.title,
                                 party.maxCapacity,
@@ -166,11 +166,11 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
     }
 
     @Override
-    public Page<PartyListDto> findJoinedPartiesByLoginId(String loginId, Pageable pageable) {
-        List<PartyListDto> parties = jpaQueryFactory
+    public Page<PartyDetailsForListDto> findJoinedPartiesByLoginId(String loginId, Pageable pageable) {
+        List<PartyDetailsForListDto> parties = jpaQueryFactory
                 .select(
                         Projections.constructor(
-                                PartyListDto.class,
+                                PartyDetailsForListDto.class,
                                 party.id,
                                 party.title,
                                 party.maxCapacity,

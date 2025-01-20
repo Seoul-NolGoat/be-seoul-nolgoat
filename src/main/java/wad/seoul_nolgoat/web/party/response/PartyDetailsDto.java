@@ -2,7 +2,7 @@ package wad.seoul_nolgoat.web.party.response;
 
 import lombok.Getter;
 import wad.seoul_nolgoat.domain.party.AdministrativeDistrict;
-import wad.seoul_nolgoat.web.comment.dto.response.CommentListForPartyDto;
+import wad.seoul_nolgoat.web.comment.dto.response.CommentDetailsForPartyDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 public class PartyDetailsDto {
 
-    private final Long id;
+    private final Long partyId;
     private final String title;
     private final String content;
     private final int maxCapacity;
@@ -23,10 +23,10 @@ public class PartyDetailsDto {
     private final String hostNickname;
     private final String hostProfileImage;
     private final List<ParticipantDto> participants;
-    private final List<CommentListForPartyDto> comments;
+    private final List<CommentDetailsForPartyDto> comments;
 
     public PartyDetailsDto(
-            Long id,
+            Long partyId,
             String title,
             String content,
             int maxCapacity,
@@ -39,10 +39,10 @@ public class PartyDetailsDto {
             String hostNickname,
             String hostProfileImage,
             List<ParticipantDto> participants,
-            List<CommentListForPartyDto> comments
+            List<CommentDetailsForPartyDto> comments
 
     ) {
-        this.id = id;
+        this.partyId = partyId;
         this.title = title;
         this.content = content;
         this.maxCapacity = maxCapacity;

@@ -15,9 +15,9 @@ import wad.seoul_nolgoat.service.party.PartyService;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
 import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
 import wad.seoul_nolgoat.web.party.request.PartyUpdateDto;
-import wad.seoul_nolgoat.web.party.response.HostedPartyListDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
-import wad.seoul_nolgoat.web.party.response.PartyListDto;
+import wad.seoul_nolgoat.web.party.response.PartyDetailsForListDto;
+import wad.seoul_nolgoat.web.party.response.PartyDetailsForUserDto;
 
 import java.net.URI;
 
@@ -119,21 +119,21 @@ public class PartyController {
 
     @Operation(summary = "파티 목록 조회")
     @GetMapping
-    public ResponseEntity<Page<PartyListDto>> showPartiesByCondition(PartySearchConditionDto partySearchConditionDto) {
+    public ResponseEntity<Page<PartyDetailsForListDto>> showPartiesByCondition(PartySearchConditionDto partySearchConditionDto) {
         return ResponseEntity
                 .ok(partyService.findPartiesWithConditionAndPagination(partySearchConditionDto));
     }
 
     @Operation(summary = "내가 생성한 파티 목록 조회")
     @GetMapping("/me/created")
-    public ResponseEntity<Page<HostedPartyListDto>> showMyHostedParties(@AuthenticationPrincipal OAuth2User loginUser, Pageable pageable) {
+    public ResponseEntity<Page<PartyDetailsForUserDto>> showMyHostedParties(@AuthenticationPrincipal OAuth2User loginUser, Pageable pageable) {
         return ResponseEntity
                 .ok(partyService.findHostedPartiesByLoginId(loginUser.getName(), pageable));
     }
 
     @Operation(summary = "내가 참여한 파티 목록 조회")
     @GetMapping("/me/joined")
-    public ResponseEntity<Page<PartyListDto>> showMyJoinedParties(@AuthenticationPrincipal OAuth2User loginUser, Pageable pageable) {
+    public ResponseEntity<Page<PartyDetailsForListDto>> showMyJoinedParties(@AuthenticationPrincipal OAuth2User loginUser, Pageable pageable) {
         return ResponseEntity
                 .ok(partyService.findJoinedPartiesByLoginId(loginUser.getName(), pageable));
     }

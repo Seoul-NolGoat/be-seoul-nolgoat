@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class InquiryDetailsDto {
 
-    private final Long id;
+    private final Long inquiryId;
     private final String title;
     private final String content;
     private final Boolean isPublic;

@@ -6,9 +6,9 @@ import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
 @Getter
 @RequiredArgsConstructor
-public class StoreForCombinationDto {
+public class StoreDetailsForCombinationDto {
 
-    private final Long id;
+    private final Long storeId;
     private final String name;
     private final CoordinateDto coordinate;
     private final double kakaoAverageGrade;

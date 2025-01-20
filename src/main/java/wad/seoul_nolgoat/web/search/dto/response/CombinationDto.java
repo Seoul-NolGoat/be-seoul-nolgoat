@@ -3,22 +3,22 @@ package wad.seoul_nolgoat.web.search.dto.response;
 import lombok.Getter;
 import lombok.Setter;
 import wad.seoul_nolgoat.service.tMap.dto.WalkRouteInfoDto;
-import wad.seoul_nolgoat.web.store.dto.response.StoreForCombinationDto;
+import wad.seoul_nolgoat.web.store.dto.response.StoreDetailsForCombinationDto;
 
 @Getter
 public class CombinationDto {
 
-    private StoreForCombinationDto firstStore;
-    private StoreForCombinationDto secondStore;
-    private StoreForCombinationDto thirdStore;
+    private StoreDetailsForCombinationDto firstStore;
+    private StoreDetailsForCombinationDto secondStore;
+    private StoreDetailsForCombinationDto thirdStore;
 
     @Setter
     private WalkRouteInfoDto walkRouteInfoDto;
 
     public CombinationDto(
-            StoreForCombinationDto firstStore,
-            StoreForCombinationDto secondStore,
-            StoreForCombinationDto thirdStore,
+            StoreDetailsForCombinationDto firstStore,
+            StoreDetailsForCombinationDto secondStore,
+            StoreDetailsForCombinationDto thirdStore,
             WalkRouteInfoDto walkRouteInfoDto
     ) {
         this.firstStore = firstStore;
@@ -28,9 +28,9 @@ public class CombinationDto {
     }
 
     public CombinationDto(
-            StoreForCombinationDto firstStore,
-            StoreForCombinationDto secondStore,
-            StoreForCombinationDto thirdStore
+            StoreDetailsForCombinationDto firstStore,
+            StoreDetailsForCombinationDto secondStore,
+            StoreDetailsForCombinationDto thirdStore
     ) {
         this.firstStore = firstStore;
         this.secondStore = secondStore;
@@ -38,8 +38,8 @@ public class CombinationDto {
     }
 
     public CombinationDto(
-            StoreForCombinationDto firstStore,
-            StoreForCombinationDto secondStore,
+            StoreDetailsForCombinationDto firstStore,
+            StoreDetailsForCombinationDto secondStore,
             WalkRouteInfoDto walkRouteInfoDto
     ) {
         this.firstStore = firstStore;
@@ -47,17 +47,17 @@ public class CombinationDto {
         this.walkRouteInfoDto = walkRouteInfoDto;
     }
 
-    public CombinationDto(StoreForCombinationDto firstStore, StoreForCombinationDto secondStore) {
+    public CombinationDto(StoreDetailsForCombinationDto firstStore, StoreDetailsForCombinationDto secondStore) {
         this.firstStore = firstStore;
         this.secondStore = secondStore;
     }
 
-    public CombinationDto(StoreForCombinationDto firstStore, WalkRouteInfoDto walkRouteInfoDto) {
+    public CombinationDto(StoreDetailsForCombinationDto firstStore, WalkRouteInfoDto walkRouteInfoDto) {
         this.firstStore = firstStore;
         this.walkRouteInfoDto = walkRouteInfoDto;
     }
 
-    public CombinationDto(StoreForCombinationDto firstStore) {
+    public CombinationDto(StoreDetailsForCombinationDto firstStore) {
         this.firstStore = firstStore;
     }
 }

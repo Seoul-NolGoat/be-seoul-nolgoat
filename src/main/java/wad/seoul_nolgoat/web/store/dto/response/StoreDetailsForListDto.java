@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class StoreListDto {
+public class StoreDetailsForListDto {
 
-    private final Long id;
+    private final Long storeId;
     private final String name;
     private final String category;
     private final String phoneNumber;

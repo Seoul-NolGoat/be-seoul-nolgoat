@@ -6,7 +6,7 @@ import wad.seoul_nolgoat.domain.party.AdministrativeDistrict;
 import java.time.LocalDateTime;
 
 @Getter
-public class HostedPartyListDto {
+public class PartyDetailsForUserDto {
 
     private final Long partyId;
     private final String title;
@@ -17,7 +17,7 @@ public class HostedPartyListDto {
     private final int currentCount;
     private final LocalDateTime createdDate;
 
-    public HostedPartyListDto(
+    public PartyDetailsForUserDto(
             Long partyId,
             String title,
             int maxCapacity,

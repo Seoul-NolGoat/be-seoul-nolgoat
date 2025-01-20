@@ -14,7 +14,7 @@ import wad.seoul_nolgoat.util.mapper.InquiryMapper;
 import wad.seoul_nolgoat.web.inquiry.dto.request.InquirySaveDto;
 import wad.seoul_nolgoat.web.inquiry.dto.request.InquiryUpdateDto;
 import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryDetailsDto;
-import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryListDto;
+import wad.seoul_nolgoat.web.inquiry.dto.response.InquiryDetailsForListDto;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
@@ -41,7 +41,7 @@ public class InquiryService {
         return InquiryMapper.toInquiryDetailsDto(inquiry);
     }
 
-    public Page<InquiryListDto> findInquiriesWithPagination(Pageable pageable) {
+    public Page<InquiryDetailsForListDto> findInquiriesWithPagination(Pageable pageable) {
         return inquiryRepository.findAllWithPagination(pageable);
     }
 
