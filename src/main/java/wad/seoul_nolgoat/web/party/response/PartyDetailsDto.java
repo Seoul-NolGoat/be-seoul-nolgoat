@@ -2,6 +2,7 @@ package wad.seoul_nolgoat.web.party.response;
 
 import lombok.Getter;
 import wad.seoul_nolgoat.domain.party.AdministrativeDistrict;
+import wad.seoul_nolgoat.web.comment.dto.response.CommentListForPartyDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +23,7 @@ public class PartyDetailsDto {
     private final String hostNickname;
     private final String hostProfileImage;
     private final List<ParticipantDto> participants;
+    private final List<CommentListForPartyDto> comments;
 
     public PartyDetailsDto(
             Long id,
@@ -36,7 +38,8 @@ public class PartyDetailsDto {
             Long hostId,
             String hostNickname,
             String hostProfileImage,
-            List<ParticipantDto> participants
+            List<ParticipantDto> participants,
+            List<CommentListForPartyDto> comments
 
     ) {
         this.id = id;
@@ -52,5 +55,6 @@ public class PartyDetailsDto {
         this.hostNickname = hostNickname;
         this.hostProfileImage = hostProfileImage;
         this.participants = participants;
+        this.comments = comments;
     }
 }
