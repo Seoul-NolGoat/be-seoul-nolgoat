@@ -60,7 +60,7 @@ public class NoticeController {
     }
 
     @Operation(summary = "공지 사항 수정")
-    @PutMapping("/{noticeId}")
+    @PatchMapping("/{noticeId}")
     public ResponseEntity<Void> update(
             @AuthenticationPrincipal OAuth2User loginUser,
             @PathVariable Long noticeId,
@@ -91,9 +91,11 @@ public class NoticeController {
     }
 
     @Hidden
-    @PutMapping("/{noticeId}/views")
+    @PatchMapping("/{noticeId}/views")
     public ResponseEntity<Void> increaseViews(@PathVariable Long noticeId) {
         noticeService.increaseViews(noticeId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

@@ -51,7 +51,7 @@ public class ReviewController {
 
     @Hidden
     // 현재 사용하지 않음
-    @PutMapping("/{reviewId}")
+    @PatchMapping("/{reviewId}")
     public ResponseEntity<Void> update(
             @PathVariable Long reviewId,
             @Valid @RequestBody ReviewUpdateDto reviewUpdateDto
