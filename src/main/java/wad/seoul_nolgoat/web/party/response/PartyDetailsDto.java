@@ -25,6 +25,12 @@ public class PartyDetailsDto {
     private final List<ParticipantDto> participants;
     private final List<CommentDetailsForPartyDto> comments;
 
+    private boolean isHost;
+    private boolean isParticipant;
+
+    // 호스트 여부 확인을 위한 필드
+    private final String hostLoginId;
+
     public PartyDetailsDto(
             Long partyId,
             String title,
@@ -39,7 +45,8 @@ public class PartyDetailsDto {
             String hostNickname,
             String hostProfileImage,
             List<ParticipantDto> participants,
-            List<CommentDetailsForPartyDto> comments
+            List<CommentDetailsForPartyDto> comments,
+            String hostLoginId
 
     ) {
         this.partyId = partyId;
@@ -56,5 +63,16 @@ public class PartyDetailsDto {
         this.hostProfileImage = hostProfileImage;
         this.participants = participants;
         this.comments = comments;
+        this.hostLoginId = hostLoginId;
+    }
+
+    public void setHostStatus(String loginId) {
+        isHost = loginId.equals(hostLoginId);
+    }
+
+    public void setParticipantStatus(String loginId) {
+        isParticipant = participants.stream()
+                .map(ParticipantDto::getParticipantLoginId)
+                .anyMatch(loginId::equals);
     }
 }
