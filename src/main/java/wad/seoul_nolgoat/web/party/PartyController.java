@@ -112,9 +112,9 @@ public class PartyController {
 
     @Operation(summary = "파티 단건 조회")
     @GetMapping("/{partyId}")
-    public ResponseEntity<PartyDetailsDto> showPartyByPartyId(@PathVariable Long partyId) {
+    public ResponseEntity<PartyDetailsDto> showPartyByPartyId(@AuthenticationPrincipal OAuth2User loginUser, @PathVariable Long partyId) {
         return ResponseEntity
-                .ok(partyService.findPartyDetailsById(partyId));
+                .ok(partyService.findPartyDetailsById(loginUser.getName(), partyId));
     }
 
     @Operation(summary = "파티 목록 조회")

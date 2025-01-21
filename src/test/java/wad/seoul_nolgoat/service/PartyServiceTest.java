@@ -321,9 +321,10 @@ public class PartyServiceTest {
     @Test
     void update_party_to_closed_when_finding_party_after_meeting_date() {
         // given
+        String loginId = "user10";
         Long partyId = 2L;
 
-        PartyDetailsDto a = partyService.findPartyDetailsById(partyId);
+        PartyDetailsDto a = partyService.findPartyDetailsById(loginId, partyId);
 
         System.out.println(a.getTitle());
 
