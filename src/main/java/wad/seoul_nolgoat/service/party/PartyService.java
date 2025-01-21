@@ -191,12 +191,17 @@ public class PartyService {
 
     // 파티 단건 조회
     @Transactional
-    public PartyDetailsDto findPartyDetailsById(Long partyId) {
+    public PartyDetailsDto findPartyDetailsById(String loginId, Long partyId) {
         if (!partyRepository.existsById(partyId)) {
             throw new ApplicationException(PARTY_NOT_FOUND);
         }
 
-        return partyRepository.findPartyDetailsById(partyId);
+        // 호스트, 참여자 여부 판단
+        PartyDetailsDto partyDetailsById = partyRepository.findPartyDetailsById(partyId);
+        partyDetailsById.setHostStatus(loginId);
+        partyDetailsById.setParticipantStatus(loginId);
+
+        return partyDetailsById;
     }
 
     // 파티 목록 조회
