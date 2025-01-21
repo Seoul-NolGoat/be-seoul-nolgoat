@@ -53,6 +53,8 @@ public enum ErrorCode {
     INVALID_PARTY_STATUS(HttpStatus.BAD_REQUEST, "PARTY012", "올바르지 않은 파티 상태값입니다."),
     INVALID_ADMINISTRATIVE_DISTRICT(HttpStatus.BAD_REQUEST, "PARTY013", "올바르지 않은 행정구역입니다."),
     INVALID_MAX_CAPACITY(HttpStatus.BAD_REQUEST, "PARTY014", "참여 가능 인원은 현재 인원보다 적을 수 없습니다."),
+    PARTY_COUNT_BELOW_MINIMUM(HttpStatus.BAD_REQUEST, "PARTY015", "현재 인원수는 1보다 작을 수 없습니다."),
+    PARTY_CREATOR_CANNOT_LEAVE(HttpStatus.BAD_REQUEST, "PARTY016", "본인이 생성한 파티에서 탈퇴 할 수 없습니다."),
 
     // 댓글 관련
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT001", "존재하지 않는 댓글입니다."),
