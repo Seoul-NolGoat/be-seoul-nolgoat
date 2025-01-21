@@ -11,6 +11,7 @@ import wad.seoul_nolgoat.exception.ApplicationException;
 import java.time.LocalDateTime;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.PARTY_CAPACITY_EXCEEDED;
+import static wad.seoul_nolgoat.exception.ErrorCode.PARTY_COUNT_BELOW_MINIMUM;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -86,6 +87,9 @@ public class Party extends BaseTimeEntity {
     }
 
     public void decrementParticipantCount() {
+        if (currentCount <= 1) {
+            throw new ApplicationException(PARTY_COUNT_BELOW_MINIMUM);
+        }
         currentCount--;
     }
 }
