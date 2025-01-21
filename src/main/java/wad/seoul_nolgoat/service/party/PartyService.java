@@ -100,6 +100,29 @@ public class PartyService {
         partyUserRepository.save(partyUser);
     }
 
+    // 파티 탈퇴
+    @Transactional
+    public void leave(String loginId, Long partyId) {
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+
+        Party party = partyRepository.findByIdWithFetchJoinAndLock(partyId)
+                .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
+
+        // 파티 호스트인지 확인
+        if (loginId.equals(party.getHost().getLoginId())) {
+            throw new ApplicationException(PARTY_CREATOR_CANNOT_LEAVE);
+        }
+
+        // 파티 참여자가 맞는지 확인
+        PartyUser partyUser = partyUserRepository.findByPartyIdAndParticipantId(partyId, user.getId())
+                .orElseThrow(() -> new ApplicationException(PARTY_USER_NOT_FOUND));
+
+        partyUserRepository.delete(partyUser);
+
+        party.decrementParticipantCount();
+    }
+
     // 파티 마감
     @Transactional
     public void close(String loginId, Long partyId) {

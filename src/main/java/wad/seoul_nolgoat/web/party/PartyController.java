@@ -57,6 +57,16 @@ public class PartyController {
                 .build();
     }
 
+    @Operation(summary = "파티 탈퇴")
+    @DeleteMapping("/{partyId}")
+    public ResponseEntity<Void> leave(@AuthenticationPrincipal OAuth2User loginUser, @PathVariable Long partyId) {
+        partyService.leave(loginUser.getName(), partyId);
+
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
+
     @Operation(summary = "파티 마감")
     @PostMapping("/{partyId}")
     public ResponseEntity<Void> close(@AuthenticationPrincipal OAuth2User loginUser, @PathVariable Long partyId) {
