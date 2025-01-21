@@ -7,7 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ParticipantDto {
 
-    private final Long userId;
-    private final String nickname;
-    private final String profileImage;
+    private final Long participantUserId;
+    private final String participantNickname;
+    private final String participantProfileImage;
+
+    // 참여자 여부 확인을 위한 필드
+    private final String participantLoginId;
 }
