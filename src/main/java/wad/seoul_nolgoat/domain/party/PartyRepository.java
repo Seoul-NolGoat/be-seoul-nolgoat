@@ -19,5 +19,5 @@ public interface PartyRepository extends JpaRepository<Party, Long>, PartyReposi
     @Query("SELECT p FROM Party p " +
             "JOIN FETCH p.host " +
             "WHERE p.id = :partyId")
-    Optional<Party> findByIdWithFetchJoinAndLock(Long id);
+    Optional<Party> findByIdWithFetchJoinAndLock(Long partyId);
 }
