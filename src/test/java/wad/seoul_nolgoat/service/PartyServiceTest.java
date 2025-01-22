@@ -98,7 +98,6 @@ public class PartyServiceTest {
             String loginId = loginIdPrefix + i;
             executorService.submit(() -> {
                 try {
-                    System.out.println("==========================================참여자 : " + loginId);
                     partyService.joinParty(loginId, partyId);
                 } catch (ApplicationException e) {
                     System.out.println(e.getErrorCode().getMessage());
@@ -185,6 +184,47 @@ public class PartyServiceTest {
         assertThatThrownBy(() -> partyService.joinParty(loginIdE, partyId))
                 .isInstanceOf(ApplicationException.class)
                 .hasMessage(PARTY_CAPACITY_EXCEEDED.getMessage());
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @DisplayName("파티 참여 유저가 탈퇴 신청을 하면 파티의 현재 인원수가 감소합니다.")
+    @Test
+    void prevent_wrong_count_with_concurrent_leaves() throws InterruptedException {
+        //given
+        Long partyId = 2L;
+        for (int i = 2; i < 7; i++) {
+            partyService.joinParty("user" + i, partyId);
+        }
+
+        // when
+        partyService.leave("user2", partyId);
+
+        // then
+        assertThat(partyRepository.findById(partyId).get().getCurrentCount()).isEqualTo(5);
+    }
+
+    @DisplayName("파티 생성자가 파티 탈퇴 신청을 하면, 예외가 발생합니다.")
+    @Test
+    void leave_party_by_host_then_throw_exception() {
+        // given
+        String hostLoginId = "user1";
+
+        // when // then
+        assertThatThrownBy(() -> partyService.leave(hostLoginId, 1L))
+                .isInstanceOf(ApplicationException.class)
+                .hasMessage(PARTY_CREATOR_CANNOT_LEAVE.getMessage());
+    }
+
+    @DisplayName("파티 참여자가 아닌 유저가 파티 탈퇴 신청을 하면, 예외가 발생합니다.")
+    @Test
+    void leave_party_by_non_participant_then_throw_exception() {
+        // given
+        String hostLoginId = "user2";
+
+        // when // then
+        assertThatThrownBy(() -> partyService.leave(hostLoginId, 1L))
+                .isInstanceOf(ApplicationException.class)
+                .hasMessage(PARTY_USER_NOT_FOUND.getMessage());
     }
 
     // 수정 테스트
@@ -331,7 +371,7 @@ public class PartyServiceTest {
         // when // then
         assertThat(a)
                 .extracting(
-                        "id",
+                        "partyId",
                         "title",
                         "content",
                         "maxCapacity",
