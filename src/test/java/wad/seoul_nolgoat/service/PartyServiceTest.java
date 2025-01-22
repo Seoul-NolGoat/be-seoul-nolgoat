@@ -14,6 +14,7 @@ import wad.seoul_nolgoat.domain.party.PartyUserRepository;
 import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.service.party.PartyService;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
+import wad.seoul_nolgoat.web.party.request.PartyUpdateDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
 
 import java.time.LocalDateTime;
@@ -227,7 +228,26 @@ public class PartyServiceTest {
                 .hasMessage(PARTY_USER_NOT_FOUND.getMessage());
     }
 
-    // 수정 테스트
+    @DisplayName("파티를 수정하면, 변경 사항이 DB에 올바르게 저장됩니다.")
+    @Test
+    void update_party() {
+        // given
+        Long partyId = 2L;
+        String title = "new title";
+        String content = "new content";
+        int maxCapacity = 4;
+        LocalDateTime meetingDate = LocalDateTime.now();
+        String district = "gangnam_gu";
+        PartyUpdateDto partyUpdateDto = new PartyUpdateDto(title, content, maxCapacity, meetingDate, district);
+
+        // when
+        partyService.update(partyUpdateDto, "user1", partyId);
+
+        // then
+        assertThat(partyRepository.findById(partyId).get())
+                .extracting("title", "content", "maxCapacity", "meetingDate", "administrativeDistrict")
+                .containsExactly(title, content, maxCapacity, meetingDate, AdministrativeDistrict.GANGNAM_GU);
+    }
 
     @Transactional
     @DisplayName("파티를 마감하면, isClosed가 True로 변경됩니다.")
