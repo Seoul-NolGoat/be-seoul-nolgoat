@@ -47,7 +47,7 @@ public enum AdministrativeDistrict {
             return null;
         }
         try {
-            return AdministrativeDistrict.valueOf(district);
+            return AdministrativeDistrict.valueOf(district.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new ApplicationException(INVALID_ADMINISTRATIVE_DISTRICT);
         }
