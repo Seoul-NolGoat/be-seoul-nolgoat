@@ -51,7 +51,8 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                                                 ParticipantDto.class,
                                                 partyUser.participant.id,
                                                 partyUser.participant.nickname,
-                                                partyUser.participant.profileImage
+                                                partyUser.participant.profileImage,
+                                                partyUser.participant.loginId
                                         )
                                 ),
                                 Projections.list(
@@ -65,7 +66,8 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
                                                 comment.writer.nickname,
                                                 comment.writer.profileImage
                                         )
-                                )
+                                ),
+                                party.host.loginId
                         )
                 )
                 .from(party)
