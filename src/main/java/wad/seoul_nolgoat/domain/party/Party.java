@@ -18,9 +18,6 @@ import static wad.seoul_nolgoat.exception.ErrorCode.PARTY_COUNT_BELOW_MINIMUM;
 @Entity
 public class Party extends BaseTimeEntity {
 
-    @Version
-    private Long version;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
