@@ -1,11 +1,10 @@
 package wad.seoul_nolgoat.service.party;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.party.*;
 import wad.seoul_nolgoat.domain.user.User;
@@ -49,31 +48,12 @@ public class PartyService {
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
 
-        Long userId = user.getId();
-
         // 이미 파티에 참여중인 유저는 중복 신청 불가능
-        if (partyUserRepository.existsByPartyIdAndParticipantId(partyId, userId)) {
+        if (partyUserRepository.existsByPartyIdAndParticipantId(partyId, user.getId())) {
             throw new ApplicationException(PARTY_ALREADY_JOINED);
         }
 
-        while (true) {
-            try {
-                doJoinParty(userId, partyId);
-
-                break;
-            } catch (ObjectOptimisticLockingFailureException e) {
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException Ie) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void doJoinParty(Long userId, Long partyId) {
-        Party party = partyRepository.findByIdWithFetchJoin(partyId)
+        Party party = partyRepository.findByIdWithFetchJoinAndLock(partyId)
                 .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
 
         // 파티 삭제 여부 확인
@@ -87,17 +67,20 @@ public class PartyService {
         }
 
         // 파티 생성자는 본인의 파티에 참여 신청 불가능
-        if (party.getHost().getId().equals(userId)) {
+        if (loginId.equals(party.getHost().getLoginId())) {
             throw new ApplicationException(PARTY_CREATOR_CANNOT_JOIN);
+        }
+
+        // partyUser 객체 저장 및 유니크 제약 조건 위반 예외 처리
+        try {
+            PartyUser partyUser = new PartyUser(party, user);
+            partyUserRepository.save(partyUser);
+        } catch (DuplicateKeyException e) {
+            throw new ApplicationException(PARTY_ALREADY_JOINED);
         }
 
         // 인원 초과 여부 검증 및 참여자 수 증가
         party.incrementParticipantCount();
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
-        PartyUser partyUser = new PartyUser(party, user);
-        partyUserRepository.save(partyUser);
     }
 
     // 파티 탈퇴
@@ -120,6 +103,7 @@ public class PartyService {
 
         partyUserRepository.delete(partyUser);
 
+        // 현재 인원 수 검증 및 참여자 수 감소
         party.decrementParticipantCount();
     }
 
