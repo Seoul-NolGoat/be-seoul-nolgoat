@@ -34,7 +34,7 @@ public class MDCFilter extends OncePerRequestFilter {
                 .getAuthentication();
 
         if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
-            OAuth2User oAuth2User = (OAuth2User) auth;
+            OAuth2User oAuth2User = (OAuth2User) auth.getPrincipal();
             return oAuth2User.getName();
         }
         return "guest";
