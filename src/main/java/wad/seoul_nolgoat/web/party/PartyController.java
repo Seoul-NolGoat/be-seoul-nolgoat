@@ -58,7 +58,7 @@ public class PartyController {
     }
 
     @Operation(summary = "파티 탈퇴")
-    @DeleteMapping("/{partyId}")
+    @DeleteMapping("/{partyId}/participants/me")
     public ResponseEntity<Void> leave(@AuthenticationPrincipal OAuth2User loginUser, @PathVariable Long partyId) {
         partyService.leave(loginUser.getName(), partyId);
 
