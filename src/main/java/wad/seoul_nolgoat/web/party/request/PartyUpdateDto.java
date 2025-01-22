@@ -23,7 +23,7 @@ public class PartyUpdateDto {
     private final int maxCapacity;
 
     @NotBlank
-    @Future(message = "모임일은 현재 시간 이후여야 합니다.")
+    @FutureOrPresent(message = "모임일은 현재 시간 이후여야 합니다.")
     private final LocalDateTime meetingDate;
 
     @NotBlank
