@@ -61,5 +61,5 @@ jobs:
             mv /home/ubuntu/be-seoul-nolgoat/next/nolgoat.jar /home/ubuntu/be-seoul-nolgoat/current/nolgoat.jar
             cd /home/ubuntu/be-seoul-nolgoat/current
             sudo fuser -k -n tcp 8080 || true
-            sudo nohup java -jar nolgoat.jar &
+            sudo nohup java -jar nolgoat.jar > /dev/null 2>&1 &
             rm -rf /home/ubuntu/be-seoul-nolgoat/next
