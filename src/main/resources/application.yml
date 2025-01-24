@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: seoul-nolgoat
+  config:
+    import:
+      - db-config.yml
+      - kakao-config.yml
+      - seoul-config.yml
+      - t-config.yml
+      - oauth2-config.yml
+      - authorization-config.yml
+      - s3-config.yml
+      - multipart-config.yml
+      - app-urls.yml
+      - mail-config.yml

@@ -1,0 +1,24 @@
+name: 🐞 Fix
+description: 버그 해결 및 에러 수정
+title: "[Fix]: "
+labels:
+  - 🐞 Fix
+
+body:
+  - type: textarea
+    attributes:
+      label: 📋 개요
+      placeholder: 작업할 내용에 대해 설명해주세요.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: ✔️ ToDo
+      placeholder: 체크박스를 활용해 작성해주세요.
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: ➕ 기타 사항
+    validations:
+      required: false
