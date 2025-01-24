@@ -1,0 +1,62 @@
+name: NolGoat
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: JDK 17 Install
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 설정 파일 생성
+        run: |
+          echo "${{ secrets.APPLICATION_CONFIG_URLS }}" > ./src/main/resources/app-urls.yml
+          echo "${{ secrets.APPLICATION_CONFIG_AUTHORIZATION }}" > ./src/main/resources/authorization-config.yml
+          echo "${{ secrets.APPLICATION_CONFIG_DATABASE }}" > ./src/main/resources/db-config.yml
+          echo "${{ secrets.APPLICATION_CONFIG_KAKAOMAP }}" > ./src/main/resources/kakao-config.yml
+          echo "${{ secrets.APPLICATION_CONFIG_MAIL }}" > ./src/main/resources/mail-config.yml
+          echo "${{ secrets.APPLICATION_CONFIG_MULTIPART }}" > ./src/main/resources/multipart-config.yml
+          echo "${{ secrets.APPLICATION_CONFIG_OAUTH2 }}" > ./src/main/resources/oauth2-config.yml
+          echo "${{ secrets.APPLICATION_CONFIG_S3 }}" > ./src/main/resources/s3-config.yml
+          echo "${{ secrets.APPLICATION_CONFIG_SEOUL }}" > ./src/main/resources/seoul-config.yml
+          echo "${{ secrets.APPLICATION_CONFIG_TMAP }}" > ./src/main/resources/t-config.yml
+
+      - name: 테스트 및 빌드
+        run: ./gradlew clean build
+
+      - name: 빌드된 파일 이름 변경
+        run: mv ./build/libs/*SNAPSHOT.jar ./nolgoat.jar
+
+      - name: SCP를 사용해 EC2로 빌드 파일 전송
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          source: nolgoat.jar
+          target: /home/ubuntu/be-seoul-nolgoat/next
+
+      - name: SSH로 EC2 접속
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            rm -rf /home/ubuntu/be-seoul-nolgoat/current
+            mkdir /home/ubuntu/be-seoul-nolgoat/current
+            mv /home/ubuntu/be-seoul-nolgoat/next/nolgoat.jar /home/ubuntu/be-seoul-nolgoat/current/nolgoat.jar
+            cd /home/ubuntu/be-seoul-nolgoat/current
+            sudo fuser -k -n tcp 8080 || true
+            sudo nohup java -jar nolgoat.jar
+            rm -rf /home/ubuntu/be-seoul-nolgoat/next
