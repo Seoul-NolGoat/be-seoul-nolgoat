@@ -5,7 +5,8 @@
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>
-                %d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] [REQ:%X{requestId}] [%X{method} %X{uri}] [USER:%X{loginId}]
+                %d{yyyy-MM-dd HH:mm:ss, Asia/Seoul} %-5level [%thread] [REQ:%X{requestId}] [%X{method} %X{uri}]
+                [USER:%X{loginId}]
                 %logger{36} - %msg%n
             </pattern>
         </encoder>
@@ -20,15 +21,23 @@
         </rollingPolicy>
         <encoder>
             <pattern>
-                %d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] [REQ:%X{requestId}] [%X{method} %X{uri}] [USER:%X{loginId}]
+                %d{yyyy-MM-dd HH:mm:ss, Asia/Seoul} %-5level [%thread] [REQ:%X{requestId}] [%X{method} %X{uri}]
+                [USER:%X{loginId}]
                 %logger{36} - %msg%n
             </pattern>
         </encoder>
+    </appender>
+
+    <!-- Logstash로 전송 -->
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>54.180.82.54:5044</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
     </appender>
 
     <!-- Logger 설정 -->
     <root level="info">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
+        <appender-ref ref="LOGSTASH"/>
     </root>
 </configuration>
