@@ -6,19 +6,23 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wad.seoul_nolgoat.domain.comment.CommentRepository;
 import wad.seoul_nolgoat.domain.party.*;
 import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.util.mapper.PartyMapper;
+import wad.seoul_nolgoat.web.comment.dto.response.CommentDetailsForPartyDto;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
 import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
 import wad.seoul_nolgoat.web.party.request.PartyUpdateDto;
+import wad.seoul_nolgoat.web.party.response.ParticipantDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsForListDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsForUserDto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
@@ -30,6 +34,7 @@ public class PartyService {
     private final PartyRepository partyRepository;
     private final UserRepository userRepository;
     private final PartyUserRepository partyUserRepository;
+    private final CommentRepository commentRepository;
 
     // 파티 생성
     @Transactional
@@ -201,16 +206,26 @@ public class PartyService {
     // 파티 단건 조회
     @Transactional
     public PartyDetailsDto findPartyDetailsById(String loginId, Long partyId) {
-        if (!partyRepository.existsById(partyId)) {
-            throw new ApplicationException(PARTY_NOT_FOUND);
+        Party party = partyRepository.findPartyByIdWithFetchJoin(partyId)
+                .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
+
+        // 참여 일 검증
+        LocalDateTime currentTime = LocalDateTime.now();
+        if (!party.isClosed()) {
+            if (party.getMeetingDate().isBefore(currentTime) || party.getMeetingDate().isEqual(currentTime)) {
+                party.close();
+            }
         }
 
-        // 호스트, 참여자 여부 판단
-        PartyDetailsDto partyDetailsById = partyRepository.findPartyDetailsById(partyId);
-        partyDetailsById.setHostStatus(loginId);
-        partyDetailsById.setParticipantStatus(loginId);
+        List<ParticipantDto> participants = partyUserRepository.findParticipantsByPartyId(partyId);
+        List<CommentDetailsForPartyDto> comments = commentRepository.findCommentsByPartyId(partyId);
 
-        return partyDetailsById;
+        return PartyDetailsDto.of(
+                party,
+                participants,
+                comments,
+                loginId
+        );
     }
 
     // 파티 목록 조회
@@ -245,8 +260,10 @@ public class PartyService {
 
         // 현재 시간과 비교하여 마감 여부 결정
         parties.getContent().forEach(party -> {
-            if (party.getMeetingDate().isBefore(currentTime) || party.getMeetingDate().isEqual(currentTime)) {
-                party.close();
+            if (!party.isClosed()) {
+                if (party.getMeetingDate().isBefore(currentTime) || party.getMeetingDate().isEqual(currentTime)) {
+                    party.close();
+                }
             }
         });
     }
