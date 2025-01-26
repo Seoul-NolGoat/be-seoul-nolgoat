@@ -141,7 +141,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
         List<Party> parties = jpaQueryFactory
                 .selectFrom(party)
                 .join(party.host).fetchJoin()
-                .join(partyUser).on(partyUser.party.eq(party))
+                .leftJoin(partyUser).on(partyUser.party.eq(party))
                 .join(partyUser.participant)
                 .where(
                         partyUser.participant.loginId.eq(loginId),
@@ -155,8 +155,8 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
         JPAQuery<Long> countQuery = jpaQueryFactory
                 .select(party.count()) // select count(party.id)
                 .from(party)
-                .join(party.host).fetchJoin()
-                .join(partyUser).on(partyUser.party.eq(party))
+                .join(party.host)
+                .leftJoin(partyUser).on(partyUser.party.eq(party))
                 .join(partyUser.participant)
                 .where(
                         partyUser.participant.loginId.eq(loginId),
