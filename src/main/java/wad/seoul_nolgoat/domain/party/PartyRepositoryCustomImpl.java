@@ -14,7 +14,6 @@ import wad.seoul_nolgoat.web.comment.dto.response.CommentDetailsForPartyDto;
 import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
 import wad.seoul_nolgoat.web.party.response.ParticipantDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
-import wad.seoul_nolgoat.web.party.response.PartyDetailsForListDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsForUserDto;
 
 import java.util.List;
@@ -152,26 +151,10 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
     }
 
     @Override
-    public Page<PartyDetailsForListDto> findJoinedPartiesByLoginId(String loginId, Pageable pageable) {
-        List<PartyDetailsForListDto> parties = jpaQueryFactory
-                .select(
-                        Projections.constructor(
-                                PartyDetailsForListDto.class,
-                                party.id,
-                                party.title,
-                                party.maxCapacity,
-                                party.meetingDate,
-                                party.isClosed,
-                                party.administrativeDistrict,
-                                party.currentCount,
-                                party.createdDate,
-                                party.host.id,
-                                party.host.nickname,
-                                party.host.profileImage
-                        )
-                )
-                .from(party)
-                .join(party.host)
+    public Page<Party> findJoinedPartiesByLoginId(String loginId, Pageable pageable) {
+        List<Party> parties = jpaQueryFactory
+                .selectFrom(party)
+                .join(party.host).fetchJoin()
                 .join(partyUser).on(partyUser.party.eq(party))
                 .join(partyUser.participant)
                 .where(
@@ -186,7 +169,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
         JPAQuery<Long> countQuery = jpaQueryFactory
                 .select(party.count()) // select count(party.id)
                 .from(party)
-                .join(party.host)
+                .join(party.host).fetchJoin()
                 .join(partyUser).on(partyUser.party.eq(party))
                 .join(partyUser.participant)
                 .where(
