@@ -18,6 +18,8 @@ import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsForListDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsForUserDto;
 
+import java.time.LocalDateTime;
+
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
@@ -212,8 +214,19 @@ public class PartyService {
     }
 
     // 파티 목록 조회
+    @Transactional
     public Page<PartyDetailsForListDto> findPartiesWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto) {
-        return partyRepository.findAllWithConditionAndPagination(partySearchConditionDto);
+        Page<Party> parties = partyRepository.findAllWithConditionAndPagination(partySearchConditionDto);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        // 현재 시간과 비교하여 마감 여부 결정
+        parties.getContent().forEach(party -> {
+            if (party.getMeetingDate().isBefore(currentTime) || party.getMeetingDate().isEqual(currentTime)) {
+                party.close();
+            }
+        });
+
+        return parties.map(PartyDetailsForListDto::from);
     }
 
     // 내가 만든 파티 목록 조회
