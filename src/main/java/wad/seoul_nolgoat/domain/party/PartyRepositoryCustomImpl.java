@@ -14,7 +14,6 @@ import wad.seoul_nolgoat.web.comment.dto.response.CommentDetailsForPartyDto;
 import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
 import wad.seoul_nolgoat.web.party.response.ParticipantDto;
 import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
-import wad.seoul_nolgoat.web.party.response.PartyDetailsForUserDto;
 
 import java.util.List;
 
@@ -114,22 +113,9 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
     }
 
     @Override
-    public Page<PartyDetailsForUserDto> findHostedPartiesByLoginId(String loginId, Pageable pageable) {
-        List<PartyDetailsForUserDto> parties = jpaQueryFactory
-                .select(
-                        Projections.constructor(
-                                PartyDetailsForUserDto.class,
-                                party.id,
-                                party.title,
-                                party.maxCapacity,
-                                party.meetingDate,
-                                party.isClosed,
-                                party.administrativeDistrict,
-                                party.currentCount,
-                                party.createdDate
-                        )
-                )
-                .from(party)
+    public Page<Party> findHostedPartiesByLoginId(String loginId, Pageable pageable) {
+        List<Party> parties = jpaQueryFactory
+                .selectFrom(party)
                 .where(
                         party.host.loginId.eq(loginId),
                         party.isDeleted.isFalse()
