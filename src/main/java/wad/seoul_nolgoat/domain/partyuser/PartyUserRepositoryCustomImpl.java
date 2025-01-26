@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.domain.party;
+package wad.seoul_nolgoat.domain.partyuser;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;

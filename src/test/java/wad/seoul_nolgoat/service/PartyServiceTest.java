@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.party.AdministrativeDistrict;
 import wad.seoul_nolgoat.domain.party.PartyRepository;
-import wad.seoul_nolgoat.domain.party.PartyUserRepository;
+import wad.seoul_nolgoat.domain.partyuser.PartyUserRepository;
 import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.service.party.PartyService;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
