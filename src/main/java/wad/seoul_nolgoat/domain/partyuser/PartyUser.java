@@ -1,9 +1,10 @@
-package wad.seoul_nolgoat.domain.party;
+package wad.seoul_nolgoat.domain.partyuser;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import wad.seoul_nolgoat.domain.BaseTimeEntity;
+import wad.seoul_nolgoat.domain.party.Party;
 import wad.seoul_nolgoat.domain.user.User;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
