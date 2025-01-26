@@ -84,31 +84,15 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
     }
 
     @Override
-    public Page<PartyDetailsForListDto> findAllWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto) {
+    public Page<Party> findAllWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto) {
         Pageable pageable = PageRequest.of(partySearchConditionDto.getPage(), partySearchConditionDto.getSize());
         PartyStatus status = PartyStatus.fromString(partySearchConditionDto.getStatus());
         AdministrativeDistrict district = AdministrativeDistrict.fromString(partySearchConditionDto.getDistrict());
         String sortField = partySearchConditionDto.getSortField();
 
-        List<PartyDetailsForListDto> parties = jpaQueryFactory
-                .select(
-                        Projections.constructor(
-                                PartyDetailsForListDto.class,
-                                party.id,
-                                party.title,
-                                party.maxCapacity,
-                                party.meetingDate,
-                                party.isClosed,
-                                party.administrativeDistrict,
-                                party.currentCount,
-                                party.createdDate,
-                                party.host.id,
-                                party.host.nickname,
-                                party.host.profileImage
-                        )
-                )
-                .from(party)
-                .join(party.host)
+        List<Party> parties = jpaQueryFactory
+                .selectFrom(party)
+                .join(party.host).fetchJoin()
                 .where(
                         buildSearchCondition(status, district),
                         party.isDeleted.isFalse()
