@@ -11,7 +11,7 @@ public interface PartyRepositoryCustom {
 
     PartyDetailsDto findPartyDetailsById(Long partyId);
 
-    Page<PartyDetailsForListDto> findAllWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto);
+    Page<Party> findAllWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto);
 
     Page<PartyDetailsForUserDto> findHostedPartiesByLoginId(String loginId, Pageable pageable);
 
