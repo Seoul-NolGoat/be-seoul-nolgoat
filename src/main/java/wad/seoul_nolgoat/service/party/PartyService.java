@@ -235,7 +235,18 @@ public class PartyService {
     }
 
     // 내가 참여한 파티 목록 조회
+    @Transactional
     public Page<PartyDetailsForListDto> findJoinedPartiesByLoginId(String loginId, Pageable pageable) {
-        return partyRepository.findJoinedPartiesByLoginId(loginId, pageable);
+        Page<Party> parties = partyRepository.findJoinedPartiesByLoginId(loginId, pageable);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        // 현재 시간과 비교하여 마감 여부 결정
+        parties.getContent().forEach(party -> {
+            if (party.getMeetingDate().isBefore(currentTime) || party.getMeetingDate().isEqual(currentTime)) {
+                party.close();
+            }
+        });
+
+        return parties.map(PartyDetailsForListDto::from);
     }
 }
