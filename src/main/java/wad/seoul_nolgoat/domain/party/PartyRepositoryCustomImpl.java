@@ -1,7 +1,6 @@
 package wad.seoul_nolgoat.domain.party;
 
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -10,14 +9,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
-import wad.seoul_nolgoat.web.comment.dto.response.CommentDetailsForPartyDto;
 import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
-import wad.seoul_nolgoat.web.party.response.ParticipantDto;
-import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
 
 import java.util.List;
+import java.util.Optional;
 
-import static wad.seoul_nolgoat.domain.comment.QComment.comment;
 import static wad.seoul_nolgoat.domain.party.QParty.party;
 import static wad.seoul_nolgoat.domain.party.QPartyUser.partyUser;
 
@@ -27,58 +23,15 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public PartyDetailsDto findPartyDetailsById(Long partyId) {
-        return jpaQueryFactory
-                .select(
-                        Projections.constructor(
-                                PartyDetailsDto.class,
-                                party.id,
-                                party.title,
-                                party.content,
-                                party.maxCapacity,
-                                party.meetingDate,
-                                party.isClosed,
-                                party.administrativeDistrict,
-                                party.currentCount,
-                                party.createdDate,
-                                party.host.id,
-                                party.host.nickname,
-                                party.host.profileImage,
-                                Projections.list(
-                                        Projections.constructor(
-                                                ParticipantDto.class,
-                                                partyUser.participant.id,
-                                                partyUser.participant.nickname,
-                                                partyUser.participant.profileImage,
-                                                partyUser.participant.loginId
-                                        )
-                                ),
-                                Projections.list(
-                                        Projections.constructor(
-                                                CommentDetailsForPartyDto.class,
-                                                comment.id,
-                                                comment.content,
-                                                comment.createdDate,
-                                                comment.party.id,
-                                                comment.writer.id,
-                                                comment.writer.nickname,
-                                                comment.writer.profileImage
-                                        )
-                                ),
-                                party.host.loginId
-                        )
-                )
-                .from(party)
-                .join(party.host)
-                .leftJoin(partyUser).on(partyUser.party.eq(party)) // inner 조인을 하면 partyUser가 없을 경우, 결과가 null이 됨
-                .leftJoin(partyUser.participant) // inner 조인을 하면 참여자가 없을 경우, 결과가 null이 됨
-                .leftJoin(comment).on(comment.party.eq(party))
-                .leftJoin(comment.writer)
+    public Optional<Party> findPartyByIdWithFetchJoin(Long partyId) {
+        return Optional.ofNullable(jpaQueryFactory
+                .selectFrom(party)
+                .join(party.host).fetchJoin()
                 .where(
                         party.id.eq(partyId),
                         party.isDeleted.isFalse()
                 )
-                .fetchOne();
+                .fetchOne());
     }
 
     @Override
