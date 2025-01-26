@@ -144,14 +144,20 @@ public class PartyService {
         Party party = partyRepository.findByIdWithFetchJoin(partyId)
                 .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
 
+        // 해당 파티의 호스트인지 검증
         if (!party.getHost().getLoginId().equals(loginId)) {
             throw new ApplicationException(PARTY_UPDATE_NOT_AUTHORIZED);
+        }
+
+        if (party.isClosed()) {
+            throw new ApplicationException(PARTY_ALREADY_CLOSED);
         }
 
         if (party.isDeleted()) {
             throw new ApplicationException(PARTY_ALREADY_DELETED);
         }
 
+        // 수정된 참여 가능 전체 인원수가 현재 인원수보다 적은지 검증
         if (partyUpdateDto.getMaxCapacity() < party.getCurrentCount()) {
             throw new ApplicationException(INVALID_MAX_CAPACITY);
         }
