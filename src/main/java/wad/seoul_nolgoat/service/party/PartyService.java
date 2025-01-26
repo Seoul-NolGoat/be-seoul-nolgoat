@@ -217,27 +217,30 @@ public class PartyService {
     @Transactional
     public Page<PartyDetailsForListDto> findPartiesWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto) {
         Page<Party> parties = partyRepository.findAllWithConditionAndPagination(partySearchConditionDto);
-        LocalDateTime currentTime = LocalDateTime.now();
-
-        // 현재 시간과 비교하여 마감 여부 결정
-        parties.getContent().forEach(party -> {
-            if (party.getMeetingDate().isBefore(currentTime) || party.getMeetingDate().isEqual(currentTime)) {
-                party.close();
-            }
-        });
+        closeExpiredParties(parties);
 
         return parties.map(PartyDetailsForListDto::from);
     }
 
     // 내가 만든 파티 목록 조회
+    @Transactional
     public Page<PartyDetailsForUserDto> findHostedPartiesByLoginId(String loginId, Pageable pageable) {
-        return partyRepository.findHostedPartiesByLoginId(loginId, pageable);
+        Page<Party> parties = partyRepository.findHostedPartiesByLoginId(loginId, pageable);
+        closeExpiredParties(parties);
+
+        return parties.map(PartyDetailsForUserDto::from);
     }
 
     // 내가 참여한 파티 목록 조회
     @Transactional
     public Page<PartyDetailsForListDto> findJoinedPartiesByLoginId(String loginId, Pageable pageable) {
         Page<Party> parties = partyRepository.findJoinedPartiesByLoginId(loginId, pageable);
+        closeExpiredParties(parties);
+
+        return parties.map(PartyDetailsForListDto::from);
+    }
+
+    private void closeExpiredParties(Page<Party> parties) {
         LocalDateTime currentTime = LocalDateTime.now();
 
         // 현재 시간과 비교하여 마감 여부 결정
@@ -246,7 +249,5 @@ public class PartyService {
                 party.close();
             }
         });
-
-        return parties.map(PartyDetailsForListDto::from);
     }
 }
