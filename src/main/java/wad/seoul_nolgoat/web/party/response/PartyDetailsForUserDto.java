@@ -2,6 +2,7 @@ package wad.seoul_nolgoat.web.party.response;
 
 import lombok.Getter;
 import wad.seoul_nolgoat.domain.party.AdministrativeDistrict;
+import wad.seoul_nolgoat.domain.party.Party;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +18,7 @@ public class PartyDetailsForUserDto {
     private final int currentCount;
     private final LocalDateTime createdDate;
 
-    public PartyDetailsForUserDto(
+    private PartyDetailsForUserDto(
             Long partyId,
             String title,
             int maxCapacity,
@@ -35,5 +36,18 @@ public class PartyDetailsForUserDto {
         this.district = district.getDisplayName();
         this.currentCount = currentCount;
         this.createdDate = createdDate;
+    }
+
+    public static PartyDetailsForUserDto from(Party party) {
+        return new PartyDetailsForUserDto(
+                party.getId(),
+                party.getTitle(),
+                party.getMaxCapacity(),
+                party.getMeetingDate(),
+                party.isClosed(),
+                party.getAdministrativeDistrict(),
+                party.getCurrentCount(),
+                party.getCreatedDate()
+        );
     }
 }
