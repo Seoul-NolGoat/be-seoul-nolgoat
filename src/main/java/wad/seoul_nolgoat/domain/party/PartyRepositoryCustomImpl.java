@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static wad.seoul_nolgoat.domain.party.QParty.party;
-import static wad.seoul_nolgoat.domain.party.QPartyUser.partyUser;
+import static wad.seoul_nolgoat.domain.partyuser.QPartyUser.partyUser;
 
 @RequiredArgsConstructor
 public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
