@@ -7,7 +7,7 @@ import wad.seoul_nolgoat.web.party.response.ParticipantDto;
 
 import java.util.List;
 
-import static wad.seoul_nolgoat.domain.party.QPartyUser.partyUser;
+import static wad.seoul_nolgoat.domain.partyuser.QPartyUser.partyUser;
 
 @RequiredArgsConstructor
 public class PartyUserRepositoryCustomImpl implements PartyUserRepositoryCustom {
