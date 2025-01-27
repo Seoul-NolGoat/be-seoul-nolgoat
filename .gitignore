@@ -9,6 +9,7 @@
 /src/main/resources/multipart-config.yml
 /src/main/resources/app-urls.yml
 /src/main/resources/mail-config.yml
+/src/main/resources/logging-config.yml
 
 ### build ###
 .gradle
