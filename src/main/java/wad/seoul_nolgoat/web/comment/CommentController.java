@@ -47,7 +47,7 @@ public class CommentController {
     }
 
     @Operation(summary = "댓글 수정")
-    @PatchMapping("/{commentId}")
+    @PutMapping("/{commentId}")
     public ResponseEntity<Void> update(
             @AuthenticationPrincipal OAuth2User loginUser,
             @Valid @RequestBody CommentUpdateDto commentUpdateDto,

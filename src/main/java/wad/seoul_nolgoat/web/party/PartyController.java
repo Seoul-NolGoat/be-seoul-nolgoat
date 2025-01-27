@@ -78,7 +78,7 @@ public class PartyController {
     }
 
     @Operation(summary = "파티 수정")
-    @PatchMapping("/{partyId}")
+    @PutMapping("/{partyId}")
     public ResponseEntity<Void> update(
             @AuthenticationPrincipal OAuth2User loginUser,
             @Valid @RequestBody PartyUpdateDto partyUpdateDto,

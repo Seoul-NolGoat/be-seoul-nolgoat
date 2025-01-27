@@ -1,6 +1,5 @@
 package wad.seoul_nolgoat.web.notice;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -60,7 +59,7 @@ public class NoticeController {
     }
 
     @Operation(summary = "공지 사항 수정")
-    @PatchMapping("/{noticeId}")
+    @PutMapping("/{noticeId}")
     public ResponseEntity<Void> update(
             @AuthenticationPrincipal OAuth2User loginUser,
             @PathVariable Long noticeId,
@@ -90,8 +89,8 @@ public class NoticeController {
                 .build();
     }
 
-    @Hidden
-    @PatchMapping("/{noticeId}/views")
+    @Operation(summary = "공지 사항 조회수 증가")
+    @PutMapping("/{noticeId}/views")
     public ResponseEntity<Void> increaseViews(@PathVariable Long noticeId) {
         noticeService.increaseViews(noticeId);
         return ResponseEntity
