@@ -16,7 +16,7 @@ public class PartyUserRepositoryCustomImpl implements PartyUserRepositoryCustom 
 
     @Override
     public List<ParticipantDto> findParticipantsByPartyId(Long partyId) {
-        jpaQueryFactory
+        return jpaQueryFactory
                 .select(
                         Projections.constructor(
                                 ParticipantDto.class,
@@ -30,7 +30,5 @@ public class PartyUserRepositoryCustomImpl implements PartyUserRepositoryCustom 
                 .where(partyUser.party.id.eq(partyId))
                 .orderBy(partyUser.createdDate.asc())
                 .fetch();
-
-        return List.of();
     }
 }
