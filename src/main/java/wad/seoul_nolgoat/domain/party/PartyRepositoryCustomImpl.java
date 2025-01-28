@@ -137,6 +137,9 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
     }
 
     private BooleanExpression createStatusCondition(PartyStatus status) {
+        if (status == null) {
+            return null;
+        }
         if (status.equals(PartyStatus.OPENED)) {
             return party.isClosed.isFalse();
         }
