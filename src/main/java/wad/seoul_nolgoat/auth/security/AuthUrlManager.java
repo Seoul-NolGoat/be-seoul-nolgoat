@@ -1,11 +1,13 @@
-package wad.seoul_nolgoat.auth.util;
+package wad.seoul_nolgoat.auth.security;
 
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AuthUrlManager {
 
-    public static RequestMatcher[] getUserRequestMatchers() {
+    public RequestMatcher[] getUserRequestMatchers() {
         return new RequestMatcher[]{
                 new AntPathRequestMatcher("/api/auths/token/reissue", "POST"),
                 new AntPathRequestMatcher("/api/auths/logout", "POST"),
