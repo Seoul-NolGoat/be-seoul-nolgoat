@@ -22,7 +22,7 @@ public class PartySaveDto {
     @Max(value = 30, message = "참여 가능 인원은 30명을 초과할 수 없습니다.")
     private final int maxCapacity;
 
-    @NotBlank
+    @NotNull
     @Future(message = "모임일은 현재 시간 이후여야 합니다.")
     private final LocalDateTime meetingDate;
 
