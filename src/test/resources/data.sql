@@ -33,13 +33,15 @@ VALUES ('user1', 'password1', 'UserA', null, 'user1@nolgoat.site', false),
 
 INSERT INTO party (title, content, max_capacity, current_count, meeting_date, administrative_district, is_closed,
                    is_deleted,
-                   host_id)
-VALUES ('PartyA', 'Party Content A', 6, 1, '2024-12-31T23:59:59', 'GANGNAM_GU', false, false, 1), -- 동시성 테스트용
-       ('PartyB', 'Party Content B', 6, 1, '2024-12-31T23:59:59', 'GANGNAM_GU', false, false, 1),
-       ('PartyC', 'Party Content C', 4, 1, '2024-11-30T12:00:00', 'MAPO_GU', false, false, 3),
-       ('PartyD', 'Party Content D', 4, 1, '2024-11-11T11:11:11', 'GANGNAM_GU', true, false, 1),
-       ('PartyE', 'Party Content E', 4, 1, '2024-12-12T12:12:12', 'SEOCHO_GU', true, true, 4),
-       ('PartyF', 'Party Content F', 5, 1, '2024-11-15T18:00:00', 'SEOCHO_GU', false, false, 2);
+                   host_id,
+                   created_date)
+VALUES ('PartyA', 'Party Content A', 6, 1, '2024-12-31T23:59:59', 'GANGNAM_GU', false, false, 1,
+        '2024-12-12T12:12:12'), -- 동시성 테스트용
+       ('PartyB', 'Party Content B', 6, 1, '2024-12-31T23:59:59', 'GANGNAM_GU', false, false, 1, '2024-12-12T12:12:12'),
+       ('PartyC', 'Party Content C', 4, 1, '2024-11-30T12:00:00', 'MAPO_GU', false, false, 3, '2024-12-12T12:12:12'),
+       ('PartyD', 'Party Content D', 4, 1, '2024-11-11T11:11:11', 'GANGNAM_GU', true, false, 1, '2024-12-12T12:12:12'),
+       ('PartyE', 'Party Content E', 4, 1, '2024-12-12T12:12:12', 'SEOCHO_GU', true, true, 4, '2024-12-12T12:12:12'),
+       ('PartyF', 'Party Content F', 5, 1, '2024-11-15T18:00:00', 'SEOCHO_GU', false, false, 2, '2024-12-12T12:12:12');
 
 INSERT INTO inquiry (user_id, title, content, is_public, created_date, last_modified_date)
 VALUES (1, 'InquiryA', 'ContentA', true, '2024-12-01T10:00:00', '2024-12-01T10:10:00'),
