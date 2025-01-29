@@ -158,7 +158,7 @@ public class PartyRepositoryCustomImpl implements PartyRepositoryCustom {
 
     private OrderSpecifier<?> getOrderSpecifier(String sortField) {
         if (sortField.equals("meetingDate")) {
-            return party.meetingDate.desc();
+            return party.meetingDate.asc();
         }
         return party.createdDate.desc();
     }
