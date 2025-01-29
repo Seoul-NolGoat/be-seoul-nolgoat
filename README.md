@@ -1,6 +1,6 @@
 # System Architecture
 
-<img src="https://github.com/user-attachments/assets/bc307616-e3bb-49b8-af75-1e5c519ee5a8" width="650">
+<img src="https://github.com/user-attachments/assets/918b8416-4442-4196-96ec-56743189371d" width="650">
 
 # ERD
 
