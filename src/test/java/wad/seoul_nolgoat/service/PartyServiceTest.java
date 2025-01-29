@@ -377,7 +377,7 @@ public class PartyServiceTest {
                 .hasMessage(PARTY_USER_NOT_FOUND.getMessage());
     }
 
-    @DisplayName("파티 단건 조회")
+    @DisplayName("파티 단건 조회 시, 모임 일이 지났다면 파티가 자동으로 마감됩니다.")
     @Test
     void update_party_to_closed_when_finding_party_after_meeting_date() {
         // given
@@ -405,7 +405,7 @@ public class PartyServiceTest {
                         "Party Content B",
                         6,
                         LocalDateTime.of(2024, 12, 31, 23, 59, 59),
-                        false,
+                        true,
                         1
                 );
     }
