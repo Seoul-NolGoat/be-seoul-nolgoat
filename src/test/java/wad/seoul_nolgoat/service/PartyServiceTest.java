@@ -383,10 +383,7 @@ public class PartyServiceTest {
         // given
         String loginId = "user10";
         Long partyId = 2L;
-
         PartyDetailsDto a = partyService.findPartyDetailsById(loginId, partyId);
-
-        System.out.println(a.getTitle());
 
         // when // then
         assertThat(a)
