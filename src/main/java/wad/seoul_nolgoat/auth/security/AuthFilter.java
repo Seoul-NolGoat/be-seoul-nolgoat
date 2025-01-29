@@ -13,7 +13,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2UserDto;
 import wad.seoul_nolgoat.auth.oauth2.dto.OAuth2UserImpl;
 import wad.seoul_nolgoat.auth.service.AuthService;
-import wad.seoul_nolgoat.auth.util.AuthUrlManager;
 import wad.seoul_nolgoat.exception.ApplicationException;
 
 import java.io.IOException;
@@ -27,6 +26,7 @@ import static wad.seoul_nolgoat.auth.service.AuthService.AUTHORIZATION_HEADER;
 public class AuthFilter extends OncePerRequestFilter {
 
     private final AuthService authService;
+    private final AuthUrlManager authUrlManager;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -58,7 +58,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return Arrays.stream(AuthUrlManager.getUserRequestMatchers())
+        return Arrays.stream(authUrlManager.getUserRequestMatchers())
                 .noneMatch(matcher -> matcher.matches(request));
     }
 }

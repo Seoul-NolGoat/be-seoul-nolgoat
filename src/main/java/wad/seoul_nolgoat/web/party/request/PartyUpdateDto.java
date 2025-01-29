@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class PartyUpdateDto {
 
     @NotBlank
-    @Size(max = 25, message = "제목은 25자 이내여야 합니다.")
+    @Size(max = 40, message = "제목은 40자 이내여야 합니다.")
     private final String title;
 
     @NotBlank
@@ -23,7 +23,7 @@ public class PartyUpdateDto {
     private final int maxCapacity;
 
     @NotNull
-    @FutureOrPresent(message = "모임일은 현재 시간 이후여야 합니다.")
+    @FutureOrPresent(message = "모임 일은 현재 시간 이후여야 합니다.")
     private final LocalDateTime meetingDate;
 
     @NotBlank
