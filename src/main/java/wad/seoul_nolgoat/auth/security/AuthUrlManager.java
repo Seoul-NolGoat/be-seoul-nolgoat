@@ -9,7 +9,6 @@ public class AuthUrlManager {
 
     public RequestMatcher[] getUserRequestMatchers() {
         return new RequestMatcher[]{
-                new AntPathRequestMatcher("/api/auths/token/reissue", "POST"),
                 new AntPathRequestMatcher("/api/auths/logout", "POST"),
                 new AntPathRequestMatcher("/api/auths/withdrawal/verification", "POST"),
                 new AntPathRequestMatcher("/api/auths/withdrawal", "DELETE"),
@@ -64,5 +63,9 @@ public class AuthUrlManager {
 
                 new AntPathRequestMatcher("/api/mail/withdrawal/verification", "POST")
         };
+    }
+
+    public RequestMatcher getReissueTokenRequestMatcher() {
+        return new AntPathRequestMatcher("/api/auths/token/reissue", "POST");
     }
 }
