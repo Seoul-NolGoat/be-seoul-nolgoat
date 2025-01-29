@@ -12,7 +12,6 @@ public class CommentDetailsForPartyDto {
     private final Long commentId;
     private final String content;
     private final LocalDateTime createdDate;
-    private final Long partyId;
     private final Long writerId;
     private final String writerNickname;
     private final String writerProfileImage;

@@ -59,7 +59,7 @@ public class InquiryController {
     }
 
     @Operation(summary = "건의 사항 수정")
-    @PatchMapping("/{inquiryId}")
+    @PutMapping("/{inquiryId}")
     public ResponseEntity<Void> update(
             @AuthenticationPrincipal OAuth2User loginUser,
             @PathVariable Long inquiryId,

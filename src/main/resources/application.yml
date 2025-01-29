@@ -13,3 +13,4 @@ spring:
       - multipart-config.yml
       - app-urls.yml
       - mail-config.yml
+      - logging-config.yml

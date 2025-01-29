@@ -30,6 +30,7 @@ jobs:
           echo "${{ secrets.APPLICATION_CONFIG_S3 }}" > ./src/main/resources/s3-config.yml
           echo "${{ secrets.APPLICATION_CONFIG_SEOUL }}" > ./src/main/resources/seoul-config.yml
           echo "${{ secrets.APPLICATION_CONFIG_TMAP }}" > ./src/main/resources/t-config.yml
+          echo "${{ secrets.APPLICATION_CONFIG_LOGGING }}" > ./src/main/resources/logging-config.yml
 
       - name: gradlew 실행 권한 부여
         run: chmod +x gradlew

@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.party.AdministrativeDistrict;
 import wad.seoul_nolgoat.domain.party.PartyRepository;
-import wad.seoul_nolgoat.domain.party.PartyUserRepository;
+import wad.seoul_nolgoat.domain.partyuser.PartyUserRepository;
 import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.service.party.PartyService;
 import wad.seoul_nolgoat.web.party.request.PartySaveDto;
@@ -377,16 +377,13 @@ public class PartyServiceTest {
                 .hasMessage(PARTY_USER_NOT_FOUND.getMessage());
     }
 
-    @DisplayName("파티 단건 조회")
+    @DisplayName("파티 단건 조회 시, 모임 일이 지났다면 파티가 자동으로 마감됩니다.")
     @Test
     void update_party_to_closed_when_finding_party_after_meeting_date() {
         // given
         String loginId = "user10";
         Long partyId = 2L;
-
         PartyDetailsDto a = partyService.findPartyDetailsById(loginId, partyId);
-
-        System.out.println(a.getTitle());
 
         // when // then
         assertThat(a)
@@ -405,7 +402,7 @@ public class PartyServiceTest {
                         "Party Content B",
                         6,
                         LocalDateTime.of(2024, 12, 31, 23, 59, 59),
-                        false,
+                        true,
                         1
                 );
     }

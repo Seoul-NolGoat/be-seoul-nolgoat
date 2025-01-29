@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
+import wad.seoul_nolgoat.web.comment.dto.response.CommentDetailsForPartyDto;
 import wad.seoul_nolgoat.web.comment.dto.response.CommentDetailsForUserDto;
 
 import java.util.List;
@@ -47,5 +48,25 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                 .where(comment.writer.loginId.eq(loginId));
 
         return PageableExecutionUtils.getPage(comments, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public List<CommentDetailsForPartyDto> findCommentsByPartyId(Long partyId) {
+        return jpaQueryFactory
+                .select(
+                        Projections.constructor(
+                                CommentDetailsForPartyDto.class,
+                                comment.id,
+                                comment.content,
+                                comment.createdDate,
+                                comment.writer.id,
+                                comment.writer.nickname,
+                                comment.writer.profileImage
+                        )
+                )
+                .from(comment)
+                .where(comment.party.id.eq(partyId))
+                .orderBy(comment.createdDate.desc())
+                .fetch();
     }
 }

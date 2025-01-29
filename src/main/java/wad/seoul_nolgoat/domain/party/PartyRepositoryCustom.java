@@ -3,17 +3,16 @@ package wad.seoul_nolgoat.domain.party;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
-import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
-import wad.seoul_nolgoat.web.party.response.PartyDetailsForListDto;
-import wad.seoul_nolgoat.web.party.response.PartyDetailsForUserDto;
+
+import java.util.Optional;
 
 public interface PartyRepositoryCustom {
 
-    PartyDetailsDto findPartyDetailsById(Long partyId);
+    Optional<Party> findPartyByIdWithFetchJoin(Long partyId);
 
-    Page<PartyDetailsForListDto> findAllWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto);
+    Page<Party> findAllWithConditionAndPagination(PartySearchConditionDto partySearchConditionDto);
 
-    Page<PartyDetailsForUserDto> findHostedPartiesByLoginId(String loginId, Pageable pageable);
+    Page<Party> findHostedPartiesByLoginId(String loginId, Pageable pageable);
 
-    Page<PartyDetailsForListDto> findJoinedPartiesByLoginId(String loginId, Pageable pageable);
+    Page<Party> findJoinedPartiesByLoginId(String loginId, Pageable pageable);
 }

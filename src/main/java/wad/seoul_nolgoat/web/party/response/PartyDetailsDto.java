@@ -2,6 +2,8 @@ package wad.seoul_nolgoat.web.party.response;
 
 import lombok.Getter;
 import wad.seoul_nolgoat.domain.party.AdministrativeDistrict;
+import wad.seoul_nolgoat.domain.party.Party;
+import wad.seoul_nolgoat.util.DateTimeUtil;
 import wad.seoul_nolgoat.web.comment.dto.response.CommentDetailsForPartyDto;
 
 import java.time.LocalDateTime;
@@ -18,20 +20,17 @@ public class PartyDetailsDto {
     private final boolean isClosed;
     private final String district;
     private final int currentCount;
-    private final LocalDateTime createdDate;
+    private final String createdDateAgo;
     private final Long hostId;
     private final String hostNickname;
     private final String hostProfileImage;
     private final List<ParticipantDto> participants;
     private final List<CommentDetailsForPartyDto> comments;
 
-    private boolean isHost;
-    private boolean isParticipant;
+    private final boolean isHost;
+    private final boolean isParticipant;
 
-    // 호스트 여부 확인을 위한 필드
-    private final String hostLoginId;
-
-    public PartyDetailsDto(
+    private PartyDetailsDto(
             Long partyId,
             String title,
             String content,
@@ -46,8 +45,8 @@ public class PartyDetailsDto {
             String hostProfileImage,
             List<ParticipantDto> participants,
             List<CommentDetailsForPartyDto> comments,
-            String hostLoginId
-
+            boolean isHost,
+            boolean isParticipant
     ) {
         this.partyId = partyId;
         this.title = title;
@@ -57,22 +56,41 @@ public class PartyDetailsDto {
         this.isClosed = isClosed;
         this.district = district.getDisplayName();
         this.currentCount = currentCount;
-        this.createdDate = createdDate;
+        this.createdDateAgo = DateTimeUtil.timeAgo(createdDate);
         this.hostId = hostId;
         this.hostNickname = hostNickname;
         this.hostProfileImage = hostProfileImage;
         this.participants = participants;
         this.comments = comments;
-        this.hostLoginId = hostLoginId;
+        this.isHost = isHost;
+        this.isParticipant = isParticipant;
     }
 
-    public void setHostStatus(String loginId) {
-        isHost = loginId.equals(hostLoginId);
-    }
-
-    public void setParticipantStatus(String loginId) {
-        isParticipant = participants.stream()
-                .map(ParticipantDto::getParticipantLoginId)
-                .anyMatch(loginId::equals);
+    public static PartyDetailsDto of(
+            Party party,
+            List<ParticipantDto> participants,
+            List<CommentDetailsForPartyDto> comments,
+            String loginId
+    ) {
+        return new PartyDetailsDto(
+                party.getId(),
+                party.getTitle(),
+                party.getContent(),
+                party.getMaxCapacity(),
+                party.getMeetingDate(),
+                party.isClosed(),
+                party.getAdministrativeDistrict(),
+                party.getCurrentCount(),
+                party.getCreatedDate(),
+                party.getHost().getId(),
+                party.getHost().getNickname(),
+                party.getHost().getProfileImage(),
+                participants,
+                comments,
+                loginId.equals(party.getHost().getLoginId()),
+                participants.stream()
+                        .map(ParticipantDto::getParticipantLoginId)
+                        .anyMatch(loginId::equals)
+        );
     }
 }
