@@ -69,7 +69,7 @@ public class CommentService {
             throw new ApplicationException(COMMENT_DELETE_NOT_AUTHORIZED);
         }
 
-        commentRepository.delete(comment);
+        comment.delete();
     }
 
     public Page<CommentDetailsForUserDto> findCommentsByLoginId(String loginId, Pageable pageable) {

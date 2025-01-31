@@ -24,14 +24,20 @@ public class Comment extends BaseTimeEntity {
     private Party party;
 
     private String content;
+    private boolean isDeleted;
 
     public Comment(User writer, Party party, String content) {
         this.writer = writer;
         this.party = party;
         this.content = content;
+        this.isDeleted = false;
     }
 
     public void update(String content) {
         this.content = content;
+    }
+
+    public void delete() {
+        this.isDeleted = true;
     }
 }

@@ -1,6 +1,7 @@
 package wad.seoul_nolgoat.domain.comment;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,8 @@ import static wad.seoul_nolgoat.domain.comment.QComment.comment;
 @RequiredArgsConstructor
 public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
 
+    private static final String DELETED_COMMENT_MESSAGE = "삭제된 댓글입니다";
+
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
@@ -26,8 +29,12 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                         Projections.constructor(
                                 CommentDetailsForUserDto.class,
                                 comment.id,
-                                comment.content,
+                                Expressions.cases()
+                                        .when(comment.isDeleted.isTrue())
+                                        .then(DELETED_COMMENT_MESSAGE)
+                                        .otherwise(comment.content),
                                 comment.createdDate,
+                                comment.isDeleted,
                                 comment.party.id
                         )
                 )
@@ -57,8 +64,12 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                         Projections.constructor(
                                 CommentDetailsForPartyDto.class,
                                 comment.id,
-                                comment.content,
+                                Expressions.cases()
+                                        .when(comment.isDeleted.isTrue())
+                                        .then(DELETED_COMMENT_MESSAGE)
+                                        .otherwise(comment.content),
                                 comment.createdDate,
+                                comment.isDeleted,
                                 comment.writer.id,
                                 comment.writer.nickname,
                                 comment.writer.profileImage
