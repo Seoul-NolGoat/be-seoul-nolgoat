@@ -12,5 +12,6 @@ public class CommentDetailsForUserDto {
     private final Long commentId;
     private final String content;
     private final LocalDateTime createdDate;
+    private final Boolean isDeleted;
     private final Long partyId;
 }
