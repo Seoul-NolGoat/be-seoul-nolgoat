@@ -1,6 +1,7 @@
 package wad.seoul_nolgoat.domain.comment;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +59,10 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                         Projections.constructor(
                                 CommentDetailsForPartyDto.class,
                                 comment.id,
-                                comment.content,
+                                Expressions.cases()
+                                        .when(comment.isDeleted.isTrue())
+                                        .then("")
+                                        .otherwise(comment.content),
                                 comment.createdDate,
                                 comment.isDeleted,
                                 comment.writer.id,
