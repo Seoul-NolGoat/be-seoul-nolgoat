@@ -18,6 +18,8 @@ import static wad.seoul_nolgoat.domain.comment.QComment.comment;
 @RequiredArgsConstructor
 public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
 
+    private static final String DELETED_COMMENT_MESSAGE = "삭제된 댓글입니다";
+
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
@@ -27,7 +29,10 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                         Projections.constructor(
                                 CommentDetailsForUserDto.class,
                                 comment.id,
-                                comment.content,
+                                Expressions.cases()
+                                        .when(comment.isDeleted.isTrue())
+                                        .then(DELETED_COMMENT_MESSAGE)
+                                        .otherwise(comment.content),
                                 comment.createdDate,
                                 comment.isDeleted,
                                 comment.party.id
@@ -61,7 +66,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                                 comment.id,
                                 Expressions.cases()
                                         .when(comment.isDeleted.isTrue())
-                                        .then("")
+                                        .then(DELETED_COMMENT_MESSAGE)
                                         .otherwise(comment.content),
                                 comment.createdDate,
                                 comment.isDeleted,
