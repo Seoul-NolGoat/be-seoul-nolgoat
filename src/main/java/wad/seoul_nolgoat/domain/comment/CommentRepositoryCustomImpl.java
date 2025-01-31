@@ -28,6 +28,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                                 comment.id,
                                 comment.content,
                                 comment.createdDate,
+                                comment.isDeleted,
                                 comment.party.id
                         )
                 )
@@ -59,6 +60,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                                 comment.id,
                                 comment.content,
                                 comment.createdDate,
+                                comment.isDeleted,
                                 comment.writer.id,
                                 comment.writer.nickname,
                                 comment.writer.profileImage
