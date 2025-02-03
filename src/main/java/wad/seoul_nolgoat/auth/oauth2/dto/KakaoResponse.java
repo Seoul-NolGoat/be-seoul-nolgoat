@@ -1,6 +1,7 @@
 package wad.seoul_nolgoat.auth.oauth2.dto;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class KakaoResponse implements OAuth2Response {
 
@@ -30,8 +31,8 @@ public class KakaoResponse implements OAuth2Response {
     }
 
     @Override
-    public String getProfileImage() {
-        return profile.get("profile_image_url");
+    public Optional<String> getProfileImage() {
+        return Optional.ofNullable(profile.get("profile_image_url"));
     }
 
     @Override
