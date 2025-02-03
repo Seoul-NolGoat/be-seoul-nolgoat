@@ -5,7 +5,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UrlManager {
+public class UriManager {
 
     public RequestMatcher[] getUserRequestMatchers() {
         return new RequestMatcher[]{
