@@ -1,5 +1,6 @@
 package wad.seoul_nolgoat.web.comment;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -46,6 +47,8 @@ public class CommentController {
                 .build();
     }
 
+    // 현재 사용하지 않음
+    @Hidden
     @Operation(summary = "댓글 수정")
     @PutMapping("/{commentId}")
     public ResponseEntity<Void> update(
