@@ -65,6 +65,13 @@ public class AuthUrlManager {
         };
     }
 
+    public RequestMatcher[] getPublicRequestMatchers() {
+        return new RequestMatcher[]{
+                new AntPathRequestMatcher("/swagger-ui/**", "GET"),
+                new AntPathRequestMatcher("/v3/api-docs/**", "GET")
+        };
+    }
+
     public RequestMatcher getReissueTokenRequestMatcher() {
         return new AntPathRequestMatcher("/api/auths/token/reissue", "POST");
     }
