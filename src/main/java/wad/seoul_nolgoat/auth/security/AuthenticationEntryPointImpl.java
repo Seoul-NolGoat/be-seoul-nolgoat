@@ -56,12 +56,12 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
             return;
         }
 
-        // 유효하지 않은 요청 URL에 대한 응답
+        // 유효하지 않은 요청 URI에 대한 응답
         if (authException instanceof InsufficientAuthenticationException) {
-            log.info("Invalid Request URL", authException);
+            log.info("Invalid Request URI", authException);
             response.setStatus(HttpStatus.NOT_FOUND.value());
             response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write(objectMapper.writeValueAsString(new ErrorResponse(INVALID_REQUEST_URL)));
+            response.getWriter().write(objectMapper.writeValueAsString(new ErrorResponse(INVALID_REQUEST_URI)));
         }
     }
 }
