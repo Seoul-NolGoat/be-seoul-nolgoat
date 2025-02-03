@@ -66,6 +66,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(authUrlManager.getUserRequestMatchers()).authenticated()
+                        .requestMatchers(authUrlManager.getPublicRequestMatchers()).permitAll()
                         .requestMatchers(authUrlManager.getReissueTokenRequestMatcher()).permitAll()
                         .anyRequest().denyAll()
                 )
