@@ -20,6 +20,8 @@ import static wad.seoul_nolgoat.exception.ErrorCode.USER_NOT_FOUND;
 @Service
 public class UserService {
 
+    private static final String DEFAULT_PROFILE_IMAGE = "https://nolgoat-review-image-bucket.s3.ap-northeast-2.amazonaws.com/user.png";
+
     private final UserRepository userRepository;
 
     public UserProfileDto getLoginUserDetails(String loginId) {
@@ -40,7 +42,8 @@ public class UserService {
     @Transactional
     public OAuth2User syncOAuth2User(String uniqueProviderId, OAuth2Response oAuth2Response) {
         String nickname = oAuth2Response.getNickname();
-        String profileImage = oAuth2Response.getProfileImage();
+        String profileImage = oAuth2Response.getProfileImage()
+                .orElse(DEFAULT_PROFILE_IMAGE);
         String email = oAuth2Response.getEmail();
 
         User user = userRepository.findByLoginId(uniqueProviderId)
