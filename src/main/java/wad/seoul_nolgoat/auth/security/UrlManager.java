@@ -61,7 +61,11 @@ public class UrlManager {
                 new AntPathRequestMatcher("/api/notices/{noticeId}", "DELETE"),
                 new AntPathRequestMatcher("/api/notices/{noticeId}/views", "PUT"),
 
-                new AntPathRequestMatcher("/api/mail/withdrawal/verification", "POST")
+                new AntPathRequestMatcher("/api/mail/withdrawal/verification", "POST"),
+
+                new AntPathRequestMatcher("/api/kakao//map/road-address", "GET"),
+                new AntPathRequestMatcher("/api/kakao//map/lot-address", "GET"),
+                new AntPathRequestMatcher("/api/kakao//map/coordinate", "GET")
         };
     }
 
