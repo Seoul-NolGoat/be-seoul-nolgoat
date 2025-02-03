@@ -93,7 +93,7 @@ public class AuthService {
         try {
             String key = REFRESH_TOKEN_KEY_PREFIX + getLoginId(refreshToken);
 
-            // 캐시에 해당 Refresh 토큰이 존재하는지 확인
+            // Redis에 해당 Refresh 토큰이 존재하는지 확인
             if (!Objects.equals(redisTokenService.getToken(key), refreshToken)) {
                 throw new ApplicationException(REFRESH_TOKEN_NOT_FOUND);
             }
@@ -148,12 +148,12 @@ public class AuthService {
         }
     }
 
-    // 캐시에서 Refresh 토큰 삭제
+    // Redis에서 Refresh 토큰 삭제
     public void deleteRefreshToken(String loginId) {
         redisTokenService.deleteToken(REFRESH_TOKEN_KEY_PREFIX + loginId);
     }
 
-    // 캐시에 Access 토큰 블랙리스트 처리
+    // Redis에 Access 토큰 블랙리스트 처리
     public void saveAccessTokenToBlacklist(String accessToken) {
         String key = ACCESS_TOKEN_KEY_PREFIX + getLoginId(accessToken);
         redisTokenService.saveToken(
