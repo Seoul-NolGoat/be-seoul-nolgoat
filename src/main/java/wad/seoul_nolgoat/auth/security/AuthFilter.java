@@ -26,7 +26,7 @@ import static wad.seoul_nolgoat.auth.service.AuthService.AUTHORIZATION_HEADER;
 public class AuthFilter extends OncePerRequestFilter {
 
     private final AuthService authService;
-    private final AuthUrlManager authUrlManager;
+    private final UrlManager urlManager;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -58,7 +58,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return Arrays.stream(authUrlManager.getUserRequestMatchers())
+        return Arrays.stream(urlManager.getUserRequestMatchers())
                 .noneMatch(matcher -> matcher.matches(request));
     }
 }
