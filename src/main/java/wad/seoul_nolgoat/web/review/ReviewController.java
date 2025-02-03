@@ -49,8 +49,9 @@ public class ReviewController {
                 .build();
     }
 
-    @Hidden
     // 현재 사용하지 않음
+    @Hidden
+    @Operation(summary = "리뷰 수정")
     @PutMapping("/{reviewId}")
     public ResponseEntity<Void> update(
             @PathVariable Long reviewId,
