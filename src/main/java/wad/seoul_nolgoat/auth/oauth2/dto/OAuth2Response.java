@@ -1,5 +1,7 @@
 package wad.seoul_nolgoat.auth.oauth2.dto;
 
+import java.util.Optional;
+
 public interface OAuth2Response {
 
     String getProvider();
@@ -8,7 +10,7 @@ public interface OAuth2Response {
 
     String getNickname();
 
-    String getProfileImage();
+    Optional<String> getProfileImage();
 
     String getEmail();
 }

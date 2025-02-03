@@ -3,6 +3,7 @@ package wad.seoul_nolgoat.auth.oauth2.dto;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class GoogleResponse implements OAuth2Response {
@@ -25,8 +26,8 @@ public class GoogleResponse implements OAuth2Response {
     }
 
     @Override
-    public String getProfileImage() {
-        return attributes.get("picture").toString();
+    public Optional<String> getProfileImage() {
+        return Optional.ofNullable(attributes.get("picture").toString());
     }
 
     @Override
