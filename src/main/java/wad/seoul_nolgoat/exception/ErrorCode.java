@@ -21,7 +21,7 @@ public enum ErrorCode {
     ACCESS_TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "AUTH010", "블랙리스트에 등록된 Access 토큰입니다."),
     INVALID_CSRF_PROTECTION_UUID(HttpStatus.UNAUTHORIZED, "AUTH011", "유효하지 않은 CSRF Protection UUID입니다."),
     WITHDRAWAL_CODE_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH012", "회원 탈퇴 인증 시간이 만료되었습니다."),
-    INVALID_REQUEST_URL(HttpStatus.NOT_FOUND, "AUTH013", "유효하지 않은 요청 URL입니다."),
+    INVALID_REQUEST_URI(HttpStatus.NOT_FOUND, "AUTH013", "유효하지 않은 요청 URI입니다."),
 
     // 유저 관련
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER001", "존재하지 않는 유저입니다."),
