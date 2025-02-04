@@ -52,7 +52,7 @@ public class NoticeServiceTest {
         assertThat(thirdPage.getContent().size()).isEqualTo(1);
     }
 
-    @DisplayName("공지 사항 작성자가 아닌 사용자가 글을 수정하려 하면 예외가 발생합니다.")
+    @DisplayName("공지 사항 작성자가 아닌 유저가 글을 수정하려 하면 예외가 발생합니다.")
     @Test
     void update_notice_when_non_creator_then_throw_exception() {
         // given
@@ -66,7 +66,7 @@ public class NoticeServiceTest {
                 .hasMessage(NOTICE_WRITER_MISMATCH.getMessage());
     }
 
-    @DisplayName("공지 사항 작성자가 아닌 사용자가 글을 삭제하려 하면 예외가 발생합니다.")
+    @DisplayName("공지 사항 작성자가 아닌 유저가 글을 삭제하려 하면 예외가 발생합니다.")
     @Test
     void delete_notice_when_non_creator_then_throw_exception() {
         // given
