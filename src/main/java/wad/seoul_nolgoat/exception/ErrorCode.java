@@ -37,7 +37,7 @@ public enum ErrorCode {
 
     // 북마크 관련
     BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOKMARK001", "존재하지 않는 북마크입니다."),
-    BOOKMARK_REGISTRANT_MISMATCH(HttpStatus.FORBIDDEN, "BOOKMARK002", "북마크를 등록한 사용자가 아닙니다."),
+    BOOKMARK_REGISTRANT_MISMATCH(HttpStatus.FORBIDDEN, "BOOKMARK002", "북마크를 등록한 유저가 아닙니다."),
 
     // 파티 관련
     PARTY_NOT_FOUND(HttpStatus.NOT_FOUND, "PARTY001", "존재하지 않는 파티입니다."),

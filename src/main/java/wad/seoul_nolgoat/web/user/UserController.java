@@ -31,7 +31,7 @@ public class UserController {
     private final ReviewService reviewService;
     private final CommentService commentService;
 
-    @Operation(summary = "로그인 사용자 정보 조회")
+    @Operation(summary = "로그인 유저 정보 조회")
     @GetMapping("/me")
     public ResponseEntity<UserProfileDto> showUserProfile(@AuthenticationPrincipal OAuth2User loginUser) {
         String loginId = loginUser.getName();
