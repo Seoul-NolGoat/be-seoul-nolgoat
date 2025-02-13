@@ -3,6 +3,8 @@ package wad.seoul_nolgoat.web.notice.dto.response;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @RequiredArgsConstructor
 public class NoticeDetailsDto {
@@ -14,6 +16,6 @@ public class NoticeDetailsDto {
     private final Long userId;
     private final String userNickname;
     private final String userProfileImage;
-    private final String createDate;
+    private final LocalDateTime createDate;
 }
 

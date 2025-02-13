@@ -5,8 +5,6 @@ import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.web.notice.dto.request.NoticeSaveDto;
 import wad.seoul_nolgoat.web.notice.dto.response.NoticeDetailsDto;
 
-import static wad.seoul_nolgoat.util.DateTimeUtil.formatDate;
-
 public class NoticeMapper {
 
     public static Notice toEntity(User user, NoticeSaveDto noticeSaveDto) {
@@ -26,7 +24,7 @@ public class NoticeMapper {
                 notice.getUser().getId(),
                 notice.getUser().getNickname(),
                 notice.getUser().getProfileImage(),
-                formatDate(notice.getCreatedDate())
+                notice.getCreatedDate()
         );
     }
 }
