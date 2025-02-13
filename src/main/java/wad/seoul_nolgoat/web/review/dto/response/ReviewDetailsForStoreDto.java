@@ -3,6 +3,8 @@ package wad.seoul_nolgoat.web.review.dto.response;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @RequiredArgsConstructor
 public class ReviewDetailsForStoreDto {
@@ -14,5 +16,5 @@ public class ReviewDetailsForStoreDto {
     private final Long userId;
     private final String userNickname;
     private final String userProfileImage;
-    private final String createDate;
+    private final LocalDateTime createDate;
 }
