@@ -3,7 +3,6 @@ package wad.seoul_nolgoat.web.inquiry.dto.response;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import wad.seoul_nolgoat.util.DateTimeUtil;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +16,7 @@ public class InquiryDetailsForListDto {
     private Long userId;
     private String userNickname;
     private String userProfileImage;
-    private String createDate;
+    private LocalDateTime createDate;
 
     public InquiryDetailsForListDto(
             Long inquiryId,
@@ -34,6 +33,6 @@ public class InquiryDetailsForListDto {
         this.userId = userId;
         this.userNickname = userNickname;
         this.userProfileImage = userProfileImage;
-        this.createDate = DateTimeUtil.formatDate(createDate);
+        this.createDate = createDate;
     }
 }
