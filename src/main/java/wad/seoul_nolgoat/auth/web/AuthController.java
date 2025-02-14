@@ -54,7 +54,7 @@ public class AuthController {
 
         String loginId = loginUser.getName();
 
-        // 캐시 및 쿠키에서 Refresh 토큰 삭제
+        // Redis 및 쿠키에서 Refresh 토큰 삭제
         authService.deleteRefreshToken(loginId);
         authService.deleteRefreshTokenCookie(response);
 
@@ -90,7 +90,7 @@ public class AuthController {
 
         String loginId = loginUser.getName();
 
-        // 캐시 및 쿠키에서 Refresh 토큰 삭제
+        // Redis 및 쿠키에서 Refresh 토큰 삭제
         authService.deleteRefreshToken(loginId);
         authService.deleteRefreshTokenCookie(response);
 

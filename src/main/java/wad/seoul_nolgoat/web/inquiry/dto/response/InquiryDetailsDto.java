@@ -3,6 +3,8 @@ package wad.seoul_nolgoat.web.inquiry.dto.response;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @RequiredArgsConstructor
 public class InquiryDetailsDto {
@@ -14,5 +16,5 @@ public class InquiryDetailsDto {
     private final Long userId;
     private final String userNickname;
     private final String userProfileImage;
-    private final String createDate;
+    private final LocalDateTime createDate;
 }

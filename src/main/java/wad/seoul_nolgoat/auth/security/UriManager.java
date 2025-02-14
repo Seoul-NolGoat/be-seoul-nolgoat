@@ -5,7 +5,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuthUrlManager {
+public class UriManager {
 
     public RequestMatcher[] getUserRequestMatchers() {
         return new RequestMatcher[]{
@@ -61,7 +61,18 @@ public class AuthUrlManager {
                 new AntPathRequestMatcher("/api/notices/{noticeId}", "DELETE"),
                 new AntPathRequestMatcher("/api/notices/{noticeId}/views", "PUT"),
 
-                new AntPathRequestMatcher("/api/mail/withdrawal/verification", "POST")
+                new AntPathRequestMatcher("/api/mail/withdrawal/verification", "POST"),
+
+                new AntPathRequestMatcher("/api/kakao//map/road-address", "GET"),
+                new AntPathRequestMatcher("/api/kakao//map/lot-address", "GET"),
+                new AntPathRequestMatcher("/api/kakao//map/coordinate", "GET")
+        };
+    }
+
+    public RequestMatcher[] getPublicRequestMatchers() {
+        return new RequestMatcher[]{
+                new AntPathRequestMatcher("/swagger-ui/**", "GET"),
+                new AntPathRequestMatcher("/v3/api-docs/**", "GET")
         };
     }
 

@@ -21,6 +21,7 @@ public enum ErrorCode {
     ACCESS_TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "AUTH010", "블랙리스트에 등록된 Access 토큰입니다."),
     INVALID_CSRF_PROTECTION_UUID(HttpStatus.UNAUTHORIZED, "AUTH011", "유효하지 않은 CSRF Protection UUID입니다."),
     WITHDRAWAL_CODE_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH012", "회원 탈퇴 인증 시간이 만료되었습니다."),
+    INVALID_REQUEST_URI(HttpStatus.NOT_FOUND, "AUTH013", "유효하지 않은 요청 URI입니다."),
 
     // 유저 관련
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER001", "존재하지 않는 유저입니다."),
@@ -36,7 +37,7 @@ public enum ErrorCode {
 
     // 북마크 관련
     BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOKMARK001", "존재하지 않는 북마크입니다."),
-    BOOKMARK_REGISTRANT_MISMATCH(HttpStatus.FORBIDDEN, "BOOKMARK002", "북마크를 등록한 사용자가 아닙니다."),
+    BOOKMARK_REGISTRANT_MISMATCH(HttpStatus.FORBIDDEN, "BOOKMARK002", "북마크를 등록한 유저가 아닙니다."),
 
     // 파티 관련
     PARTY_NOT_FOUND(HttpStatus.NOT_FOUND, "PARTY001", "존재하지 않는 파티입니다."),

@@ -19,8 +19,8 @@ import wad.seoul_nolgoat.auth.oauth2.security.CustomSuccessHandler;
 import wad.seoul_nolgoat.auth.oauth2.security.OAuth2AuthorizationRequestResolverImpl;
 import wad.seoul_nolgoat.auth.oauth2.security.RedisOAuth2AuthorizedClientService;
 import wad.seoul_nolgoat.auth.security.AuthFilter;
-import wad.seoul_nolgoat.auth.security.AuthUrlManager;
 import wad.seoul_nolgoat.auth.security.AuthenticationEntryPointImpl;
+import wad.seoul_nolgoat.auth.security.UriManager;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class SecurityConfig {
     private final RedisOAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final CustomSuccessHandler successHandler;
     private final AuthenticationEntryPointImpl authenticationEntryPoint;
-    private final AuthUrlManager authUrlManager;
+    private final UriManager uriManager;
     private final AuthFilter authFilter;
 
     @Value("${app.urls.frontend-base-url}")
@@ -65,8 +65,9 @@ public class SecurityConfig {
                         .authenticationEntryPoint(authenticationEntryPoint)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(authUrlManager.getUserRequestMatchers()).authenticated()
-                        .requestMatchers(authUrlManager.getReissueTokenRequestMatcher()).permitAll()
+                        .requestMatchers(uriManager.getUserRequestMatchers()).authenticated()
+                        .requestMatchers(uriManager.getPublicRequestMatchers()).permitAll()
+                        .requestMatchers(uriManager.getReissueTokenRequestMatcher()).permitAll()
                         .anyRequest().denyAll()
                 )
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)

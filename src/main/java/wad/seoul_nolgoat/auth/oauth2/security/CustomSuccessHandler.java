@@ -20,7 +20,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Value("${app.urls.frontend-base-url}")
     private String frontendBaseUrl;
 
-    private static final String SUCCESS_URL = "/loginSuccess";
+    private static final String SUCCESS_URI = "/loginSuccess";
     private static final String CHARSET = "UTF-8";
 
     private final AuthService authService;
@@ -31,7 +31,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String refreshToken = authService.createRefreshToken(oAuth2User.getName());
         String accessToken = authService.createAccessToken(oAuth2User.getName());
 
-        String successBaseUrl = frontendBaseUrl + SUCCESS_URL;
+        String successBaseUrl = frontendBaseUrl + SUCCESS_URI;
         String url = String.format(
                 "%s?access=%s",
                 successBaseUrl,

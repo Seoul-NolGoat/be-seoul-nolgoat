@@ -3,7 +3,6 @@ package wad.seoul_nolgoat.web.party.response;
 import lombok.Getter;
 import wad.seoul_nolgoat.domain.party.AdministrativeDistrict;
 import wad.seoul_nolgoat.domain.party.Party;
-import wad.seoul_nolgoat.util.DateTimeUtil;
 import wad.seoul_nolgoat.web.comment.dto.response.CommentDetailsForPartyDto;
 
 import java.time.LocalDateTime;
@@ -20,7 +19,7 @@ public class PartyDetailsDto {
     private final boolean isClosed;
     private final String district;
     private final int currentCount;
-    private final String createdDateAgo;
+    private final LocalDateTime createdDate;
     private final Long hostId;
     private final String hostNickname;
     private final String hostProfileImage;
@@ -56,7 +55,7 @@ public class PartyDetailsDto {
         this.isClosed = isClosed;
         this.district = district.getDisplayName();
         this.currentCount = currentCount;
-        this.createdDateAgo = DateTimeUtil.timeAgo(createdDate);
+        this.createdDate = createdDate;
         this.hostId = hostId;
         this.hostNickname = hostNickname;
         this.hostProfileImage = hostProfileImage;
