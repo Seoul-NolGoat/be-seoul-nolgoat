@@ -30,19 +30,19 @@ public class StoreService {
 
     @Transactional
     public void update(StoreUpdateDto storeUpdateDto) {
-        Store store = storeRepository.findById(storeUpdateDto.getId())
+        Store store = storeRepository.findById(storeUpdateDto.id())
                 .orElseThrow(() -> new ApplicationException(STORE_NOT_FOUND));
         store.update(
-                storeUpdateDto.getName(),
-                storeUpdateDto.getCategory(),
-                storeUpdateDto.getManagementNumber(),
-                storeUpdateDto.getPhoneNumber(),
-                storeUpdateDto.getLotAddress(),
-                storeUpdateDto.getRoadAddress(),
-                storeUpdateDto.getLatitude(),
-                storeUpdateDto.getLongitude(),
-                storeUpdateDto.getKakaoAverageGrade(),
-                storeUpdateDto.getPlaceUrl()
+                storeUpdateDto.name(),
+                storeUpdateDto.category(),
+                storeUpdateDto.managementNumber(),
+                storeUpdateDto.phoneNumber(),
+                storeUpdateDto.lotAddress(),
+                storeUpdateDto.roadAddress(),
+                storeUpdateDto.latitude(),
+                storeUpdateDto.longitude(),
+                storeUpdateDto.kakaoAverageGrade(),
+                storeUpdateDto.placeUrl()
         );
     }
 

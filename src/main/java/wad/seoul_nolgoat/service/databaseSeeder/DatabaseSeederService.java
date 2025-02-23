@@ -107,9 +107,9 @@ public class DatabaseSeederService {
                 if (optionalStoreAdditionalInfo.isPresent()) {
                     StoreAdditionalInfoDto storeAdditionalInfoDto = optionalStoreAdditionalInfo.get();
                     store.updateAdditionalInfo(
-                            storeAdditionalInfoDto.getCategory(),
-                            storeAdditionalInfoDto.getPhoneNumber(),
-                            storeAdditionalInfoDto.getPlaceUrl()
+                            storeAdditionalInfoDto.category(),
+                            storeAdditionalInfoDto.phoneNumber(),
+                            storeAdditionalInfoDto.placeUrl()
                     );
                 }
             }

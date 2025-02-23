@@ -1,24 +1,19 @@
 package wad.seoul_nolgoat.service.search.dto;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import wad.seoul_nolgoat.web.search.dto.CoordinateDto;
 
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class StoreForDistanceSortDto {
-
-    private Long id;
-    private String name;
-    private CoordinateDto coordinate;
-    private double kakaoAverageGrade;
-    private double nolgoatAverageGrade;
-
-    // Querydsl 빈 생성을 위한 필드
-    private Point location;
-    private double distance;
+/**
+ * @param location Querydsl 프로젝션용 파라미터
+ * @param distance Querydsl 프로젝션용 파라미터
+ */
+public record StoreForDistanceSortDto(
+        Long id,
+        String name,
+        CoordinateDto coordinate,
+        double kakaoAverageGrade,
+        double nolgoatAverageGrade,
+        Point location,
+        double distance
+) {
 }
