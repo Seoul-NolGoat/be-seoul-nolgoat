@@ -26,6 +26,6 @@ public class OAuth2UserImpl implements OAuth2User {
 
     @Override
     public String getName() {
-        return oAuth2UserDto.getUniqueProviderId();
+        return oAuth2UserDto.uniqueProviderId();
     }
 }
