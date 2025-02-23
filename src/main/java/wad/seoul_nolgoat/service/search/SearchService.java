@@ -76,11 +76,11 @@ public class SearchService {
 
         Set<String> possibleCategories = new HashSet<>();
         for (StoreForPossibleCategoriesDto untokenizedCategory : untokenizedCategories) {
-            if (!untokenizedCategory.getStoreType().equals(StoreType.RESTAURANT)) {
-                possibleCategories.add(untokenizedCategory.getStoreType().toString());
+            if (!untokenizedCategory.storeType().equals(StoreType.RESTAURANT)) {
+                possibleCategories.add(untokenizedCategory.storeType().toString());
                 continue;
             }
-            String[] tokens = untokenizedCategory.getCategory().replace(SPACE, EMPTY).split(DELIMITER);
+            String[] tokens = untokenizedCategory.category().replace(SPACE, EMPTY).split(DELIMITER);
             for (String token : tokens) {
                 Optional<String> primaryCategory = StoreCategory.findPrimaryCategoryName(token);
                 primaryCategory.ifPresent(possibleCategories::add);

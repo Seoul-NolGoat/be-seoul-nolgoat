@@ -37,21 +37,21 @@ public class StoreMapper {
 
     public static StoreDetailsForCombinationDto toStoreForCombinationDto(StoreForDistanceSortDto storeForDistanceSortDto) {
         return new StoreDetailsForCombinationDto(
-                storeForDistanceSortDto.getId(),
-                storeForDistanceSortDto.getName(),
-                storeForDistanceSortDto.getCoordinate(),
-                storeForDistanceSortDto.getKakaoAverageGrade(),
-                storeForDistanceSortDto.getNolgoatAverageGrade()
+                storeForDistanceSortDto.id(),
+                storeForDistanceSortDto.name(),
+                storeForDistanceSortDto.coordinate(),
+                storeForDistanceSortDto.kakaoAverageGrade(),
+                storeForDistanceSortDto.nolgoatAverageGrade()
         );
     }
 
     public static StoreDetailsForCombinationDto toStoreForCombinationDto(StoreForGradeSortDto storeForGradeSortDto) {
         return new StoreDetailsForCombinationDto(
-                storeForGradeSortDto.getId(),
-                storeForGradeSortDto.getName(),
-                storeForGradeSortDto.getCoordinate(),
-                storeForGradeSortDto.getKakaoAverageGrade(),
-                storeForGradeSortDto.getNolgoatAverageGrade()
+                storeForGradeSortDto.id(),
+                storeForGradeSortDto.name(),
+                storeForGradeSortDto.coordinate(),
+                storeForGradeSortDto.kakaoAverageGrade(),
+                storeForGradeSortDto.nolgoatAverageGrade()
         );
     }
 

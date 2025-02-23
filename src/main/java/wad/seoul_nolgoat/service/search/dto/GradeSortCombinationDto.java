@@ -21,19 +21,19 @@ public class GradeSortCombinationDto {
         this.secondStore = secondStore;
         this.thirdStore = thirdStore;
         this.totalRounds = SearchService.THREE_ROUND;
-        this.totalGrade = firstStore.getAverageGrade() + secondStore.getAverageGrade() + thirdStore.getAverageGrade();
+        this.totalGrade = firstStore.averageGrade() + secondStore.averageGrade() + thirdStore.averageGrade();
     }
 
     public GradeSortCombinationDto(StoreForGradeSortDto firstStore, StoreForGradeSortDto secondStore) {
         this.firstStore = firstStore;
         this.secondStore = secondStore;
         this.totalRounds = SearchService.TWO_ROUND;
-        this.totalGrade = firstStore.getAverageGrade() + secondStore.getAverageGrade();
+        this.totalGrade = firstStore.averageGrade() + secondStore.averageGrade();
     }
 
     public GradeSortCombinationDto(StoreForGradeSortDto firstStore) {
         this.firstStore = firstStore;
         this.totalRounds = SearchService.ONE_ROUND;
-        this.totalGrade = firstStore.getAverageGrade();
+        this.totalGrade = firstStore.averageGrade();
     }
 }
