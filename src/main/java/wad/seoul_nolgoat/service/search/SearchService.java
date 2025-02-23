@@ -55,7 +55,7 @@ public class SearchService {
     private final TMapService tMapService;
 
     public List<CombinationDto> searchAll(SearchConditionDto searchConditionDto) {
-        String criteria = searchConditionDto.getCriteria();
+        String criteria = searchConditionDto.criteria();
         if (criteria.equals(DISTANCE_CRITERIA)) {
             return getCombinationsByDistance(searchConditionDto);
         }
@@ -70,8 +70,8 @@ public class SearchService {
 
     public List<String> searchPossibleCategories(PossibleCategoriesConditionDto possibleCategoriesConditionDto) {
         List<StoreForPossibleCategoriesDto> untokenizedCategories = filterService.findCategoriesByRadiusRange(
-                possibleCategoriesConditionDto.getStartCoordinate(),
-                possibleCategoriesConditionDto.getRadiusRange()
+                possibleCategoriesConditionDto.startCoordinate(),
+                possibleCategoriesConditionDto.radiusRange()
         );
 
         Set<String> possibleCategories = new HashSet<>();
@@ -91,10 +91,10 @@ public class SearchService {
     }
 
     private List<CombinationDto> getCombinationsByDistance(SearchConditionDto searchConditionDto) {
-        List<String> categories = searchConditionDto.getCategories();
+        List<String> categories = searchConditionDto.categories();
         int categoryCount = categories.size();
-        CoordinateDto startCoordinate = searchConditionDto.getStartCoordinate();
-        double radiusRange = searchConditionDto.getRadiusRange();
+        CoordinateDto startCoordinate = searchConditionDto.startCoordinate();
+        double radiusRange = searchConditionDto.radiusRange();
 
         if (categoryCount == THREE_ROUND) {
             List<CombinationDto> combinationDtos = sortService.sortStoresByDistance(
@@ -172,10 +172,10 @@ public class SearchService {
     }
 
     private List<CombinationDto> getCombinationsByKakaoGrade(SearchConditionDto searchConditionDto) {
-        List<String> categories = searchConditionDto.getCategories();
+        List<String> categories = searchConditionDto.categories();
         int categoryCount = categories.size();
-        CoordinateDto startCoordinate = searchConditionDto.getStartCoordinate();
-        double radiusRange = searchConditionDto.getRadiusRange();
+        CoordinateDto startCoordinate = searchConditionDto.startCoordinate();
+        double radiusRange = searchConditionDto.radiusRange();
 
         if (categoryCount == THREE_ROUND) {
             List<CombinationDto> combinationDtos = sortService.sortStoresByGrade(
@@ -265,10 +265,10 @@ public class SearchService {
     }
 
     private List<CombinationDto> getCombinationsByNolgoatGrade(SearchConditionDto searchConditionDto) {
-        List<String> categories = searchConditionDto.getCategories();
+        List<String> categories = searchConditionDto.categories();
         int categoryCount = categories.size();
-        CoordinateDto startCoordinate = searchConditionDto.getStartCoordinate();
-        double radiusRange = searchConditionDto.getRadiusRange();
+        CoordinateDto startCoordinate = searchConditionDto.startCoordinate();
+        double radiusRange = searchConditionDto.radiusRange();
 
         if (categoryCount == THREE_ROUND) {
             List<CombinationDto> combinationDtos = sortService.sortStoresByGrade(
@@ -366,9 +366,9 @@ public class SearchService {
                 .map(combination -> {
                     try {
                         if (totalRounds == THREE_ROUND) {
-                            CoordinateDto pass1 = combination.getFirstStore().getCoordinate();
-                            CoordinateDto pass2 = combination.getSecondStore().getCoordinate();
-                            CoordinateDto endCoordinate = combination.getThirdStore().getCoordinate();
+                            CoordinateDto pass1 = combination.getFirstStore().coordinate();
+                            CoordinateDto pass2 = combination.getSecondStore().coordinate();
+                            CoordinateDto endCoordinate = combination.getThirdStore().coordinate();
                             combination.setWalkRouteInfoDto(tMapService.fetchWalkRouteInfo(
                                     startCoordinate,
                                     pass1,
@@ -379,8 +379,8 @@ public class SearchService {
                             return combination;
                         }
                         if (totalRounds == TWO_ROUND) {
-                            CoordinateDto pass = combination.getFirstStore().getCoordinate();
-                            CoordinateDto endCoordinate = combination.getSecondStore().getCoordinate();
+                            CoordinateDto pass = combination.getFirstStore().coordinate();
+                            CoordinateDto endCoordinate = combination.getSecondStore().coordinate();
                             combination.setWalkRouteInfoDto(tMapService.fetchWalkRouteInfo(
                                     startCoordinate,
                                     pass,
@@ -390,7 +390,7 @@ public class SearchService {
                             return combination;
                         }
                         if (totalRounds == ONE_ROUND) {
-                            CoordinateDto endCoordinate = combination.getFirstStore().getCoordinate();
+                            CoordinateDto endCoordinate = combination.getFirstStore().coordinate();
                             combination.setWalkRouteInfoDto(tMapService.fetchWalkRouteInfo(
                                     startCoordinate,
                                     endCoordinate

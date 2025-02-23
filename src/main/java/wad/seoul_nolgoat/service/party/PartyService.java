@@ -17,13 +17,13 @@ import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.util.mapper.PartyMapper;
 import wad.seoul_nolgoat.web.comment.dto.response.CommentDetailsForPartyDto;
-import wad.seoul_nolgoat.web.party.request.PartySaveDto;
-import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
-import wad.seoul_nolgoat.web.party.request.PartyUpdateDto;
-import wad.seoul_nolgoat.web.party.response.ParticipantDto;
-import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
-import wad.seoul_nolgoat.web.party.response.PartyDetailsForListDto;
-import wad.seoul_nolgoat.web.party.response.PartyDetailsForUserDto;
+import wad.seoul_nolgoat.web.party.dto.request.PartySaveDto;
+import wad.seoul_nolgoat.web.party.dto.request.PartySearchConditionDto;
+import wad.seoul_nolgoat.web.party.dto.request.PartyUpdateDto;
+import wad.seoul_nolgoat.web.party.dto.response.ParticipantDto;
+import wad.seoul_nolgoat.web.party.dto.response.PartyDetailsDto;
+import wad.seoul_nolgoat.web.party.dto.response.PartyDetailsForListDto;
+import wad.seoul_nolgoat.web.party.dto.response.PartyDetailsForUserDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -158,16 +158,16 @@ public class PartyService {
         }
 
         // 수정된 참여 가능 전체 인원수가 현재 인원수보다 적은지 검증
-        if (partyUpdateDto.getMaxCapacity() < party.getCurrentCount()) {
+        if (partyUpdateDto.maxCapacity() < party.getCurrentCount()) {
             throw new ApplicationException(INVALID_MAX_CAPACITY);
         }
 
         party.update(
-                partyUpdateDto.getTitle(),
-                partyUpdateDto.getContent(),
-                partyUpdateDto.getMaxCapacity(),
-                partyUpdateDto.getMeetingDate(),
-                AdministrativeDistrict.fromString(partyUpdateDto.getAdministrativeDistrict())
+                partyUpdateDto.title(),
+                partyUpdateDto.content(),
+                partyUpdateDto.maxCapacity(),
+                partyUpdateDto.meetingDate(),
+                AdministrativeDistrict.fromString(partyUpdateDto.administrativeDistrict())
         );
     }
 

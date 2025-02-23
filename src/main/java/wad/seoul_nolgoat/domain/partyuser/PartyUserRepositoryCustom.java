@@ -1,6 +1,6 @@
 package wad.seoul_nolgoat.domain.partyuser;
 
-import wad.seoul_nolgoat.web.party.response.ParticipantDto;
+import wad.seoul_nolgoat.web.party.dto.response.ParticipantDto;
 
 import java.util.List;
 

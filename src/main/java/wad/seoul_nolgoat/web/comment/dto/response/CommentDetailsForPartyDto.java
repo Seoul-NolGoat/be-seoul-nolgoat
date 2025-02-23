@@ -1,19 +1,14 @@
 package wad.seoul_nolgoat.web.comment.dto.response;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 import java.time.LocalDateTime;
 
-@Getter
-@RequiredArgsConstructor
-public class CommentDetailsForPartyDto {
-
-    private final Long commentId;
-    private final String content;
-    private final LocalDateTime createdDate;
-    private final Boolean isDeleted;
-    private final Long writerId;
-    private final String writerNickname;
-    private final String writerProfileImage;
+public record CommentDetailsForPartyDto(
+        Long commentId,
+        String content,
+        LocalDateTime createdDate,
+        Boolean isDeleted,
+        Long writerId,
+        String writerNickname,
+        String writerProfileImage
+) {
 }

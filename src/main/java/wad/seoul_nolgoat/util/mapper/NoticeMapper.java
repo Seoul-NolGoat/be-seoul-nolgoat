@@ -9,8 +9,8 @@ public class NoticeMapper {
 
     public static Notice toEntity(User user, NoticeSaveDto noticeSaveDto) {
         return new Notice(
-                noticeSaveDto.getTitle(),
-                noticeSaveDto.getContent(),
+                noticeSaveDto.title(),
+                noticeSaveDto.content(),
                 user
         );
     }

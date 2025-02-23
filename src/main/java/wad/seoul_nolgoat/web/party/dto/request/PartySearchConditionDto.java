@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.web.party.request;
+package wad.seoul_nolgoat.web.party.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;

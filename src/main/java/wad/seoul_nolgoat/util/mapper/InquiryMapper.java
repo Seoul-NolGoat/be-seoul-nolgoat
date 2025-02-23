@@ -9,9 +9,9 @@ public class InquiryMapper {
 
     public static Inquiry toEntity(User user, InquirySaveDto inquirySaveDto) {
         return new Inquiry(
-                inquirySaveDto.getTitle(),
-                inquirySaveDto.getContent(),
-                inquirySaveDto.getIsPublic(),
+                inquirySaveDto.title(),
+                inquirySaveDto.content(),
+                inquirySaveDto.isPublic(),
                 user
         );
     }
