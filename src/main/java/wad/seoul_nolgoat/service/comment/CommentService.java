@@ -57,7 +57,7 @@ public class CommentService {
             throw new ApplicationException(COMMENT_UPDATE_NOT_AUTHORIZED);
         }
 
-        comment.update(commentUpdateDto.getContent());
+        comment.update(commentUpdateDto.content());
     }
 
     @Transactional

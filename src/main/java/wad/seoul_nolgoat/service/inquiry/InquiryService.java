@@ -60,9 +60,9 @@ public class InquiryService {
         }
 
         inquiry.update(
-                inquiryUpdateDto.getTitle(),
-                inquiryUpdateDto.getContent(),
-                inquiryUpdateDto.getIsPublic()
+                inquiryUpdateDto.title(),
+                inquiryUpdateDto.content(),
+                inquiryUpdateDto.isPublic()
         );
     }
 

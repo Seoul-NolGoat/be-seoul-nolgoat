@@ -6,8 +6,6 @@ import wad.seoul_nolgoat.domain.user.User;
 import wad.seoul_nolgoat.web.review.dto.request.ReviewSaveDto;
 import wad.seoul_nolgoat.web.review.dto.response.ReviewDetailsForStoreDto;
 
-import static wad.seoul_nolgoat.util.DateTimeUtil.formatDate;
-
 public class ReviewMapper {
 
     public static Review toEntity(
@@ -17,8 +15,8 @@ public class ReviewMapper {
             ReviewSaveDto reviewSaveDto
     ) {
         return new Review(
-                reviewSaveDto.getGrade(),
-                reviewSaveDto.getContent(),
+                reviewSaveDto.grade(),
+                reviewSaveDto.content(),
                 imageUrl,
                 user,
                 store
@@ -34,7 +32,7 @@ public class ReviewMapper {
                 review.getUser().getId(),
                 review.getUser().getNickname(),
                 review.getUser().getProfileImage(),
-                formatDate(review.getCreatedDate())
+                review.getCreatedDate()
         );
     }
 }

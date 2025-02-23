@@ -13,9 +13,9 @@ import wad.seoul_nolgoat.domain.party.PartyRepository;
 import wad.seoul_nolgoat.domain.partyuser.PartyUserRepository;
 import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.service.party.PartyService;
-import wad.seoul_nolgoat.web.party.request.PartySaveDto;
-import wad.seoul_nolgoat.web.party.request.PartyUpdateDto;
-import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
+import wad.seoul_nolgoat.web.party.dto.request.PartySaveDto;
+import wad.seoul_nolgoat.web.party.dto.request.PartyUpdateDto;
+import wad.seoul_nolgoat.web.party.dto.response.PartyDetailsDto;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;

@@ -60,8 +60,8 @@ public class NoticeService {
         }
 
         notice.update(
-                noticeUpdateDto.getTitle(),
-                noticeUpdateDto.getContent()
+                noticeUpdateDto.title(),
+                noticeUpdateDto.content()
         );
     }
 
