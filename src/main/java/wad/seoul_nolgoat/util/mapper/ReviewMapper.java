@@ -15,8 +15,8 @@ public class ReviewMapper {
             ReviewSaveDto reviewSaveDto
     ) {
         return new Review(
-                reviewSaveDto.getGrade(),
-                reviewSaveDto.getContent(),
+                reviewSaveDto.grade(),
+                reviewSaveDto.content(),
                 imageUrl,
                 user,
                 store

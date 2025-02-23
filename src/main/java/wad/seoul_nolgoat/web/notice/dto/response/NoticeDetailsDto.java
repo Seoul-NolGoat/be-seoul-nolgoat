@@ -1,21 +1,15 @@
 package wad.seoul_nolgoat.web.notice.dto.response;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 import java.time.LocalDateTime;
 
-@Getter
-@RequiredArgsConstructor
-public class NoticeDetailsDto {
-
-    private final Long noticeId;
-    private final String title;
-    private final String content;
-    private final int views;
-    private final Long userId;
-    private final String userNickname;
-    private final String userProfileImage;
-    private final LocalDateTime createDate;
+public record NoticeDetailsDto(
+        Long noticeId,
+        String title,
+        String content,
+        int views,
+        Long userId,
+        String userNickname,
+        String userProfileImage,
+        LocalDateTime createDate
+) {
 }
-

@@ -1,39 +1,14 @@
 package wad.seoul_nolgoat.web.notice.dto.response;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class NoticeDetailsForListDto {
-
-    private Long noticeId;
-    private String title;
-    private int views;
-    private Long userId;
-    private String userNickname;
-    private String userProfileImage;
-    private LocalDateTime createDate;
-
-    public NoticeDetailsForListDto(
-            Long noticeId,
-            String title,
-            int views,
-            Long userId,
-            String userNickname,
-            String userProfileImage,
-            LocalDateTime createDate
-    ) {
-        this.noticeId = noticeId;
-        this.title = title;
-        this.views = views;
-        this.userId = userId;
-        this.userNickname = userNickname;
-        this.userProfileImage = userProfileImage;
-        this.createDate = createDate;
-    }
+public record NoticeDetailsForListDto(
+        Long noticeId,
+        String title,
+        int views,
+        Long userId,
+        String userNickname,
+        String userProfileImage,
+        LocalDateTime createDate
+) {
 }
-

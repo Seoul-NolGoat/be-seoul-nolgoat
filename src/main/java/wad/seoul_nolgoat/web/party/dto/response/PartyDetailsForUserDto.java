@@ -1,4 +1,4 @@
-package wad.seoul_nolgoat.web.party.response;
+package wad.seoul_nolgoat.web.party.dto.response;
 
 import lombok.Getter;
 import wad.seoul_nolgoat.domain.party.AdministrativeDistrict;
