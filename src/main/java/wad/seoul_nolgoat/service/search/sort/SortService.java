@@ -23,7 +23,7 @@ public class SortService {
     private final TMapService tMapService;
 
     public List<GradeSortCombinationDto> sortStoresByGrade(SortConditionDto<StoreForGradeSortDto> sortConditionDto) {
-        int totalRounds = sortConditionDto.getTotalRounds();
+        int totalRounds = sortConditionDto.totalRounds();
         List<GradeSortCombinationDto> gradeCombinations = generateGradeCombinations(sortConditionDto, totalRounds);
         sortCombinationsByGrade(gradeCombinations);
         List<GradeSortCombinationDto> filteredGradeCombinations = filterByBaseTotalGrade(gradeCombinations);
@@ -32,7 +32,7 @@ public class SortService {
     }
 
     public List<DistanceSortCombinationDto> sortStoresByDistance(SortConditionDto<StoreForDistanceSortDto> sortConditionDto) {
-        int totalRounds = sortConditionDto.getTotalRounds();
+        int totalRounds = sortConditionDto.totalRounds();
         List<DistanceSortCombinationDto> distanceCombinations = generateAndSortDistanceCombinations(
                 sortConditionDto,
                 totalRounds
@@ -44,7 +44,7 @@ public class SortService {
         List<DistanceSortCombinationDto> tMapFetchedDistanceCombinations;
         try {
             tMapFetchedDistanceCombinations = fetchDistancesFromTMapApi(
-                    sortConditionDto.getStartCoordinate(),
+                    sortConditionDto.startCoordinate(),
                     combinationsUnderBaseDistance,
                     totalRounds
             );
@@ -63,24 +63,24 @@ public class SortService {
     ) {
         if (totalRounds == SearchService.THREE_ROUND) {
             return createDistanceCombinationsForThreeRounds(
-                    sortConditionDto.getFirstFilteredStores(),
-                    sortConditionDto.getSecondFilteredStores(),
-                    sortConditionDto.getThirdFilteredStores(),
-                    sortConditionDto.getStartCoordinate()
+                    sortConditionDto.firstFilteredStores(),
+                    sortConditionDto.secondFilteredStores(),
+                    sortConditionDto.thirdFilteredStores(),
+                    sortConditionDto.startCoordinate()
             );
         }
         if (totalRounds == SearchService.TWO_ROUND) {
             return createDistanceCombinationsForTwoRounds(
-                    sortConditionDto.getFirstFilteredStores(),
-                    sortConditionDto.getSecondFilteredStores(),
-                    sortConditionDto.getStartCoordinate()
+                    sortConditionDto.firstFilteredStores(),
+                    sortConditionDto.secondFilteredStores(),
+                    sortConditionDto.startCoordinate()
             );
         }
 
         // 1차인 경우
         return createDistanceCombinationsForOneRound(
-                sortConditionDto.getFirstFilteredStores(),
-                sortConditionDto.getStartCoordinate()
+                sortConditionDto.firstFilteredStores(),
+                sortConditionDto.startCoordinate()
         );
     }
 
@@ -90,20 +90,20 @@ public class SortService {
     ) {
         if (totalRounds == SearchService.THREE_ROUND) {
             return createGradeCombinationsForThreeRounds(
-                    sortConditionDto.getFirstFilteredStores(),
-                    sortConditionDto.getSecondFilteredStores(),
-                    sortConditionDto.getThirdFilteredStores()
+                    sortConditionDto.firstFilteredStores(),
+                    sortConditionDto.secondFilteredStores(),
+                    sortConditionDto.thirdFilteredStores()
             );
         }
         if (totalRounds == SearchService.TWO_ROUND) {
             return createGradeCombinationsForTwoRounds(
-                    sortConditionDto.getFirstFilteredStores(),
-                    sortConditionDto.getSecondFilteredStores()
+                    sortConditionDto.firstFilteredStores(),
+                    sortConditionDto.secondFilteredStores()
             );
         }
 
         // 1차인 경우
-        return createGradeCombinationsForOneRound(sortConditionDto.getFirstFilteredStores());
+        return createGradeCombinationsForOneRound(sortConditionDto.firstFilteredStores());
     }
 
     private List<GradeSortCombinationDto> createGradeCombinationsForThreeRounds(
@@ -227,7 +227,7 @@ public class SortService {
         Map<Integer, List<DistanceSortCombinationDto>> groupedByDistance = tMapFetchedDistanceCombinations.stream()
                 .collect(
                         Collectors.groupingBy(
-                                combination -> combination.getWalkRouteInfoDto().getTotalDistance(),
+                                combination -> combination.getWalkRouteInfoDto().totalDistance(),
                                 LinkedHashMap::new,
                                 Collectors.toList()
                         )
@@ -348,9 +348,9 @@ public class SortService {
         List<DistanceSortCombinationDto> combinations = distanceSortCombinationDtos.parallelStream()
                 .map(combination -> {
                     if (totalRounds == SearchService.THREE_ROUND) {
-                        CoordinateDto pass1 = combination.getFirstStore().getCoordinate();
-                        CoordinateDto pass2 = combination.getSecondStore().getCoordinate();
-                        CoordinateDto endCoordinate = combination.getThirdStore().getCoordinate();
+                        CoordinateDto pass1 = combination.getFirstStore().coordinate();
+                        CoordinateDto pass2 = combination.getSecondStore().coordinate();
+                        CoordinateDto endCoordinate = combination.getThirdStore().coordinate();
 
                         return new DistanceSortCombinationDto(
                                 combination.getFirstStore(),
@@ -365,8 +365,8 @@ public class SortService {
                         );
                     }
                     if (totalRounds == SearchService.TWO_ROUND) {
-                        CoordinateDto pass = combination.getFirstStore().getCoordinate();
-                        CoordinateDto endCoordinate = combination.getSecondStore().getCoordinate();
+                        CoordinateDto pass = combination.getFirstStore().coordinate();
+                        CoordinateDto endCoordinate = combination.getSecondStore().coordinate();
 
                         return new DistanceSortCombinationDto(
                                 combination.getFirstStore(),
@@ -380,7 +380,7 @@ public class SortService {
                     }
 
                     // 1차인 경우
-                    CoordinateDto endCoordinate = combination.getFirstStore().getCoordinate();
+                    CoordinateDto endCoordinate = combination.getFirstStore().coordinate();
 
                     return new DistanceSortCombinationDto(
                             combination.getFirstStore(),
@@ -390,7 +390,7 @@ public class SortService {
 
         return combinations.stream()
                 .sorted(Comparator.comparingInt(
-                        combination -> combination.getWalkRouteInfoDto().getTotalDistance())
+                        combination -> combination.getWalkRouteInfoDto().totalDistance())
                 )
                 .toList();
     }
@@ -401,17 +401,17 @@ public class SortService {
             StoreForDistanceSortDto thirdStore
     ) {
         Set<Long> storeIds = new HashSet<>();
-        storeIds.add(firstStore.getId());
-        storeIds.add(secondStore.getId());
-        storeIds.add(thirdStore.getId());
+        storeIds.add(firstStore.id());
+        storeIds.add(secondStore.id());
+        storeIds.add(thirdStore.id());
 
         return storeIds.size() != SearchService.THREE_ROUND;
     }
 
     private boolean hasDuplicateStores(StoreForDistanceSortDto firstStore, StoreForDistanceSortDto secondStore) {
         Set<Long> storeIds = new HashSet<>();
-        storeIds.add(firstStore.getId());
-        storeIds.add(secondStore.getId());
+        storeIds.add(firstStore.id());
+        storeIds.add(secondStore.id());
 
         return storeIds.size() != SearchService.TWO_ROUND;
     }
@@ -422,17 +422,17 @@ public class SortService {
             StoreForGradeSortDto thirdStore
     ) {
         Set<Long> storeIds = new HashSet<>();
-        storeIds.add(firstStore.getId());
-        storeIds.add(secondStore.getId());
-        storeIds.add(thirdStore.getId());
+        storeIds.add(firstStore.id());
+        storeIds.add(secondStore.id());
+        storeIds.add(thirdStore.id());
 
         return storeIds.size() != SearchService.THREE_ROUND;
     }
 
     private boolean hasDuplicateStores(StoreForGradeSortDto firstStore, StoreForGradeSortDto secondStore) {
         Set<Long> storeIds = new HashSet<>();
-        storeIds.add(firstStore.getId());
-        storeIds.add(secondStore.getId());
+        storeIds.add(firstStore.id());
+        storeIds.add(secondStore.id());
 
         return storeIds.size() != SearchService.TWO_ROUND;
     }
