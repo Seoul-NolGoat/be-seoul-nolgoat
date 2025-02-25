@@ -30,6 +30,9 @@ public class Party extends BaseTimeEntity {
     private boolean isClosed;
     private boolean isDeleted;
 
+    @Version
+    private Long version;
+
     @Enumerated(EnumType.STRING)
     private AdministrativeDistrict administrativeDistrict;
 
