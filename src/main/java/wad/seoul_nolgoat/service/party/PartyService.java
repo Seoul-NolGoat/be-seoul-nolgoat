@@ -2,8 +2,11 @@ package wad.seoul_nolgoat.service.party;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.comment.CommentRepository;
@@ -54,6 +57,10 @@ public class PartyService {
     }
 
     // 파티 참여
+    @Retryable(
+            value = OptimisticLockingFailureException.class,
+            backoff = @Backoff(delay = 100, multiplier = 1.5)
+    )
     @Transactional
     public void joinParty(String loginId, Long partyId) {
         User user = userRepository.findByLoginId(loginId)
@@ -95,6 +102,10 @@ public class PartyService {
     }
 
     // 파티 탈퇴
+    @Retryable(
+            value = OptimisticLockingFailureException.class,
+            backoff = @Backoff(delay = 100, multiplier = 1.5)
+    )
     @Transactional
     public void leave(String loginId, Long partyId) {
         User user = userRepository.findByLoginId(loginId)
