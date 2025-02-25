@@ -71,7 +71,7 @@ public class PartyService {
             throw new ApplicationException(PARTY_ALREADY_JOINED);
         }
 
-        Party party = partyRepository.findByIdWithFetchJoinAndLock(partyId)
+        Party party = partyRepository.findByIdWithFetchJoin(partyId)
                 .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
 
         // 파티 삭제 여부 확인
@@ -111,7 +111,7 @@ public class PartyService {
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
 
-        Party party = partyRepository.findByIdWithFetchJoinAndLock(partyId)
+        Party party = partyRepository.findByIdWithFetchJoin(partyId)
                 .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
 
         // 파티 호스트인지 확인
