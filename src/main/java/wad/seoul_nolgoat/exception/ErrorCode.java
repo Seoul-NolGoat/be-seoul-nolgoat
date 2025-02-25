@@ -96,7 +96,7 @@ public enum ErrorCode {
     MAIL_SENDER_ENCODING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "MAIL002", "메일 발신자 정보 인코딩 중 오류가 발생했습니다"),
 
     // 시스템 관련
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SYS001", "알 수 없는 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SYS001", "일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
 
     private final HttpStatus httpStatus;
     private final String code;
