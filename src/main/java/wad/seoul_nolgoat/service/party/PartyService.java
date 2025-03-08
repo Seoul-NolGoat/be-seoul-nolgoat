@@ -1,7 +1,6 @@
 package wad.seoul_nolgoat.service.party;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -89,16 +88,12 @@ public class PartyService {
             throw new ApplicationException(PARTY_CREATOR_CANNOT_JOIN);
         }
 
-        // partyUser 객체 저장 및 유니크 제약 조건 위반 예외 처리
-        try {
-            PartyUser partyUser = new PartyUser(party, user);
-            partyUserRepository.save(partyUser);
-        } catch (DuplicateKeyException e) {
-            throw new ApplicationException(PARTY_ALREADY_JOINED);
-        }
-
         // 인원 초과 여부 검증 및 참여자 수 증가
         party.incrementParticipantCount();
+
+        // partyUser 객체 저장 및 유니크 제약 조건 위반 예외 처리
+        PartyUser partyUser = new PartyUser(party, user);
+        partyUserRepository.save(partyUser);
     }
 
     // 파티 탈퇴
@@ -123,10 +118,10 @@ public class PartyService {
         PartyUser partyUser = partyUserRepository.findByPartyIdAndParticipantId(partyId, user.getId())
                 .orElseThrow(() -> new ApplicationException(PARTY_USER_NOT_FOUND));
 
-        partyUserRepository.delete(partyUser);
-
         // 현재 인원 수 검증 및 참여자 수 감소
         party.decrementParticipantCount();
+
+        partyUserRepository.delete(partyUser);
     }
 
     // 파티 마감
