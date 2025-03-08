@@ -18,6 +18,8 @@ import static wad.seoul_nolgoat.exception.ErrorCode.PARTY_COUNT_BELOW_MINIMUM;
 @Entity
 public class Party extends BaseTimeEntity {
 
+    private static final int minCapacity = 1;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,7 +27,7 @@ public class Party extends BaseTimeEntity {
     private String title;
     private String content;
     private int maxCapacity;
-    private int currentCount = 1;
+    private int currentCount;
     private LocalDateTime meetingDate;
     private boolean isClosed;
     private boolean isDeleted;
@@ -50,6 +52,7 @@ public class Party extends BaseTimeEntity {
         this.title = title;
         this.content = content;
         this.maxCapacity = maxCapacity;
+        this.currentCount = minCapacity;
         this.meetingDate = meetingDate;
         this.isClosed = false;
         this.isDeleted = false;
@@ -87,7 +90,7 @@ public class Party extends BaseTimeEntity {
     }
 
     public void decrementParticipantCount() {
-        if (currentCount <= 1) {
+        if (currentCount <= minCapacity) {
             throw new ApplicationException(PARTY_COUNT_BELOW_MINIMUM);
         }
         currentCount--;
