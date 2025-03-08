@@ -29,11 +29,30 @@ VALUES ('user1', 'password1', 'UserA', null, 'user1@nolgoat.site', false),
        ('user28', 'password28', 'UserBB', null, 'user28@nolgoat.site', false),
        ('user29', 'password29', 'UserCC', null, 'user29@nolgoat.site', false),
        ('user30', 'password30', 'UserDD', null, 'user30@nolgoat.site', false),
-       ('user31', 'password31', 'UserEE', null, 'user31@nolgoat.site', false);
+       ('user31', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user32', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user33', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user34', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user35', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user36', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user37', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user38', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user39', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user40', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user41', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user42', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user43', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user44', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user45', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user46', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user47', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user48', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user49', 'password31', 'UserEE', null, 'user31@nolgoat.site', false),
+       ('user50', 'password31', 'UserEE', null, 'user31@nolgoat.site', false);
 
 INSERT INTO party (title, content, max_capacity, current_count, meeting_date, administrative_district, is_closed,
                    is_deleted, version, host_id, created_date)
-VALUES ('PartyA', 'Party Content A', 6, 1, '2024-12-31T23:59:59', 'GANGNAM_GU', false, false, 0, 1,
+VALUES ('PartyA', 'Party Content A', 20, 1, '2024-12-31T23:59:59', 'GANGNAM_GU', false, false, 0, 1,
         '2024-12-12T12:12:12'), -- 동시성 테스트용
        ('PartyB', 'Party Content B', 6, 1, '2024-12-31T23:59:59', 'GANGNAM_GU', false, false, 0, 1,
         '2024-12-12T12:12:12'),
@@ -43,6 +62,7 @@ VALUES ('PartyA', 'Party Content A', 6, 1, '2024-12-31T23:59:59', 'GANGNAM_GU', 
        ('PartyE', 'Party Content E', 4, 1, '2024-12-12T12:12:12', 'SEOCHO_GU', true, true, 0, 4, '2024-12-12T12:12:12'),
        ('PartyF', 'Party Content F', 5, 1, '2024-11-15T18:00:00', 'SEOCHO_GU', false, false, 0, 2,
         '2024-12-12T12:12:12');
+
 
 INSERT INTO inquiry (user_id, title, content, is_public, created_date, last_modified_date)
 VALUES (1, 'InquiryA', 'ContentA', true, '2024-12-01T10:00:00', '2024-12-01T10:10:00'),
