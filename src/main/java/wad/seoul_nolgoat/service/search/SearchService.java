@@ -55,7 +55,7 @@ public class SearchService {
     private final TMapService tMapService;
 
     public List<CombinationDto> searchAll(SearchConditionDto searchConditionDto) {
-        String criteria = searchConditionDto.criteria();
+        String criteria = searchConditionDto.getCriteria();
         if (criteria.equals(DISTANCE_CRITERIA)) {
             return getCombinationsByDistance(searchConditionDto);
         }
@@ -91,10 +91,10 @@ public class SearchService {
     }
 
     private List<CombinationDto> getCombinationsByDistance(SearchConditionDto searchConditionDto) {
-        List<String> categories = searchConditionDto.categories();
+        List<String> categories = searchConditionDto.getCategories();
         int categoryCount = categories.size();
-        CoordinateDto startCoordinate = searchConditionDto.startCoordinate();
-        double radiusRange = searchConditionDto.radiusRange();
+        CoordinateDto startCoordinate = searchConditionDto.getStartCoordinate();
+        double radiusRange = searchConditionDto.getRadiusRange();
 
         if (categoryCount == THREE_ROUND) {
             List<CombinationDto> combinationDtos = sortService.sortStoresByDistance(
@@ -172,10 +172,10 @@ public class SearchService {
     }
 
     private List<CombinationDto> getCombinationsByKakaoGrade(SearchConditionDto searchConditionDto) {
-        List<String> categories = searchConditionDto.categories();
+        List<String> categories = searchConditionDto.getCategories();
         int categoryCount = categories.size();
-        CoordinateDto startCoordinate = searchConditionDto.startCoordinate();
-        double radiusRange = searchConditionDto.radiusRange();
+        CoordinateDto startCoordinate = searchConditionDto.getStartCoordinate();
+        double radiusRange = searchConditionDto.getRadiusRange();
 
         if (categoryCount == THREE_ROUND) {
             List<CombinationDto> combinationDtos = sortService.sortStoresByGrade(
@@ -265,10 +265,10 @@ public class SearchService {
     }
 
     private List<CombinationDto> getCombinationsByNolgoatGrade(SearchConditionDto searchConditionDto) {
-        List<String> categories = searchConditionDto.categories();
+        List<String> categories = searchConditionDto.getCategories();
         int categoryCount = categories.size();
-        CoordinateDto startCoordinate = searchConditionDto.startCoordinate();
-        double radiusRange = searchConditionDto.radiusRange();
+        CoordinateDto startCoordinate = searchConditionDto.getStartCoordinate();
+        double radiusRange = searchConditionDto.getRadiusRange();
 
         if (categoryCount == THREE_ROUND) {
             List<CombinationDto> combinationDtos = sortService.sortStoresByGrade(
