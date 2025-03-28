@@ -19,7 +19,6 @@ import java.util.Objects;
 
 import static wad.seoul_nolgoat.auth.jwt.JwtProvider.*;
 import static wad.seoul_nolgoat.auth.oauth2.security.CustomOAuth2UserService.*;
-import static wad.seoul_nolgoat.auth.service.RedisTokenService.ACCESS_TOKEN_KEY_PREFIX;
 import static wad.seoul_nolgoat.auth.service.RedisTokenService.REFRESH_TOKEN_KEY_PREFIX;
 import static wad.seoul_nolgoat.exception.ErrorCode.*;
 
@@ -130,13 +129,6 @@ public class AuthService {
 
     // Access 토큰 검증
     public void verifyAccessToken(String accessToken) {
-        String key = ACCESS_TOKEN_KEY_PREFIX + getLoginId(accessToken);
-
-        // Access 토큰 블랙리스트 여부 확인
-        if (Objects.equals(redisTokenService.getToken(key), accessToken)) {
-            throw new ApplicationException(ACCESS_TOKEN_BLACKLISTED);
-        }
-
         // 토큰 발급자가 올바른지 확인
         if (jwtProvider.isTokenNotIssuedByDomain(accessToken)) {
             throw new ApplicationException(INVALID_TOKEN_ISSUER);
@@ -151,16 +143,6 @@ public class AuthService {
     // Redis에서 Refresh 토큰 삭제
     public void deleteRefreshToken(String loginId) {
         redisTokenService.deleteToken(REFRESH_TOKEN_KEY_PREFIX + loginId);
-    }
-
-    // Redis에 Access 토큰 블랙리스트 처리
-    public void saveAccessTokenToBlacklist(String accessToken) {
-        String key = ACCESS_TOKEN_KEY_PREFIX + getLoginId(accessToken);
-        redisTokenService.saveToken(
-                key,
-                accessToken,
-                jwtProvider.getExpiration(accessToken)
-        );
     }
 
     // Refresh 토큰을 쿠키에 저장

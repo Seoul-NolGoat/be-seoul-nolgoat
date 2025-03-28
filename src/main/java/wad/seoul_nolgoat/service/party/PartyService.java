@@ -1,9 +1,11 @@
 package wad.seoul_nolgoat.service.party;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wad.seoul_nolgoat.domain.comment.CommentRepository;
@@ -17,13 +19,13 @@ import wad.seoul_nolgoat.domain.user.UserRepository;
 import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.util.mapper.PartyMapper;
 import wad.seoul_nolgoat.web.comment.dto.response.CommentDetailsForPartyDto;
-import wad.seoul_nolgoat.web.party.request.PartySaveDto;
-import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
-import wad.seoul_nolgoat.web.party.request.PartyUpdateDto;
-import wad.seoul_nolgoat.web.party.response.ParticipantDto;
-import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
-import wad.seoul_nolgoat.web.party.response.PartyDetailsForListDto;
-import wad.seoul_nolgoat.web.party.response.PartyDetailsForUserDto;
+import wad.seoul_nolgoat.web.party.dto.request.PartySaveDto;
+import wad.seoul_nolgoat.web.party.dto.request.PartySearchConditionDto;
+import wad.seoul_nolgoat.web.party.dto.request.PartyUpdateDto;
+import wad.seoul_nolgoat.web.party.dto.response.ParticipantDto;
+import wad.seoul_nolgoat.web.party.dto.response.PartyDetailsDto;
+import wad.seoul_nolgoat.web.party.dto.response.PartyDetailsForListDto;
+import wad.seoul_nolgoat.web.party.dto.response.PartyDetailsForUserDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -54,6 +56,10 @@ public class PartyService {
     }
 
     // 파티 참여
+    @Retryable(
+            value = OptimisticLockingFailureException.class,
+            backoff = @Backoff(delay = 100, multiplier = 1.5)
+    )
     @Transactional
     public void joinParty(String loginId, Long partyId) {
         User user = userRepository.findByLoginId(loginId)
@@ -64,7 +70,7 @@ public class PartyService {
             throw new ApplicationException(PARTY_ALREADY_JOINED);
         }
 
-        Party party = partyRepository.findByIdWithFetchJoinAndLock(partyId)
+        Party party = partyRepository.findByIdWithFetchJoin(partyId)
                 .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
 
         // 파티 삭제 여부 확인
@@ -82,25 +88,25 @@ public class PartyService {
             throw new ApplicationException(PARTY_CREATOR_CANNOT_JOIN);
         }
 
-        // partyUser 객체 저장 및 유니크 제약 조건 위반 예외 처리
-        try {
-            PartyUser partyUser = new PartyUser(party, user);
-            partyUserRepository.save(partyUser);
-        } catch (DuplicateKeyException e) {
-            throw new ApplicationException(PARTY_ALREADY_JOINED);
-        }
-
         // 인원 초과 여부 검증 및 참여자 수 증가
         party.incrementParticipantCount();
+
+        // partyUser 객체 저장 및 유니크 제약 조건 위반 예외 처리
+        PartyUser partyUser = new PartyUser(party, user);
+        partyUserRepository.save(partyUser);
     }
 
     // 파티 탈퇴
+    @Retryable(
+            value = OptimisticLockingFailureException.class,
+            backoff = @Backoff(delay = 100, multiplier = 1.5)
+    )
     @Transactional
     public void leave(String loginId, Long partyId) {
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
 
-        Party party = partyRepository.findByIdWithFetchJoinAndLock(partyId)
+        Party party = partyRepository.findByIdWithFetchJoin(partyId)
                 .orElseThrow(() -> new ApplicationException(PARTY_NOT_FOUND));
 
         // 파티 호스트인지 확인
@@ -112,10 +118,10 @@ public class PartyService {
         PartyUser partyUser = partyUserRepository.findByPartyIdAndParticipantId(partyId, user.getId())
                 .orElseThrow(() -> new ApplicationException(PARTY_USER_NOT_FOUND));
 
-        partyUserRepository.delete(partyUser);
-
         // 현재 인원 수 검증 및 참여자 수 감소
         party.decrementParticipantCount();
+
+        partyUserRepository.delete(partyUser);
     }
 
     // 파티 마감
@@ -158,16 +164,16 @@ public class PartyService {
         }
 
         // 수정된 참여 가능 전체 인원수가 현재 인원수보다 적은지 검증
-        if (partyUpdateDto.getMaxCapacity() < party.getCurrentCount()) {
+        if (partyUpdateDto.maxCapacity() < party.getCurrentCount()) {
             throw new ApplicationException(INVALID_MAX_CAPACITY);
         }
 
         party.update(
-                partyUpdateDto.getTitle(),
-                partyUpdateDto.getContent(),
-                partyUpdateDto.getMaxCapacity(),
-                partyUpdateDto.getMeetingDate(),
-                AdministrativeDistrict.fromString(partyUpdateDto.getAdministrativeDistrict())
+                partyUpdateDto.title(),
+                partyUpdateDto.content(),
+                partyUpdateDto.maxCapacity(),
+                partyUpdateDto.meetingDate(),
+                AdministrativeDistrict.fromString(partyUpdateDto.administrativeDistrict())
         );
     }
 

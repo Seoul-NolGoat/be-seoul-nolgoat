@@ -1,16 +1,19 @@
-package wad.seoul_nolgoat.web.party.response;
+package wad.seoul_nolgoat.web.party.dto.response;
 
 import lombok.Getter;
 import wad.seoul_nolgoat.domain.party.AdministrativeDistrict;
 import wad.seoul_nolgoat.domain.party.Party;
+import wad.seoul_nolgoat.web.comment.dto.response.CommentDetailsForPartyDto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
-public class PartyDetailsForListDto {
+public class PartyDetailsDto {
 
     private final Long partyId;
     private final String title;
+    private final String content;
     private final int maxCapacity;
     private final LocalDateTime meetingDate;
     private final boolean isClosed;
@@ -20,10 +23,16 @@ public class PartyDetailsForListDto {
     private final Long hostId;
     private final String hostNickname;
     private final String hostProfileImage;
+    private final List<ParticipantDto> participants;
+    private final List<CommentDetailsForPartyDto> comments;
 
-    private PartyDetailsForListDto(
+    private final boolean isHost;
+    private final boolean isParticipant;
+
+    private PartyDetailsDto(
             Long partyId,
             String title,
+            String content,
             int maxCapacity,
             LocalDateTime meetingDate,
             boolean isClosed,
@@ -32,10 +41,15 @@ public class PartyDetailsForListDto {
             LocalDateTime createdDate,
             Long hostId,
             String hostNickname,
-            String hostProfileImage
+            String hostProfileImage,
+            List<ParticipantDto> participants,
+            List<CommentDetailsForPartyDto> comments,
+            boolean isHost,
+            boolean isParticipant
     ) {
         this.partyId = partyId;
         this.title = title;
+        this.content = content;
         this.maxCapacity = maxCapacity;
         this.meetingDate = meetingDate;
         this.isClosed = isClosed;
@@ -45,12 +59,22 @@ public class PartyDetailsForListDto {
         this.hostId = hostId;
         this.hostNickname = hostNickname;
         this.hostProfileImage = hostProfileImage;
+        this.participants = participants;
+        this.comments = comments;
+        this.isHost = isHost;
+        this.isParticipant = isParticipant;
     }
 
-    public static PartyDetailsForListDto from(Party party) {
-        return new PartyDetailsForListDto(
+    public static PartyDetailsDto of(
+            Party party,
+            List<ParticipantDto> participants,
+            List<CommentDetailsForPartyDto> comments,
+            String loginId
+    ) {
+        return new PartyDetailsDto(
                 party.getId(),
                 party.getTitle(),
+                party.getContent(),
                 party.getMaxCapacity(),
                 party.getMeetingDate(),
                 party.isClosed(),
@@ -59,7 +83,13 @@ public class PartyDetailsForListDto {
                 party.getCreatedDate(),
                 party.getHost().getId(),
                 party.getHost().getNickname(),
-                party.getHost().getProfileImage()
+                party.getHost().getProfileImage(),
+                participants,
+                comments,
+                loginId.equals(party.getHost().getLoginId()),
+                participants.stream()
+                        .map(ParticipantDto::participantLoginId)
+                        .anyMatch(loginId::equals)
         );
     }
 }

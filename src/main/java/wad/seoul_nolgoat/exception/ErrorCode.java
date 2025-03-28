@@ -18,10 +18,9 @@ public enum ErrorCode {
     MISSING_COOKIE(HttpStatus.BAD_REQUEST, "AUTH007", "필수 쿠키가 누락되었습니다."),
     MISSING_HEADER(HttpStatus.BAD_REQUEST, "AUTH008", "필수 헤더가 누락되었습니다."),
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "AUTH009", "저장소에 존재하지 않는 Refresh 토큰입니다."),
-    ACCESS_TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "AUTH010", "블랙리스트에 등록된 Access 토큰입니다."),
-    INVALID_CSRF_PROTECTION_UUID(HttpStatus.UNAUTHORIZED, "AUTH011", "유효하지 않은 CSRF Protection UUID입니다."),
-    WITHDRAWAL_CODE_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH012", "회원 탈퇴 인증 시간이 만료되었습니다."),
-    INVALID_REQUEST_URI(HttpStatus.NOT_FOUND, "AUTH013", "유효하지 않은 요청 URI입니다."),
+    INVALID_CSRF_PROTECTION_UUID(HttpStatus.UNAUTHORIZED, "AUTH010", "유효하지 않은 CSRF Protection UUID입니다."),
+    WITHDRAWAL_CODE_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH011", "회원 탈퇴 인증 시간이 만료되었습니다."),
+    INVALID_REQUEST_URI(HttpStatus.NOT_FOUND, "AUTH012", "유효하지 않은 요청 URI입니다."),
 
     // 유저 관련
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER001", "존재하지 않는 유저입니다."),
@@ -56,6 +55,7 @@ public enum ErrorCode {
     INVALID_MAX_CAPACITY(HttpStatus.BAD_REQUEST, "PARTY014", "참여 가능 인원은 현재 인원보다 적을 수 없습니다."),
     PARTY_COUNT_BELOW_MINIMUM(HttpStatus.BAD_REQUEST, "PARTY015", "현재 인원수는 1보다 작을 수 없습니다."),
     PARTY_CREATOR_CANNOT_LEAVE(HttpStatus.BAD_REQUEST, "PARTY016", "본인이 생성한 파티에서 탈퇴 할 수 없습니다."),
+    PARTY_CONCURRENT_ERROR(HttpStatus.CONFLICT, "PARTY017", "문제가 발생했습니다. 잠시 후 다시 시도해주세요."),
 
     // 댓글 관련
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT001", "존재하지 않는 댓글입니다."),
@@ -92,7 +92,10 @@ public enum ErrorCode {
 
     // 메일 관련
     MAIL_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "MAIL001", "메일 발송에 실패했습니다."),
-    MAIL_SENDER_ENCODING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "MAIL002", "메일 발신자 정보 인코딩 중 오류가 발생했습니다");
+    MAIL_SENDER_ENCODING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "MAIL002", "메일 발신자 정보 인코딩 중 오류가 발생했습니다"),
+
+    // 시스템 관련
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SYS001", "일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
 
     private final HttpStatus httpStatus;
     private final String code;

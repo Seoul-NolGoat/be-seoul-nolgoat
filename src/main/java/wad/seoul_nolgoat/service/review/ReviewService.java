@@ -54,7 +54,7 @@ public class ReviewService {
                 .filter(file -> !file.isEmpty())
                 .map(s3Service::saveFile);
 
-        store.addNolgoatGrade(reviewSaveDto.getGrade());
+        store.addNolgoatGrade(reviewSaveDto.grade());
 
         return reviewRepository.save(
                 ReviewMapper.toEntity(
@@ -76,7 +76,7 @@ public class ReviewService {
                 .orElseThrow(() -> new ApplicationException(REVIEW_NOT_FOUND));
 
         int previousNolgoatGrade = review.getGrade();
-        int currentNolgoatGrade = reviewUpdateDto.getGrade();
+        int currentNolgoatGrade = reviewUpdateDto.grade();
         int nolgoatGradeDifference = previousNolgoatGrade - currentNolgoatGrade;
 
         Store store = review.getStore();
@@ -84,7 +84,7 @@ public class ReviewService {
 
         review.update(
                 currentNolgoatGrade,
-                reviewUpdateDto.getContent()
+                reviewUpdateDto.content()
         );
     }
 

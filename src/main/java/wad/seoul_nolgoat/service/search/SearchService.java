@@ -70,17 +70,17 @@ public class SearchService {
 
     public List<String> searchPossibleCategories(PossibleCategoriesConditionDto possibleCategoriesConditionDto) {
         List<StoreForPossibleCategoriesDto> untokenizedCategories = filterService.findCategoriesByRadiusRange(
-                possibleCategoriesConditionDto.getStartCoordinate(),
-                possibleCategoriesConditionDto.getRadiusRange()
+                possibleCategoriesConditionDto.startCoordinate(),
+                possibleCategoriesConditionDto.radiusRange()
         );
 
         Set<String> possibleCategories = new HashSet<>();
         for (StoreForPossibleCategoriesDto untokenizedCategory : untokenizedCategories) {
-            if (!untokenizedCategory.getStoreType().equals(StoreType.RESTAURANT)) {
-                possibleCategories.add(untokenizedCategory.getStoreType().toString());
+            if (!untokenizedCategory.storeType().equals(StoreType.RESTAURANT)) {
+                possibleCategories.add(untokenizedCategory.storeType().toString());
                 continue;
             }
-            String[] tokens = untokenizedCategory.getCategory().replace(SPACE, EMPTY).split(DELIMITER);
+            String[] tokens = untokenizedCategory.category().replace(SPACE, EMPTY).split(DELIMITER);
             for (String token : tokens) {
                 Optional<String> primaryCategory = StoreCategory.findPrimaryCategoryName(token);
                 primaryCategory.ifPresent(possibleCategories::add);
@@ -366,9 +366,9 @@ public class SearchService {
                 .map(combination -> {
                     try {
                         if (totalRounds == THREE_ROUND) {
-                            CoordinateDto pass1 = combination.getFirstStore().getCoordinate();
-                            CoordinateDto pass2 = combination.getSecondStore().getCoordinate();
-                            CoordinateDto endCoordinate = combination.getThirdStore().getCoordinate();
+                            CoordinateDto pass1 = combination.getFirstStore().coordinate();
+                            CoordinateDto pass2 = combination.getSecondStore().coordinate();
+                            CoordinateDto endCoordinate = combination.getThirdStore().coordinate();
                             combination.setWalkRouteInfoDto(tMapService.fetchWalkRouteInfo(
                                     startCoordinate,
                                     pass1,
@@ -379,8 +379,8 @@ public class SearchService {
                             return combination;
                         }
                         if (totalRounds == TWO_ROUND) {
-                            CoordinateDto pass = combination.getFirstStore().getCoordinate();
-                            CoordinateDto endCoordinate = combination.getSecondStore().getCoordinate();
+                            CoordinateDto pass = combination.getFirstStore().coordinate();
+                            CoordinateDto endCoordinate = combination.getSecondStore().coordinate();
                             combination.setWalkRouteInfoDto(tMapService.fetchWalkRouteInfo(
                                     startCoordinate,
                                     pass,
@@ -390,7 +390,7 @@ public class SearchService {
                             return combination;
                         }
                         if (totalRounds == ONE_ROUND) {
-                            CoordinateDto endCoordinate = combination.getFirstStore().getCoordinate();
+                            CoordinateDto endCoordinate = combination.getFirstStore().coordinate();
                             combination.setWalkRouteInfoDto(tMapService.fetchWalkRouteInfo(
                                     startCoordinate,
                                     endCoordinate

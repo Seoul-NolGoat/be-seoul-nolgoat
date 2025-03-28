@@ -74,10 +74,10 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
         // 조회 결과를 모두 사용하면 개수가 너무 많기 때문에 적당한 기준 설정
         int resultCount = Math.min(DISTANCE_SORT_MAX_RESULT_COUNT, result.size());
-        double baseDistance = result.get(resultCount - 1).getDistance();
+        double baseDistance = result.get(resultCount - 1).distance();
 
         return result.stream()
-                .filter(store -> store.getDistance() <= baseDistance)
+                .filter(store -> store.distance() <= baseDistance)
                 .toList();
     }
 
@@ -101,10 +101,10 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
         // 조회 결과를 모두 사용하면 개수가 너무 많기 때문에 적당한 기준 설정
         int resultCount = Math.min(DISTANCE_SORT_MAX_RESULT_COUNT, result.size());
-        double baseDistance = result.get(resultCount - 1).getDistance();
+        double baseDistance = result.get(resultCount - 1).distance();
 
         return result.stream()
-                .filter(store -> store.getDistance() <= baseDistance)
+                .filter(store -> store.distance() <= baseDistance)
                 .toList();
     }
 
@@ -360,8 +360,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
         return numberTemplate(
                 Double.class,
                 "ST_Distance_Sphere(Point({0}, {1}), Point(ST_X({2}), ST_Y({2})))",
-                startCoordinate.getLongitude(),
-                startCoordinate.getLatitude(),
+                startCoordinate.longitude(),
+                startCoordinate.latitude(),
                 store.location
         ).divide(1000.0); // km로 변환
     }

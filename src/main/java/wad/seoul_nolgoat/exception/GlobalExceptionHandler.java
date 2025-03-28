@@ -1,6 +1,7 @@
 package wad.seoul_nolgoat.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -57,6 +58,26 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMissingRequestHeaderException(MissingRequestHeaderException e) {
         log.info("MissingRequestHeader exception occurred", e);
         ErrorCode errorCode = MISSING_HEADER;
+
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(new ErrorResponse(errorCode));
+    }
+
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorResponse> handleOptimisticLockingFailureException(OptimisticLockingFailureException e) {
+        log.info("OptimisticLockingFailure exception occurred", e);
+        ErrorCode errorCode = PARTY_CONCURRENT_ERROR;
+
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(new ErrorResponse(errorCode));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception e) {
+        log.info("Unexpected exception occurred", e);
+        ErrorCode errorCode = INTERNAL_SERVER_ERROR;
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())

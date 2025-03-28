@@ -12,12 +12,12 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import wad.seoul_nolgoat.service.party.PartyService;
-import wad.seoul_nolgoat.web.party.request.PartySaveDto;
-import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
-import wad.seoul_nolgoat.web.party.request.PartyUpdateDto;
-import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
-import wad.seoul_nolgoat.web.party.response.PartyDetailsForListDto;
-import wad.seoul_nolgoat.web.party.response.PartyDetailsForUserDto;
+import wad.seoul_nolgoat.web.party.dto.request.PartySaveDto;
+import wad.seoul_nolgoat.web.party.dto.request.PartySearchConditionDto;
+import wad.seoul_nolgoat.web.party.dto.request.PartyUpdateDto;
+import wad.seoul_nolgoat.web.party.dto.response.PartyDetailsDto;
+import wad.seoul_nolgoat.web.party.dto.response.PartyDetailsForListDto;
+import wad.seoul_nolgoat.web.party.dto.response.PartyDetailsForUserDto;
 
 import java.net.URI;
 

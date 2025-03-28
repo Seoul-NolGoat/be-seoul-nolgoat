@@ -15,7 +15,7 @@ public class CommentMapper {
         return new Comment(
                 user,
                 party,
-                commentSaveDto.getContent()
+                commentSaveDto.content()
         );
     }
 }

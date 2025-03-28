@@ -44,7 +44,6 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<String> logout(
             @AuthenticationPrincipal OAuth2User loginUser,
-            @RequestHeader(AUTHORIZATION_HEADER) String authorizationHeader,
             @RequestHeader(CSRF_PROTECTION_UUID_HEADER) String csrfProtectionUuid,
             @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME) String refreshToken,
             HttpServletResponse response
@@ -57,9 +56,6 @@ public class AuthController {
         // Redis 및 쿠키에서 Refresh 토큰 삭제
         authService.deleteRefreshToken(loginId);
         authService.deleteRefreshTokenCookie(response);
-
-        // Access 토큰 블랙리스트 처리
-        authService.saveAccessTokenToBlacklist(authorizationHeader.split(" ")[1]);
 
         return ResponseEntity
                 .ok()
@@ -80,7 +76,6 @@ public class AuthController {
     @DeleteMapping("/withdrawal")
     public ResponseEntity<Void> withdraw(
             @AuthenticationPrincipal OAuth2User loginUser,
-            @RequestHeader(AUTHORIZATION_HEADER) String authorizationHeader,
             @RequestHeader(CSRF_PROTECTION_UUID_HEADER) String csrfProtectionUuid,
             @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME) String refreshToken,
             HttpServletResponse response
@@ -93,9 +88,6 @@ public class AuthController {
         // Redis 및 쿠키에서 Refresh 토큰 삭제
         authService.deleteRefreshToken(loginId);
         authService.deleteRefreshTokenCookie(response);
-
-        // Access 토큰 블랙리스트 처리
-        authService.saveAccessTokenToBlacklist(authorizationHeader.split(" ")[1]);
 
         // 소셜 계정 연동 unlink 및 유저 상태 변경
         authService.unlinkSocialAccount(loginUser.getName());

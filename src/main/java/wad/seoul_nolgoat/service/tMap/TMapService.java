@@ -101,10 +101,10 @@ public class TMapService {
     ) {
         try {
             Map<String, String> requestBodyMap = new HashMap<>();
-            requestBodyMap.put("startX", String.valueOf(startCoordinate.getLongitude()));
-            requestBodyMap.put("startY", String.valueOf(startCoordinate.getLatitude()));
-            requestBodyMap.put("endX", String.valueOf(endCoordinate.getLongitude()));
-            requestBodyMap.put("endY", String.valueOf(endCoordinate.getLatitude()));
+            requestBodyMap.put("startX", String.valueOf(startCoordinate.longitude()));
+            requestBodyMap.put("startY", String.valueOf(startCoordinate.latitude()));
+            requestBodyMap.put("endX", String.valueOf(endCoordinate.longitude()));
+            requestBodyMap.put("endY", String.valueOf(endCoordinate.latitude()));
 
             if (!passList.isEmpty()) {
                 requestBodyMap.put("passList", String.join(WAYPOINT_SEPARATOR, passList));
@@ -173,8 +173,8 @@ public class TMapService {
             WalkRouteInfoDto secondWalkRouteInfo = fetchWalkRouteInfo(pass2, endCoordinate);
 
             return new WalkRouteInfoDto(
-                    firstWalkRouteInfo.getTotalDistance() + secondWalkRouteInfo.getTotalDistance(),
-                    firstWalkRouteInfo.getTotalTime() + secondWalkRouteInfo.getTotalTime()
+                    firstWalkRouteInfo.totalDistance() + secondWalkRouteInfo.totalDistance(),
+                    firstWalkRouteInfo.totalTime() + secondWalkRouteInfo.totalTime()
             );
         }
 
@@ -211,11 +211,11 @@ public class TMapService {
     }
 
     private String convertCoordinateToString(CoordinateDto coordinate) {
-        return coordinate.getLongitude() + COORDINATE_SEPARATOR + coordinate.getLatitude();
+        return coordinate.longitude() + COORDINATE_SEPARATOR + coordinate.latitude();
     }
 
     private boolean isSameLocation(CoordinateDto coordinate1, CoordinateDto coordinate2) {
-        return (coordinate1.getLongitude() == coordinate2.getLongitude())
-                && (coordinate1.getLatitude() == coordinate2.getLatitude());
+        return (coordinate1.longitude() == coordinate2.longitude())
+                && (coordinate1.latitude() == coordinate2.latitude());
     }
 }

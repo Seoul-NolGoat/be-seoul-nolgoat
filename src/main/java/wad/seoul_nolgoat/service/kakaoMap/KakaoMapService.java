@@ -164,8 +164,8 @@ public class KakaoMapService {
         headers.set(AUTHORIZATION, KAKAO_AUTHORIZATION_START + apiKey);
 
         String url = UriComponentsBuilder.fromHttpUrl(addressApiUrl)
-                .queryParam(LONGITUDE_PATH, coordinate.getLongitude())
-                .queryParam(LATITUDE_PATH, coordinate.getLatitude())
+                .queryParam(LONGITUDE_PATH, coordinate.longitude())
+                .queryParam(LATITUDE_PATH, coordinate.latitude())
                 .build()
                 .toUriString();
 
@@ -196,8 +196,8 @@ public class KakaoMapService {
         headers.set(AUTHORIZATION, KAKAO_AUTHORIZATION_START + apiKey);
 
         String url = UriComponentsBuilder.fromHttpUrl(addressApiUrl)
-                .queryParam(LONGITUDE_PATH, coordinate.getLongitude())
-                .queryParam(LATITUDE_PATH, coordinate.getLatitude())
+                .queryParam(LONGITUDE_PATH, coordinate.longitude())
+                .queryParam(LATITUDE_PATH, coordinate.latitude())
                 .build()
                 .toUriString();
 

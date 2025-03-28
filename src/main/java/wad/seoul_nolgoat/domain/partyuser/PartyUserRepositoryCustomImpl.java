@@ -3,7 +3,7 @@ package wad.seoul_nolgoat.domain.partyuser;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import wad.seoul_nolgoat.web.party.response.ParticipantDto;
+import wad.seoul_nolgoat.web.party.dto.response.ParticipantDto;
 
 import java.util.List;
 

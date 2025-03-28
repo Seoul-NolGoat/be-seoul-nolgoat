@@ -17,9 +17,9 @@ public class DistanceCalculator {
             StoreForDistanceSortDto thirdStore,
             CoordinateDto startCoordinate
     ) {
-        CoordinateDto firstCoordinate = firstStore.getCoordinate();
-        CoordinateDto secondCoordinate = secondStore.getCoordinate();
-        CoordinateDto thirdCoordinate = thirdStore.getCoordinate();
+        CoordinateDto firstCoordinate = firstStore.coordinate();
+        CoordinateDto secondCoordinate = secondStore.coordinate();
+        CoordinateDto thirdCoordinate = thirdStore.coordinate();
 
         return (int) (
                 (calculateDistance(startCoordinate, firstCoordinate)
@@ -33,8 +33,8 @@ public class DistanceCalculator {
             StoreForDistanceSortDto secondStore,
             CoordinateDto startCoordinate
     ) {
-        CoordinateDto firstCoordinate = firstStore.getCoordinate();
-        CoordinateDto secondCoordinate = secondStore.getCoordinate();
+        CoordinateDto firstCoordinate = firstStore.coordinate();
+        CoordinateDto secondCoordinate = secondStore.coordinate();
 
         return (int) (
                 (calculateDistance(startCoordinate, firstCoordinate)
@@ -43,7 +43,7 @@ public class DistanceCalculator {
     }
 
     public static int calculateTotalDistance(StoreForDistanceSortDto firstStore, CoordinateDto startCoordinate) {
-        CoordinateDto firstCoordinate = firstStore.getCoordinate();
+        CoordinateDto firstCoordinate = firstStore.coordinate();
 
         return (int) (calculateDistance(startCoordinate, firstCoordinate) * METER_CONVERSION_FACTOR);
     }
@@ -54,9 +54,9 @@ public class DistanceCalculator {
             CoordinateDto startCoordinate
     ) {
         if (totalRounds == 3) {
-            CoordinateDto firstCoordinate = combinationDto.getFirstStore().getCoordinate();
-            CoordinateDto secondCoordinate = combinationDto.getSecondStore().getCoordinate();
-            CoordinateDto thirdCoordinate = combinationDto.getThirdStore().getCoordinate();
+            CoordinateDto firstCoordinate = combinationDto.getFirstStore().coordinate();
+            CoordinateDto secondCoordinate = combinationDto.getSecondStore().coordinate();
+            CoordinateDto thirdCoordinate = combinationDto.getThirdStore().coordinate();
             return (int) (
                     (calculateDistance(startCoordinate, firstCoordinate)
                             + calculateDistance(firstCoordinate, secondCoordinate)
@@ -64,8 +64,8 @@ public class DistanceCalculator {
             );
         }
         if (totalRounds == 2) {
-            CoordinateDto firstCoordinate = combinationDto.getFirstStore().getCoordinate();
-            CoordinateDto secondCoordinate = combinationDto.getSecondStore().getCoordinate();
+            CoordinateDto firstCoordinate = combinationDto.getFirstStore().coordinate();
+            CoordinateDto secondCoordinate = combinationDto.getSecondStore().coordinate();
             return (int) (
                     (calculateDistance(startCoordinate, firstCoordinate)
                             + calculateDistance(firstCoordinate, secondCoordinate)) * METER_CONVERSION_FACTOR
@@ -73,15 +73,15 @@ public class DistanceCalculator {
         }
 
         // 1차인 경우
-        CoordinateDto firstCoordinate = combinationDto.getFirstStore().getCoordinate();
+        CoordinateDto firstCoordinate = combinationDto.getFirstStore().coordinate();
         return (int) (calculateDistance(startCoordinate, firstCoordinate) * METER_CONVERSION_FACTOR);
     }
 
     private static double calculateDistance(CoordinateDto firstCoordinate, CoordinateDto secondCoordinate) {
-        double firstLatitude = firstCoordinate.getLatitude();
-        double firstLongitude = firstCoordinate.getLongitude();
-        double secondLatitude = secondCoordinate.getLatitude();
-        double secondLongitude = secondCoordinate.getLongitude();
+        double firstLatitude = firstCoordinate.latitude();
+        double firstLongitude = firstCoordinate.longitude();
+        double secondLatitude = secondCoordinate.latitude();
+        double secondLongitude = secondCoordinate.longitude();
 
         double sinDeltaLatitude = Math.sin(Math.abs(firstLatitude - secondLatitude) * TO_RADIAN / 2);
         double sinDeltaLongitude = Math.sin(Math.abs(firstLongitude - secondLongitude) * TO_RADIAN / 2);

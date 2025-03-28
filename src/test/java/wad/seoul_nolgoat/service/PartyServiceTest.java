@@ -13,9 +13,9 @@ import wad.seoul_nolgoat.domain.party.PartyRepository;
 import wad.seoul_nolgoat.domain.partyuser.PartyUserRepository;
 import wad.seoul_nolgoat.exception.ApplicationException;
 import wad.seoul_nolgoat.service.party.PartyService;
-import wad.seoul_nolgoat.web.party.request.PartySaveDto;
-import wad.seoul_nolgoat.web.party.request.PartyUpdateDto;
-import wad.seoul_nolgoat.web.party.response.PartyDetailsDto;
+import wad.seoul_nolgoat.web.party.dto.request.PartySaveDto;
+import wad.seoul_nolgoat.web.party.dto.request.PartyUpdateDto;
+import wad.seoul_nolgoat.web.party.dto.response.PartyDetailsDto;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
@@ -89,7 +89,7 @@ public class PartyServiceTest {
     @Test
     void prevent_exceeding_max_capacity_with_concurrent_requests() throws InterruptedException {
         //given // when
-        int threadCount = 30;
+        int threadCount = 49;
         ExecutorService executorService = Executors.newFixedThreadPool(4);
         CountDownLatch latch = new CountDownLatch(threadCount);
 
@@ -100,8 +100,7 @@ public class PartyServiceTest {
             executorService.submit(() -> {
                 try {
                     partyService.joinParty(loginId, partyId);
-                } catch (ApplicationException e) {
-                    System.out.println(e.getErrorCode().getMessage());
+                } catch (ApplicationException ignored) {
                 } finally {
                     latch.countDown();
                 }
@@ -110,7 +109,7 @@ public class PartyServiceTest {
         latch.await();
 
         // then
-        assertThat(partyRepository.findById(partyId).get().getCurrentCount()).isEqualTo(6);
+        assertThat(partyUserRepository.findParticipantsByPartyId(partyId).size()).isEqualTo(19);
     }
 
     @DisplayName("이미 삭제된 파티에 참여 신청을 하면, 예외가 발생합니다.")

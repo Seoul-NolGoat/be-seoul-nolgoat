@@ -2,7 +2,7 @@ package wad.seoul_nolgoat.domain.party;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import wad.seoul_nolgoat.web.party.request.PartySearchConditionDto;
+import wad.seoul_nolgoat.web.party.dto.request.PartySearchConditionDto;
 
 import java.util.Optional;
 

@@ -88,7 +88,7 @@ public class DatabaseSeederService {
                 Optional<CoordinateDto> optionalCoordinates = kakaoMapService.fetchCoordinate(store.getRoadAddress());
                 if (optionalCoordinates.isPresent()) {
                     CoordinateDto coordinates = optionalCoordinates.get();
-                    store.updateCoordinates(coordinates.getLongitude(), coordinates.getLatitude());
+                    store.updateCoordinates(coordinates.longitude(), coordinates.latitude());
                 }
             }
         });
@@ -107,9 +107,9 @@ public class DatabaseSeederService {
                 if (optionalStoreAdditionalInfo.isPresent()) {
                     StoreAdditionalInfoDto storeAdditionalInfoDto = optionalStoreAdditionalInfo.get();
                     store.updateAdditionalInfo(
-                            storeAdditionalInfoDto.getCategory(),
-                            storeAdditionalInfoDto.getPhoneNumber(),
-                            storeAdditionalInfoDto.getPlaceUrl()
+                            storeAdditionalInfoDto.category(),
+                            storeAdditionalInfoDto.phoneNumber(),
+                            storeAdditionalInfoDto.placeUrl()
                     );
                 }
             }
