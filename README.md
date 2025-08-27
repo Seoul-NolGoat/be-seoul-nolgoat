@@ -8,7 +8,6 @@
 <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
 <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
 <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
-<img src="https://img.shields.io/badge/redis-FF4438?style=for-the-badge&logo=redis&logoColor=white">
 
 서울시의 다양한 먹거리와 놀거리 조합을 추천해 주는 서비스입니다.<br>
 식당, 카페, 노래방, 당구장, PC방 업종을 검색할 수 있으며 평점과 거리 기반으로 적절한 가게 조합을 추천받을 수 있습니다.<br>
@@ -62,7 +61,7 @@
 
 ### System Architecture
 
-<img src="https://github.com/user-attachments/assets/8321ab3d-8aac-4a26-bdca-0510b406b4e0" width="700"><br>
+<img src="https://github.com/user-attachments/assets/7f0ca30f-baae-4f3c-802d-f75c63bfea23" width="700"><br>
 
 ### Directory Structure
 
@@ -102,7 +101,6 @@ src/
 <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
 <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
 <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
-<img src="https://img.shields.io/badge/redis-FF4438?style=for-the-badge&logo=redis&logoColor=white">
 <img src="https://img.shields.io/badge/hibernate-59666C?style=for-the-badge&logo=hibernate&logoColor=white"><br>
 <img src="https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white">
 <img src="https://img.shields.io/badge/postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white">
@@ -112,7 +110,6 @@ src/
     - `Java 17`은 텍스트 블록, record 클래스 등 새로운 기능들을 적극 활용해 코드 가독성을 높여보고자 선택했습니다.
     - `Spring Boot 3.x`는 Java EE 대신 Jakarta EE 기반으로 전환되었는데 Jakarta EE는 지속적으로 업그레이드되어 최신 기술을 반영할 수 있다는 이점이 있어 선택했습니다.
 - 운영 및 개발 환경에서는 `MySQL`을, 테스트 환경에서는 `H2`를 사용했습니다.
-- `Redis`를 활용해 Refresh 토큰을 관리했습니다.
 - `Spring Data JPA(Hibernate)`로 ORM 기반 데이터 접근을 구현했고 `QueryDSL`로 동적 쿼리를 타입 안정성 있게 작성했습니다.
 - `Spring Security`와 `JWT`를 활용해 인증 및 인가 기능을 구현했습니다.
 - `Postman`으로 API 테스트를 진행했습니다.
@@ -124,7 +121,6 @@ src/
 
 <img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white">
 <img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white">
-<img src="https://img.shields.io/badge/amazonroute53-8C4FFF?style=for-the-badge&logo=amazonroute53&logoColor=white">
 <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white">
 <img src="https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white"><br>
 <img src="https://img.shields.io/badge/logstash-005571?style=for-the-badge&logo=logstash&logoColor=white">
@@ -133,8 +129,7 @@ src/
 
 - `AWS EC2` 인스턴스(Ubuntu)에 백엔드 서버를 배포했습니다.
 - `AWS S3`로 정적 리소스(사용자 프로필 이미지 및 리뷰 이미지)를 관리했습니다.
-- `AWS Route 53`으로 도메인을 설정하고 연결했습니다.
-- `Nginx`로 리버스 프록시를 구성하고 HTTPS를 적용했습니다.
+- `Nginx`로 리버스 프록시를 구성하고 도메인과 HTTPS를 적용했습니다.
 - `GitHub Actions`를 활용해 작업 브랜치(dev)에 머지 시에는 컴파일 에러를 검증하고 배포 브랜치(main)에 머지 시에는 자동으로 배포되는 CI/CD 파이프라인을 구축했습니다.
 - `Logstash`, `Elasticsearch`, `Kibana`를 활용해 서버 로그를 수집, 저장 및 시각화했습니다.
 
