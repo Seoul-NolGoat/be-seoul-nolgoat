@@ -61,7 +61,7 @@
 
 ### System Architecture
 
-<img src="https://github.com/user-attachments/assets/7f0ca30f-baae-4f3c-802d-f75c63bfea23" width="700"><br>
+<img src="https://github.com/user-attachments/assets/e60fcea1-c061-46db-99b9-6e7c932fcc51" width="700"><br>
 
 ### Directory Structure
 
@@ -159,9 +159,7 @@ src/
 <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
 <img src="https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white"><br>
 
-- `Notion`을
-  활용해 [코드 컨벤션](https://longing-freckle-3c6.notion.site/211c9c8e52ce80f3b5ecd3f7dfc32ee6?source=copy_link), [회의 내용](https://longing-freckle-3c6.notion.site/211c9c8e52ce805b82e3c2087d7976b5?source=copy_link)
-  등 공동 작업 자료를 정리했습니다.
+- `Notion`을 활용해 코드 컨벤션, 회의 내용 등 공동 작업 자료를 정리했습니다.
 - `Discord`를 통해 온라인 회의를 진행했습니다.
 
 </div>
