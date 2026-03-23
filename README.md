@@ -61,7 +61,7 @@
 
 ### System Architecture
 
-<img src="https://github.com/user-attachments/assets/0f219ccd-635d-4d60-9177-f696c086a92a" width="700"><br>
+<img src="https://github.com/user-attachments/assets/e079c706-fdae-4b16-8356-08ef67a2fecf" width="700"><br>
 
 ### Directory Structure
 
